@@ -1,0 +1,21 @@
+table {
+  td {
+    text-align: right;
+  }
+  th, td{
+    &:nth-child(1){
+      color: red;
+    }
+    &:nth-child(7){
+      color: blue;
+    }
+  }
+  td.today {
+    font-weight: bolder;
+  }
+  td.no {
+    color: black;
+    background-color: rgb(190, 190, 190);
+    text-align: center;
+  }
+}

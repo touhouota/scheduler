@@ -1,0 +1,25 @@
+body,
+html {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	position: relative;
+}
+
+.container {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+
+	.todo_side {
+		width: calc(80%);
+	}
+
+	.comment_side {
+		width: calc(20%);
+	}
+}

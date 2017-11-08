@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<title>やることリストのリスト</title>
+	<meta charset="utf-8">
+	<link type="text/css" rel="stylesheet" href="./css/list_test.css">
+	<link id="favicon" rel="shortcut icon" href="./image/add.png">
+</head>
+
+<body>
+	<div class="container">
+		<div class="left_side">
+			<div>
+				<h2 class="list_title">今日やること</h2>
+				<time id="today"></time>のやることは以下のとおり
+				<br>
+				<!-- タスク追加ボタン -->
+				<button type="button" class="button add" id="append_task">
+					<img src="./image/add.png" alt="add">
+					<span class="button_text">タスクを追加</span>
+				</button>
+
+				<!-- 仲間の予定ページ -->
+				<button type="button" class="button members">
+					<img src="./image/tasks.png" alt="members">
+					<span class="button_text">仲間の予定</span>
+				</button>
+				<!-- ログアウト -->
+				<button type="button" class="button logout" id="logout">
+					<img src="./image/logout.png" alt="add">
+					<span class="button_text">ログアウト</span>
+				</button>
+				<!-- <a href="./members_task.html">仲間の予定(テスト版)</a> -->
+				<!-- <a href="./members(list_test).html">仲間の予定(テスト版)</a> -->
+			</div>
+
+			<div id="today_list">
+			</div>
+		</div>
+		<!-- left_side -->
+
+		<div class="right_side">
+			<div id="chart">
+				<p id="chart_title">時間比較グラフ</p>
+				<span id="plan">予定</span>
+				<br>
+				<span id="real">実際</span>
+				<canvas width="350" height="200" id="canvas"></canvas>
+			</div>
+			<!-- chart -->
+
+			<div id="timeline_area" class="tab">
+				<h2 class="list_title">みんなの動き</h2>
+				<div id="input_area">
+					<textarea id="comment" placeholder="コメントをどうぞ" rows="4" cols="45"></textarea>
+					<button id="comment_button">送信</button>
+				</div>
+				<!-- input_area -->
+				<div id="comment_area"></div>
+			</div>
+			<!-- timeline_area -->
+		</div>
+		<!-- right_side -->
+	</div>
+	<!-- container -->
+
+	<!-- タスクのテンプレート -->
+	<template id="task_template">
+    <form class="task">
+			<div class="task_main">
+				<div class="change_button" status="0">
+					<img class="task_status" src="./image/stop.png" alt="タスクの状態" />
+					<span class="task_name"></span>
+				</div>
+				<div class="time_area">
+					<span class="image">予想時間：<span class="time">---</span>時間</span>
+					<span class="real">経過時間：<span class="time">00:00:00</span></span>
+				</div>
+				<p class="modal_open">
+					[タスク情報を追加・修正する]
+				</p>
+			</div>
+			<!-- task_main -->
+			<div class="task_sub hide">
+				<p class="task_detail">
+					<span class="task_detail_exp">タスクの内容・終了条件等</span>
+					<br>
+					<span class="task_detail_text">詳細を決めていません<br>タスクを実行する前に決めよう！</span>
+				</p>
+				<details class="end_detail">
+					<summary>振り返り・メモ</summary>
+					<textarea class="end_text" name="end_detail" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう" tabindex="1"></textarea>
+				</details>
+				<div class="task_finish_area">
+					<a tabindex="2" class="finish" data-status="2">
+						<img class="finish_icon" src="./image/succ.png" alt="タスク完了" />
+						<span class="fin_text">完了</span>
+					</a>
+					<a tabindex="3" class="finish" data-status="3">
+						<img class="finish_icon" src="./image/nosucc.png" alt="タスク未達成" />
+						<span class="fin_text">未達成</span>
+					</a>
+				</div>
+			</div>
+			<!-- task_sub -->
+		</form>
+  </template>
+	<!-- task_template -->
+
+	<template id="timeline_template">
+    <div class="comment_container">
+  		<span class="user_name"></span>
+  		<span class="tl_time"></span>
+  		<p class="comment_text"></p>
+  		<span><img src="./image/gj.png" alt=""></span>
+  	</div>
+	</template>
+	<!-- timeline_template -->
+
+	<!-- modal -->
+	<template id="task_modify">
+    <form class="modal task_modify">
+			<p class="modal_title">
+				タスクの内容、どのくらいかかるかを考えよう
+			</p>
+			<label class="modal_content">タスク名: <input class="modal_task" type="text" name="task_name" value=""></label>
+			<label class="modal_content">予想時間(h): <input class="modal_hour" type="number" name="task_hour" placeholder="例：2時間なら「2」と入力" value="" min="0" max="24" step="0.5"></label>
+			<label class="modal_content">タスクの内容・終了条件など: <br><textarea class="modal_detail" name="task_detail" placeholder="そのタスクがどうなれば完了と言えるか&#13;&#10そのために、まず何をするかを考えてみよう"></textarea></label>
+			<input type="hidden" name="task_id" value="">
+			<button class="modify_button" type="button">変更をサーバへ送る
+			</button>
+			<p id="close">
+				閉じる
+			</p>
+		</form>
+  </template>
+
+	<template id="time_modify">
+    <form class="modal time_modify">
+			<p class="modal_title">
+				時間の修正をする
+			</p>
+			<label class="modal_content">時間： <input type="text" class="modal_hour" name="time" value=""></label>
+			<input type="hidden" name="task_id" value="1063">
+			<button id="modify_button" type="button">変更をサーバへ送る
+			</button>
+			<p class="close">
+				閉じる
+			</p>
+		</form>
+  </template>
+
+	<!-- 画像たち -->
+	<template>
+		<img src="./image/succ.png" alt="" />
+		<img src="./image/nosucc.png" alt="" />
+		<img src="./image/stop.png" alt="" />
+		<img src="./image/start.png" alt="" />
+		<img src="./image/pause.png" alt="" />
+	</template>
+
+	<div class="hide" id="pop">
+	</div>
+	<script src="./js/base_object.js"></script>
+	<script src="./js/chart(list_test).js"></script>
+	<script src="./js/progress_timer.js"></script>
+	<script src="./js/timeline(list_test).js"></script>
+	<script src="./js/task_timer.js"></script>
+	<script src="./js/modal.js"></script>
+	<script src="./js/task.js"></script>
+	<script src="./js/list_page.js"></script>
+</body>
+
+</html>

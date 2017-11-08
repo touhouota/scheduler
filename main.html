@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>タスク | SuperScheduler</title>
+	<link rel="stylesheet" href="./css/main.css">
+	<link id="favicon" rel="shortcut icon" type="image/x-icon" href="./image/stop.png">
+</head>
+
+<body>
+	<div class="container">
+		<div class="main_side">
+			<!-- タスク一覧の場所 -->
+			<div class="main_header">
+				<h2>今日やること</h2>
+				<time id="today"></time>のやることは以下の通り。
+				<br>
+				<div id="append_task" class="button add">
+					<img src="./image/add.png" alt="add" width="30" height="30">
+					<span class="button_text">タスクを追加</span>
+				</div>
+				<div class="button members">
+					<img src="./image/tasks.png" alt="members" width="30" height="30">
+					<span class="button_text">仲間の予定</span>
+				</div>
+			</div>
+			<div id="today_task">
+				<!-- 今日のタスクが入る場所 -->
+			</div>
+		</div>
+		<!-- main_side -->
+		<div class="sub_side">
+			<!-- グラフやTLが入る場所 -->
+			<div id="chart">
+				<h2 id="chart_title">時間比較グラフ</h2>
+				<span id="plan">予定</span>
+				<br>
+				<span id="real">実際</span>
+				<canvas width="350" height="200" id="canvas"></canvas>
+			</div>
+
+			<div id="timeline_area" class="tab">
+				<h2 class="list_title">みんなの動き</h2>
+				<div id="input_area">
+					<textarea id="comment" placeholder="コメントをどうぞ" rows="4" cols="45"></textarea>
+					<button id="comment_button" onclick="send_comment();">送信</button>
+				</div>
+				<!-- input_area -->
+				<div id="comment_area"></div>
+			</div>
+		</div>
+		<!-- sub_side -->
+	</div>
+	<!-- テンプレート置き場 -->
+	<template id="task_template">
+    <form class="task">
+      <div class="task_main">
+        <!-- タスクの常に表示されている部分 -->
+        <div class="change_button">
+          <img class="task_status" src="./image/stop.png" alt="タスク状態">
+          <span class="task_name"></span>
+        </div>
+        <div class="time_area">
+          <span class="image">
+            予想時間： <span class="time">---</span>
+          </span>
+          <span class="real">
+            経過時間： <span class="time">00:00:00</span>
+          </span>
+        </div>
+      </div>
+      <!-- task_main -->
+      <div class="task_sub">
+        <p class="task_detail_exp">
+          <!-- 説明文 -->
+          <span class="task_detail_exp"></span>
+          <!-- 取り組む内容 -->
+          <span class="task_detail_text">
+            詳細を決めていません。 <br>
+            タスクに取り組む前に、何をするのかを決めよう。
+          </span>
+        </p>
+      </div>
+      <!-- task_sub -->
+      <div class="task_hidden">
+        <p>メモ・振り返り</p>
+        <textarea name="end_detail" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう"></textarea>
+      </div>
+    </form>
+  </template>
+
+	<template id="comment_template">
+    <div class="comment_container">
+			<span class="user_name"></span>
+			<span class="tl_time"></span>
+			<p class="comment_text"></p>
+			<span><img src="./image/gj.png" alt=""></span>
+		</div>
+  </template>
+
+	<script src="./js/base_object.js"></script>
+	<script src="./js/progress_timer.js"></script>
+	<script src="./js/task.js"></script>
+	<script src="./js/main_page.js"></script>
+</body>
+
+</html>

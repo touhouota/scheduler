@@ -1,0 +1,10 @@
+.DS_Store
+.git
+.jshintrc
+.sass-cache
+css/
+error
+*~
+sass/
+*.old
+temp_db/

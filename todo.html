@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>ToDoベース | SuperScheduler</title>
+	<link rel="stylesheet" href="./css/">
+</head>
+
+<body>
+	<div class="container">
+		<div class="todo_side">
+			<header>
+				<button type="button">add</button>
+				<button type="button">member</button>
+				<button type="button">logout</button>
+			</header>
+			<div class="todo_area">
+
+			</div>
+		</div>
+		<div class="comment_side">
+			<div id="progress_area">
+				<h2 class="list_title">今日の進捗</h2>
+				<div id="progress_list_area">
+					<p class="progress_list">
+						<img src="./image/succ.png" alt=""> × <span class="num"></span>個
+					</p>
+					<p class="progress_list">
+						<img src="./image/nosucc.png" alt=""> × <span class="num"></span>個
+					</p>
+					<p class="progress_list">
+						<img src="./image/stop.png" alt=""> × <span class="num"></span>個
+					</p>
+				</div>
+			</div>
+			<div id="timeline_area" class="tab">
+				<h2 class="list_title">みんなの動き</h2>
+				<div id="input_area">
+					<textarea id="comment" placeholder="コメントをどうぞ" rows="4" cols="45"></textarea>
+					<button id="comment_button">送信</button>
+				</div>
+				<!-- input_area -->
+				<div id="comment_area">
+					<!-- ここコメントの一覧 -->
+				</div>
+			</div>
+			<!-- timeline_area -->
+		</div>
+		<!-- right_side -->
+	</div>
+
+	<!-- template置き場 -->
+	<template id="todo_template">
+    <div class="task">
+      <div class="task_main">
+        <div class="change_button">
+          <img class="task_status" src="" alt="タスクの状態">
+          <span class="task_name"></span>
+        </div>
+        <div class="memo">
+          <p class="task_detail">タスクの内容やメモ</p>
+          <p class="task_detail_text">
+            <!-- メモが入る -->
+          </p>
+        </div>
+        <div class="graph">
+          <!-- タスクの時間差を表すグラフ -->
+          <canvas class="canvas" width="250" height="100"></canvas>
+        </div>
+      </div>
+      <!-- task_main -->
+      <div class="task_sub">
+         <!-- 振り返りがある場合は、ここに入る -->
+        <p class="end_text"></p>
+      </div>
+    </div>
+  </template>
+</body>
+
+</html>

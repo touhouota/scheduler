@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>さんぷる</title>
+	<link type="text/css" rel="stylesheet" href="./css/reflect.css">
+	<script type="text/javascript" src="./js/base.js">
+	</script>
+	<script type="text/javascript" src="./js/task_template.js">
+	</script>
+	<script type="text/javascript" src="./js/daily.js">
+	</script>
+	<script type="text/javascript" src="./js/timer.js">
+	</script>
+</head>
+
+<body>
+	<div class="container">
+		<h1>振り返りを行う部分</h1>
+		<div class="exp">
+			<span class="list_title">他の日のやることリスト</span>
+			<br>日付：
+			<input id="date" type="date" class="date" name="date" onchange="get_list_from_date();">
+		</div>
+		<div id="my_area" class="task_area"></div>
+		<div class="other_container">
+			<div id="tabs" class="tabs">
+				<span class="tab all">みんな</span>
+				<div class="inline_div" id="other_tab">
+
+				</div>
+			</div>
+			<div id="other_area">
+
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

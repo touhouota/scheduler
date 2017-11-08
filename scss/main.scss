@@ -1,0 +1,126 @@
+body,
+html {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+h2 {
+	font-size: 14px;
+}
+
+body {
+	position: relative;
+
+	.container {
+		width: 1024px;
+		height: 100%;
+		margin: 0 auto;
+		position: relative;
+
+		.main_side {
+			width: 624px;
+			position: absolute;
+			top: 0;
+			left: 0;
+
+			.main_header {
+				font-size: 14px;
+
+				.button {
+					display: inline-block;
+					width: 135px;
+					border-radius: 4px;
+					-webkit-box-shadow: 0 2px 0 #8f9080;
+					box-shadow: 0 2px 0 #8f9080;
+					border: 1px solid #666;
+					position: relative;
+					padding: 5px;
+
+					* {
+						vertical-align: middle;
+					}
+
+					img {
+						width: 30px;
+					}
+
+					.button_text {
+						margin-left: 10px;
+					}
+
+					&:hover {
+						background-color: rgb(232, 232, 232);
+					}
+
+					&:active {
+						top: 3px;
+						-webkit-box-shadow: none;
+						box-shadow: none;
+					}
+				}
+			}
+		}
+
+		.sub_side {
+			width: 400px;
+			position: relative;
+			top: 0;
+			margin-left: 624px;
+
+			#chart {
+				#plan {
+					position: relative;
+					top: 60px;
+				}
+
+				#real {
+					position: relative;
+					top: -75px;
+				}
+
+				#canvas {
+					margin-left: 10px;
+				}
+			}
+
+			#timeline_area {
+				height: 610px;
+			}
+		}
+	}
+}
+
+.task {
+	margin: 10px 10px 20px;
+	padding: 0 10px 10px;
+
+	.task_name {
+		margin-left: 10px;
+		font-size: large;
+		font-weight: bold;
+	}
+
+	.task_name,
+	.task_status {
+		vertical-align: middle;
+		width: 42px;
+	}
+
+	.image,
+	.real {
+		margin-right: 5px;
+	}
+
+	.task_detail_exp {
+		font-weight: bolder;
+	}
+
+	.task_sub {
+		display: none;
+	}
+}
+
+.hide {
+	display: none;
+}

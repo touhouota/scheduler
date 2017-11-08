@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<title>今日やることリスト</title>
+	<meta charset="utf-8">
+	<link type="text/css" rel="stylesheet" href="./css/new_list.css">
+	<link id="favicon" rel="shortcut icon" type="image/x-icon" href="./image/stop.png">
+</head>
+
+<body>
+	<div class="container">
+		<div class="left_side">
+			<div class="left_hesder">
+				<h2 class="list_title">今日やること</h2>
+				<time id="today"></time>のやることは以下のとおり<br>
+				<!-- <span class="help"><img src="./image/stop.png" alt="ToDo" width="16px" /> ＜= これをクリックでタスク実行</span><br> アイコンクリックでタスクの状態を変更できます！
+				<br> -->
+				<button class="head_button" type="button" name="button" onclick="only_task_name();">タスクを追加</button>
+				<a class="head_button" href="./members_task.html">仲間の予定</a>
+				<span class="help head_button" onclick="balloon();">
+					Help
+				</span>
+				<a href="http://wiki.c.fun.ac.jp/wiki/2017/index.php?SuperScheduler" target="_blank">ご要望</a>
+				<span class="head_button" id="logout">ログアウト</a>
+				<div class="hide help_balloon" id="help">
+					<p>
+						アイコンをクリックすると、タスクを実行・一時停止などができます。<br> アイコンの意味は以下の通り。
+					</p>
+					<ul class="icon_describe">
+						<li>
+							<span class="describe_text"><img src="./image/stop.png" alt="ToDo">：未実行</span>
+				</li>
+				<li>
+					<span class="describe_text"><img src="./image/start.png" alt="Doing">：実行中</span>
+				</li>
+				<li>
+					<span class="describe_text"><img src="./image/pause.png" alt="Pause">：一時停止</span>
+				</li>
+				<li>
+					<span class="describe_text"><img src="./image/succ.png" alt="Done">：終了</span>
+				</li>
+				<li>
+					<span class="describe_text"><img src="./image/nosucc.png" alt="Imperfect">：未達成</span>
+				</li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="today_list">
+			<div id="task">
+
+			</div>
+		</div>
+	</div>
+	<!-- left_side -->
+
+	<div class="right_side">
+		<div id="chart">
+			<p id="chart_title">時間比較グラフ</p>
+			<span id="plan">予定</span>
+			<br>
+			<span id="real">実際</span>
+			<canvas width="350" height="200" id="canvas"></canvas>
+		</div>
+		<!-- chart -->
+
+		<div id="timeline_area" class="tab">
+			<h2 class="list_title">みんなの動き</h2>
+			<div id="input_area">
+				<textarea id="comment" placeholder="コメントをどうぞ" rows="4" cols="45"></textarea>
+				<button id="comment_button" onclick="send_comment();">送信</button>
+			</div>
+			<!-- input_area -->
+			<div id="comment_area"></div>
+		</div>
+		<!-- timeline_area -->
+	</div>
+	<!-- right_side -->
+
+	<!--
+    <div id="other_list">
+  <span class="list_title">他の日のやることリスト</span>
+  <br>日付：
+  <input type="date" class="date" name="date" onchange="get_list_from_date();">
+  <div id="list_area"></div>
+</div>
+-->
+	<!-- other_list -->
+	<form class="modal hide" id="task_info_modify">
+		<p class="modal_title">
+			タスクの内容、どのくらいかかるかを考えよう
+		</p>
+		<label class="modal_content">タスク名: <input class="modal_task" type="text" name="task_name" value=""></label>
+		<label class="modal_content">予想時間(h): <input class="modal_hour" type="number" name="task_hour" placeholder="例：2時間なら「2」と入力" value="" min="0" max="24" step="0.5"></label>
+		<label class="modal_content">タスクの内容・終了条件など: <br><textarea class="modal_detail" name="task_detail" placeholder="そのタスクがどうなれば完了と言えるか&#13;&#10そのために、まず何をするかを考えてみよう"></textarea></label>
+		<input type="hidden" name="task_id" value="">
+		<button id="modify_button" type="button" onclick="send_modify(this);">変更をサーバへ送る
+			</button>
+		<p class="close" onclick="remove_modal();">
+			閉じる
+		</p>
+	</form>
+
+	<form class="modal hide" id="time_modify">
+		<p class="modal_title">
+			時間の修正をする
+		</p>
+		<label class="modal_content">時間： <input type="text" class="modal_hour" name="time" value=""></label>
+		<input type="hidden" name="task_id" value="">
+		<button id="modify_button" type="button" onclick="send_modify(this)">変更をサーバへ送る
+			</button>
+		<p class="close" onclick="remove_modal();">
+			閉じる
+		</p>
+	</form>
+	</div>
+	<!-- container -->
+	<!-- タスクのテンプレート -->
+	<div class="hide">
+		<form class="task" id="task_template">
+			<div class="task_main">
+				<div class="change_button" status="0">
+					<img class="task_status" src="./image/stop.png" alt="タスクの状態" />
+					<span class="task_name"></span>
+				</div>
+				<div class="time_area">
+					<span class="image">予想時間：<span class="time">---</span>時間</span>
+					<span class="real">経過時間：<span class="time">00:00:00</span></span>
+					<p class="modal_open time_info" onclick="create_modal(this);">
+						[時間を修正]
+					</p>
+				</div>
+				<p class="modal_open task_info" onclick="create_modal(this);">
+					[タスク情報を追加・修正する]
+				</p>
+			</div>
+			<!-- task_main -->
+			<div class="task_sub">
+				<p class="task_detail">
+					<span class="task_detail_exp">タスクの内容・終了条件等</span>
+					<br>
+					<span class="task_detail_text">詳細を決めていません<br>タスクを実行する前に決めよう！</span>
+				</p>
+				<details class="end_detail">
+					<summary>振り返り・メモ</summary>
+					<textarea tabindex="1" class="end_text" name="end_detail" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう"></textarea>
+				</details>
+				<div class="task_finish_area">
+					<button type="button" tabindex="2" class="finish" data-status="2">
+						<img class="finish_icon" src="./image/succ.png" alt="タスク完了" />
+						<span class="fin_text">完了</span>
+					</button>
+					<button type="button" tabindex="3" class="finish" data-status="3">
+						<img class="finish_icon" src="./image/nosucc.png" alt="タスク未達成" />
+						<span class="fin_text">未達成</span>
+					</button>
+				</div>
+			</div>
+			<!-- task_sub -->
+		</form>
+		<!-- task_template -->
+		<!-- コメントのテンプレート -->
+		<div class="comment_container" id="comment_template">
+			<span class="user_name"></span>
+			<span class="tl_time"></span>
+			<p class="comment_text"></p>
+			<span><img src="./image/gj.png" alt=""></span>
+		</div>
+		<img src="./image/succ.png" alt="Done">
+		<img src="./image/nosucc.png" alt="Imperfect">
+		<img src="./image/stop.png" alt="ToDo">
+		<img src="./image/start.png" alt="Doing">
+		<img src="./image/pause.png" alt="Pause">
+	</div>
+
+	<div class="hide" id="pop">
+	</div>
+	<script src="./js/base.js"></script>
+	<script src="./js/chart.js"></script>
+	<script src="./js/timeline.js"></script>
+	<script src="./js/task_timer.js"></script>
+	<script src="./js/list.js"></script>
+	<script src="./js/help.js"></script>
+</body>
+
+</html>

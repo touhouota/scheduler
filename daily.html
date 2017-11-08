@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>自分用スケジューラv1</title>
+  <meta charset="utf-8">
+  <script src="./js/base.js"></script>
+  <script src="./js/daily.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/dialy.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>今日やることリスト作成</h1>
+    <div class="main">
+      <div id="task_list">
+        <p id="describe">
+          状態・時間(h)・やること
+        </p>
+        <form class="level0">
+          <!-- <input type="checkbox" name="status"> -->
+          <select name="status">
+            <option value="0">未着手</option>
+            <option value="1">実行中</option>
+            <option value="2">終了！</option>
+            <option value="3">未達成</option>
+          </select>
+          <input type="text" name="hour" class="hour" placeholder="2">
+          <input type="text" name="task" class="task" placeholder="論文を２本読む">
+          <details>
+            <summary>詳細・終了条件</summary>
+            <textarea name="detail_text" class="detail_text" placeholder="タスクの詳細や、こうなったら終わり、ということをメモ"></textarea>
+          </details>
+        </form>
+      </div>
+      <!-- <button onclick="add_subtask()" id="subtask">サブタスクを追加</button> -->
+      <button onclick="add_task()" id="task">タスク追加</button>
+      <button onclick="send_list()">サーバへ送信</button>
+    </div>
+
+    <div class="right_bar" id="other_list">
+      <!-- <span id="toggle_bar">他の日のタスクを確認</span> -->
+      <span class="list_title">他の日のやることリスト</span>
+      <br>日付：
+      <input type="date" class="date" name="date" id="date" onchange="get_list_from_date();">
+      <div id="list_area"></div>
+    </div>
+  </div><!-- container -->
+</body>
+
+</html>
