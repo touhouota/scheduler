@@ -9,3 +9,6 @@ sass/
 *.old
 temp_db/
 node_modules/
+gulpfile.js
+package-lock.json
+package.json
