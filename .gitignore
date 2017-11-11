@@ -8,3 +8,4 @@ error
 sass/
 *.old
 temp_db/
+node_modules/
