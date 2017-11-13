@@ -76,6 +76,7 @@
 				<div class="time_area">
 					<span class="image">予想時間：<span class="time">---</span>時間</span>
 					<span class="real">経過時間：<span class="time">00:00:00</span></span>
+          <span class="time_modal_open">[経過時間の修正]</span>
 				</div>
 				<p class="modal_open">
 					[タスク情報を追加・修正する]
@@ -130,7 +131,7 @@
 			<input type="hidden" name="task_id" value="">
 			<button class="modify_button" type="button">変更をサーバへ送る
 			</button>
-			<p id="close">
+			<p class="close">
 				閉じる
 			</p>
 		</form>
@@ -141,9 +142,12 @@
 			<p class="modal_title">
 				時間の修正をする
 			</p>
-			<label class="modal_content">時間： <input type="text" class="modal_hour" name="time" value=""></label>
+			<label class="modal_content">作業時間： 
+        <input type="number" class="modal_hour" name="hour" value="" step="1" min="0"></label>時間
+        <input type="number" class="modal_hour" name="minute" value="" step="1" min="0"></label>分
+        <input type="number" class="modal_hour" name="second" value="" step="1" min="0"></label>秒
 			<input type="hidden" name="task_id" value="1063">
-			<button id="modify_button" type="button">変更をサーバへ送る
+			<button class="modify_button" type="button">変更をサーバへ送る
 			</button>
 			<p class="close">
 				閉じる
