@@ -1,7 +1,7 @@
 let Modal = {
 	create_task_modify: function(event) {
 		// 初期状態を作成
-		Modal.modal_init();
+		Modal.init();
 		// タスクのmodalの初期化
 		let modal = Modal.task_modify_init();
 		modal.id = "modify_modal";
@@ -13,8 +13,24 @@ let Modal = {
 		document.body.appendChild(modal);
 	},
 
+	create_time_modify: function(event) {
+		// 初期化
+		Modal.init();
+		// 時間のmodalを初期化
+		let modal = Modal.time_modify_init();
+		modal.id = "time_modal";
+		// ターゲットとなるtaskを取得
+		let task = Base.parents(event.target, "task");
+		Modal.get_time_info(modal, task);
+		// modalを中央揃え
+		Modal.centering(modal);
+
+		// documentに追加
+		document.body.appendChild(modal);
+	},
+
 	// すべてのモーダル作成における、初期状態の作成
-	modal_init: function(task_info) {
+	init: function(task_info) {
 		let div = document.createElement("div");
 		div.id = "modal_back";
 		// 黒背景をクリックされたら、modalを消す
@@ -26,13 +42,26 @@ let Modal = {
 		document.body.classList.add("noscroll");
 	},
 
+	// タスク情報のmodalの初期化
 	task_modify_init: function() {
 		let _modify_modal = document.getElementById("task_modify");
 		let modal = document.importNode(_modify_modal.content, true);
 		// フォームの内容をサーバへ送るイベント
 		modal.querySelector(".modify_button").addEventListener("click", Modal.send_modify);
 		// モーダルの「閉じる」を押した時のイベント
-		modal.getElementById("close").addEventListener("click", Modal.remove);
+		modal.querySelector(".close").addEventListener("click", Modal.remove);
+		return modal.firstElementChild;
+	},
+
+	// 経過時間の修正modalの初期化
+	time_modify_init: function() {
+		let _modify_modal = document.getElementById("time_modify");
+		let modal = document.importNode(_modify_modal.content, true);
+		// フォームの内容をサーバへ送るイベント
+		modal.querySelector(".modify_button").addEventListener("click", Modal.send_modify);
+		// モーダルの閉じるを押した時のイベント
+		modal.querySelector(".close").addEventListener("click", Modal.remove);
+
 		return modal.firstElementChild;
 	},
 
@@ -59,6 +88,17 @@ let Modal = {
 		modal.task_name.value = task_name;
 		modal.task_hour.value = plan;
 		modal.task_detail.value = explain;
+		modal.task_id.value = task.id.split(":").pop();
+	},
+
+	get_time_info: function(modal, task) {
+		// taskにある経過時間を取得し、:で分ける
+		let time = task.querySelector(".time_area > .real").textContent.split(":");
+		// それぞれを、指定する
+		modal.hour.value = time[0];
+		modal.minute.value = time[1];
+		modal.second.value = time[2];
+		// タスクidを付加
 		modal.task_id.value = task.id.split(":").pop();
 	},
 
@@ -94,6 +134,7 @@ let Modal = {
 			"&task_id=" + form.task_id.value,
 		].join("");
 
+		// TODO: switchに書き換え
 		if (form.classList.contains("task_modify")) {
 			// こちらは、タスクの情報を変更する時
 			post = [
@@ -102,6 +143,15 @@ let Modal = {
 				"&hour=", form.task_hour.value,
 				"&task_detail=", encodeURIComponent(form.task_detail.value),
 			].join("");
+		} else if (form.classList.contains("time_modify")) {
+			// 時間の修正に関する修正
+			let hour = Number(form.hour.value);
+			let min = Number(form.minute.value);
+			let sec = Number(form.second.value);
+			post = [
+				post,
+				"&time=", (hour * 3600) + (min * 60) + sec,
+			]
 		}
 
 		Base.create_request("POST", Base.request_path, function() {
