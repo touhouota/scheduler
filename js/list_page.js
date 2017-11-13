@@ -43,7 +43,12 @@ window.onload = function() {
 		window.location = "./members(list_test).html";
 	});
 
+	// ログアウトのボタン
 	document.getElementById("logout").addEventListener("click", Base.logout);
+	// wikiへ飛ばす
+	document.getElementById("wiki").addEventListener("click", function() {
+		window.open('http://wiki.c.fun.ac.jp/wiki/2017/index.php?SuperScheduler', '_blank');
+	});
 }
 
 function set_date() {
