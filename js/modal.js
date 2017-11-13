@@ -93,11 +93,13 @@ let Modal = {
 
 	get_time_info: function(modal, task) {
 		// taskにある経過時間を取得し、:で分ける
-		let time = task.querySelector(".time_area > .real").textContent.split(":");
+		let _time = task.querySelector(".time_area > .real").textContent.split("：").pop();
+		let time = _time.split(":");
+		console.log(time);
 		// それぞれを、指定する
-		modal.hour.value = time[0];
-		modal.minute.value = time[1];
-		modal.second.value = time[2];
+		modal.hour.value = Number(time[0]);
+		modal.minute.value = Number(time[1]);
+		modal.second.value = Number(time[2]);
 		// タスクidを付加
 		modal.task_id.value = task.id.split(":").pop();
 	},
