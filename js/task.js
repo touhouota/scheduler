@@ -105,6 +105,9 @@ let Task = {
 		// タスク情報を更新するときのクリックイベント
 		task.querySelector(".modal_open").addEventListener("click", Modal.create_task_modify);
 
+		// タスクの経過時間修正用のmodalにイベント
+		task.querySelector(".time_modal_open").addEventListener("click", Modal.create_time_modify);
+
 		// 終了時のイベントを付加
 		task.querySelector(".task_finish_area").addEventListener("click", Task.finish);
 	},
