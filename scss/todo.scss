@@ -11,15 +11,147 @@ body {
 }
 
 .container {
-	margin: 0;
+	margin: 0 auto;
 	padding: 0;
-	width: 100%;
+	width: 95%;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
 
-	.todo_side {
-		width: calc(80%);
+	#todo_side {
+		width: 60vw;
+
+		header {
+			margin-top: 10px;
+
+			.button {
+				display: inline-block;
+				width: 145px;
+				border-radius: 4px;
+				-webkit-box-shadow: 0 2px 0 #8f9080;
+				box-shadow: 0 2px 0 #8f9080;
+				border: 1px solid #666;
+				position: relative;
+				padding: 5px;
+				cursor: pointer;
+				margin-right: 10px;
+
+				img {
+					width: 30px;
+				}
+
+				.button_text {
+					margin-left: 10px;
+				}
+
+				&:hover {
+					background-color: rgb(232, 232, 232);
+				}
+
+				&:active {
+					top: 3px;
+					-webkit-box-shadow: none;
+					box-shadow: none;
+				}
+
+				& > * {
+					vertical-align: middle;
+				}
+			}
+		}
+
+		.todos {
+			margin-top: 10px;
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+			-webkit-box-orient: horizontal;
+			-webkit-box-direction: normal;
+			-ms-flex-direction: row;
+			flex-direction: row;
+			-ms-flex-wrap: wrap;
+			flex-wrap: wrap;
+			-webkit-box-pack: start;
+			-ms-flex-pack: start;
+			justify-content: flex-start;
+		}
 	}
 
-	.comment_side {
-		width: calc(20%);
+	#comment_side {
+		width: 40%;
+
+		#progress_area {
+			#progress_list_area {
+				.progress_list {
+					vertical-align: middle;
+
+					img {
+						width: 40px;
+						vertical-align: middle;
+					}
+				}
+			}
+		}
+	}
+}
+// タスクに関するあれこれ
+
+.task {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	border: 1px solid #111;
+	min-width: 200px;
+	max-width: 400px;
+	margin-right: 20px;
+
+	.task_main {
+		.change_button {
+			width: 95%;
+			margin: 5px auto;
+			grid-area: task_title;
+
+			img {
+				width: 30px;
+				vertical-align: middle;
+			}
+
+			.task_name {
+				display: inline-block;
+				vertical-align: middle;
+				width: calc(95% - 35px);
+			}
+		}
+
+		.task_info {
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+
+			.memo {
+				// canvasの大きさを引いた分がtextの大きさ
+				width: calc(100% - 165px);
+				grid-area: task_detail;
+				margin: 5px;
+
+				.task_detail {
+					font-weight: bolder;
+				}
+
+				.task_detail_text {
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+			}
+
+			.graph {
+				grid-area: task_graph;
+				width: 150px;
+
+				canvas {
+					border: 1px solid #111;
+				}
+			}
+		}
 	}
 }

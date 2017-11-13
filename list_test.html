@@ -11,29 +11,33 @@
 <body>
 	<div class="container">
 		<div class="left_side">
-			<div>
+			<header>
 				<h2 class="list_title">今日やること</h2>
 				<time id="today"></time>のやることは以下のとおり
 				<br>
 				<!-- タスク追加ボタン -->
 				<button type="button" class="button add" id="append_task">
-					<img src="./image/add.png" alt="add">
-					<span class="button_text">タスクを追加</span>
-				</button>
+  					<img src="./image/add.png" alt="タスク追加">
+  					<span class="button_text">タスクを追加</span>
+  				</button>
 
 				<!-- 仲間の予定ページ -->
 				<button type="button" class="button members">
-					<img src="./image/tasks.png" alt="members">
-					<span class="button_text">仲間の予定</span>
-				</button>
+  					<img src="./image/tasks.png" alt="仲間の様子">
+  					<span class="button_text">仲間の予定</span>
+  				</button>
 				<!-- ログアウト -->
 				<button type="button" class="button logout" id="logout">
-					<img src="./image/logout.png" alt="add">
-					<span class="button_text">ログアウト</span>
-				</button>
+  					<img src="./image/logout.png" alt="ログアウト">
+  					<span class="button_text">ログアウト</span>
+  				</button>
 				<!-- <a href="./members_task.html">仲間の予定(テスト版)</a> -->
 				<!-- <a href="./members(list_test).html">仲間の予定(テスト版)</a> -->
-			</div>
+				<button type="button" class="button wiki" id="wiki">
+            <img src="./image/wiki.png" alt="wikiへ">
+            <span class="button_text">ご要望</span>
+          </button>
+			</header>
 
 			<div id="today_list">
 			</div>
@@ -76,6 +80,7 @@
 				<div class="time_area">
 					<span class="image">予想時間：<span class="time">---</span>時間</span>
 					<span class="real">経過時間：<span class="time">00:00:00</span></span>
+          <span class="time_modal_open modify_button">[経過時間の修正]</span>
 				</div>
 				<p class="modal_open">
 					[タスク情報を追加・修正する]
@@ -130,9 +135,9 @@
 			<input type="hidden" name="task_id" value="">
 			<button class="modify_button" type="button">変更をサーバへ送る
 			</button>
-			<p id="close">
+			<span class="close">
 				閉じる
-			</p>
+			</span>
 		</form>
   </template>
 
@@ -141,13 +146,18 @@
 			<p class="modal_title">
 				時間の修正をする
 			</p>
-			<label class="modal_content">時間： <input type="text" class="modal_hour" name="time" value=""></label>
+			<label class="modal_content">作業時間： 
+        <input type="number" class="modal_time" name="hour" value="" step="1" min="0">時間
+        <input type="number" class="modal_time" name="minute" value="" step="1" min="0">分
+        <input type="number" class="modal_time" name="second" value="" step="1" min="0">秒
+      </label>
 			<input type="hidden" name="task_id" value="1063">
-			<button id="modify_button" type="button">変更をサーバへ送る
+      <br>
+			<button class="modify_button" type="button">変更をサーバへ送る
 			</button>
-			<p class="close">
+			<span class="close">
 				閉じる
-			</p>
+			</span>
 		</form>
   </template>
 

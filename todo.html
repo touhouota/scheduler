@@ -4,22 +4,91 @@
 <head>
 	<meta charset="utf-8">
 	<title>ToDoベース | SuperScheduler</title>
-	<link rel="stylesheet" href="./css/">
+	<link rel="stylesheet" href="./css/todo.css">
 </head>
 
 <body>
 	<div class="container">
-		<div class="todo_side">
+		<div id="todo_side">
 			<header>
-				<button type="button">add</button>
-				<button type="button">member</button>
-				<button type="button">logout</button>
+				<button type="button" class="button">
+          <img src="./image/add.png" alt="">
+          <span class="button_text">add</span>
+        </button>
+				<button type="button" class="button">
+          <img src="./image/tasks.png" alt="">
+          <span class="button_text">member</span>
+        </button>
+				<button type="button" class="button">
+          <img src="./image/logout.png" alt="">
+          <span class="button_text">logout</span>
+        </button>
 			</header>
 			<div class="todo_area">
+				<div class="todos">
+					<div class="task">
+						<div class="task_main">
+							<div class="change_button">
+								<img class="task_status" src="./image/pause.png" alt="タスクの状態">
+								<span class="task_name">タスクテンプレ</span>
+							</div>
+							<div class="task_info">
+								<div class="memo">
+									<p class="task_detail">タスク情報</p>
+									<p class="task_detail_text">
+										<!-- メモが入る -->
+										がんばるぞがんばるぞがんばるぞ
+									</p>
+								</div>
+								<div class="graph">
+									<!-- タスクの時間差を表すグラフ -->
+									<canvas class="canvas" width="150" height="100"></canvas>
+								</div>
+							</div>
+						</div>
+						<!-- task_main -->
+						<div class="task_sub">
+							<!-- 振り返りがある場合は、ここに入る -->
+							<p class="end_text"></p>
+						</div>
+					</div>
+					<div class="task">
+						<div class="task_main">
+							<div class="change_button">
+								<img class="task_status" src="./image/pause.png" alt="タスクの状態">
+								<span class="task_name">タスクテンプレ</span>
+							</div>
+							<div class="task_info">
+								<div class="memo">
+									<p class="task_detail">タスクの内容やメモ</p>
+									<p class="task_detail_text">
+										<!-- メモが入る -->
+										がんばるぞがんばるぞがんばるぞ
+									</p>
+								</div>
+								<div class="graph">
+									<!-- タスクの時間差を表すグラフ -->
+									<canvas class="canvas" width="150" height="100"></canvas>
+								</div>
+							</div>
+						</div>
+						<!-- task_main -->
+						<div class="task_sub">
+							<!-- 振り返りがある場合は、ここに入る -->
+							<p class="end_text"></p>
+						</div>
+					</div>
+				</div>
+				<!-- todos -->
+				<div class="dones">
 
+				</div>
+				<!-- dones -->
 			</div>
 		</div>
-		<div class="comment_side">
+		<!-- todo_side -->
+
+		<div id="comment_side">
 			<div id="progress_area">
 				<h2 class="list_title">今日の進捗</h2>
 				<div id="progress_list_area">
@@ -48,25 +117,26 @@
 			<!-- timeline_area -->
 		</div>
 		<!-- right_side -->
-	</div>
 
-	<!-- template置き場 -->
-	<template id="todo_template">
+		<!-- template置き場 -->
+		<template id="todo_template">
     <div class="task">
       <div class="task_main">
         <div class="change_button">
-          <img class="task_status" src="" alt="タスクの状態">
+          <img class="task_status" src="./image/stop.png" alt="タスクの状態">
           <span class="task_name"></span>
         </div>
-        <div class="memo">
-          <p class="task_detail">タスクの内容やメモ</p>
-          <p class="task_detail_text">
-            <!-- メモが入る -->
-          </p>
-        </div>
-        <div class="graph">
-          <!-- タスクの時間差を表すグラフ -->
-          <canvas class="canvas" width="250" height="100"></canvas>
+        <div class="task_info">
+          <div class="memo">
+            <p class="task_detail">タスクの内容やメモ</p>
+            <p class="task_detail_text">
+              <!-- メモが入る -->
+            </p>
+          </div>
+          <div class="graph">
+            <!-- タスクの時間差を表すグラフ -->
+            <canvas class="canvas" width="150" height="100"></canvas>
+          </div>
         </div>
       </div>
       <!-- task_main -->
@@ -76,6 +146,9 @@
       </div>
     </div>
   </template>
+		<script src="./js/base_object.js"></script>
+		<script src="./js/chart(list_test).js"></script>
+		<script src="./js/task.js"></script>
 </body>
 
 </html>
