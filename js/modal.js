@@ -18,7 +18,7 @@ let Modal = {
 		Modal.init();
 		// 時間のmodalを初期化
 		let modal = Modal.time_modify_init();
-		modal.id = "time_modal";
+		modal.id = "modify_modal";
 		// ターゲットとなるtaskを取得
 		let task = Base.parents(event.target, "task");
 		Modal.get_time_info(modal, task);
@@ -151,7 +151,7 @@ let Modal = {
 			post = [
 				post,
 				"&time=", (hour * 3600) + (min * 60) + sec,
-			]
+			].join("");
 		}
 
 		Base.create_request("POST", Base.request_path, function() {
