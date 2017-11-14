@@ -1,0 +1,16 @@
+body,
+html {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	position: relative;
+
+	.container {
+		width: 1024px;
+		margin: 0 auto;
+		position: relative;
+	}
+}

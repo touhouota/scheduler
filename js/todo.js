@@ -89,6 +89,8 @@ let Task = {
 			task.dataset.progress = 0;
 		}
 
+		// 時間を
+		Chart.draw(task.querySelector(".canvas"), info.hour, info.time);
 
 
 		if (info.task_detail) {
