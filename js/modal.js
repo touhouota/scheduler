@@ -7,10 +7,11 @@ let Modal = {
 		modal.id = "modify_modal";
 		let task = Base.parents(event.target, "task");
 		Modal.get_task_info(modal, task);
-		// 中央に表示
-		Modal.centering(modal);
 
 		document.body.appendChild(modal);
+
+		// 中央に表示
+		Modal.centering(modal);
 	},
 
 	create_time_modify: function(event) {
@@ -22,11 +23,12 @@ let Modal = {
 		// ターゲットとなるtaskを取得
 		let task = Base.parents(event.target, "task");
 		Modal.get_time_info(modal, task);
-		// modalを中央揃え
-		Modal.centering(modal);
 
 		// documentに追加
 		document.body.appendChild(modal);
+
+		// modalを中央揃え
+		Modal.centering(modal);
 	},
 
 	// すべてのモーダル作成における、初期状態の作成
@@ -111,8 +113,8 @@ let Modal = {
 		console.log(modal);
 		let modal_width = modal.offsetWidth;
 		let modal_height = modal.offsetHeight;
-		modal.style.left = ((width - modal_width) / 4) + "px";
-		modal.style.top = ((height - modal_height) / 4) + "px";
+		modal.style.left = ((width - modal_width) / 2) + "px";
+		modal.style.top = ((height - modal_height) / 2) + "px";
 	},
 
 	remove: function() {
