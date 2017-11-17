@@ -13,9 +13,9 @@ let Chart = {
 	scale: null,
 	bar_height: null,
 
-	draw: function(canvas_id, plan, real) {
+	draw: function(canvas, plan, real) {
 		// canvasに関する初期設定
-		if (!Chart._init(canvas_id, real, plan)) {
+		if (!Chart._init(canvas, real, plan)) {
 			// ここに入る時は、データに不備がある場合
 			alert("データの数が合いません。");
 			return;
@@ -24,10 +24,13 @@ let Chart = {
 		// 罫線を引く
 		this.draw_rule();
 
-		this.draw_time_bar(plan, this.canvas.height / 5);
-		this.draw_time_bar(real, this.canvas.height * (3 / 5));
+		// 予想時間のグラフ
+		this.draw_time_bar(plan, (this.canvas.height / 5) + 5);
+		// 時差氏の時間のグラフ
+		this.draw_time_bar(real, this.canvas.height * (3 / 5) - 5);
 	},
 
+	// 罫線を引く
 	draw_rule: function() {
 		let ctx = Chart.context;
 		ctx.strokeStyle = "#000";
@@ -39,18 +42,19 @@ let Chart = {
 		for (let i = 0; i < width; i = i + range) {
 			ctx.beginPath();
 			// 端数を切り捨てて整数の部分に描画する
-			ctx.moveTo((i - 0.5) | 0, 10);
-			ctx.lineTo((i - 0.5) | 0, Chart.canvas.height - 20);
+			ctx.moveTo((i - 0.5) | 0, 15);
+			ctx.lineTo((i - 0.5) | 0, Chart.canvas.height - 12);
 			ctx.stroke();
 			var minutes = Math.round((i / range)) * 0.5;
 			if (minutes !== 0) {
 				//console.log(minutes, "分");
 				ctx.fillStyle = "#000";
-				ctx.fillText(minutes.toFixed(1), (i - 10.5) | 0, Chart.canvas.height - 10);
+				ctx.fillText(minutes.toFixed(1), (i - 10.5) | 0, Chart.canvas.height - 2);
 			}
 		}
 	},
 
+	// 時間のグラフを弾く
 	draw_time_bar: function(data, graph_height) {
 		let ctx = this.context;
 		// グラフのX座標
@@ -67,9 +71,9 @@ let Chart = {
 	},
 
 	// canvasの初期化
-	_init: function(canvas_id, real, plan) {
-		Chart.canvas = document.getElementById(canvas_id);
-		Chart.context = canvas.getContext("2d");
+	_init: function(canvas, real, plan) {
+		this.canvas = canvas;
+		this.context = this.canvas.getContext("2d");
 		// データ数があっているかを確認
 		if (real.length !== plan.length) {
 			// あっていないと、何もしない
@@ -99,7 +103,8 @@ let Chart = {
 			Chart.scale = max.real;
 		}
 		// キャンバスの幅とグラフの最大長の大きさの比率
-		Chart.scale = (Chart.canvas.width - Chart.canvas.width * 0.1) / Chart.scale;
+		// 最大の長さは、canvas幅の7割りにする
+		Chart.scale = (Chart.canvas.width - Chart.canvas.width * 0.3) / Chart.scale;
 
 		return true;
 	},
