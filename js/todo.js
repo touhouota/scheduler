@@ -227,6 +227,14 @@ let Task = {
 
 	},
 
+	// 修正ボタンを押したときの処理
+	modify_button: function(event) {
+
+	},
+
+	// 
+
+
 	// タスクの内容を決めてあるかの確認
 	// true: 決められていない、false: 決められてる
 	_check_detail_empty: function(task) {
