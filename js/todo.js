@@ -108,7 +108,7 @@ let Task = {
 		task.querySelector(".task_status").addEventListener("click", Task.change_status);
 
 		// タスク情報を更新するときのクリックイベント
-		// task.querySelector(".modal_open").addEventListener("click", Modal.create_task_modify);
+		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 
 		// 終了時のイベントを付加
 		// task.querySelector(".task_finish_area").addEventListener("click", Task.finish);
