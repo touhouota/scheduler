@@ -4,12 +4,13 @@ require 'json'
 require 'mysql2'
 require 'uri'
 require 'time'
+require 'yaml'
 load './process.rb'
 
 print "Content-Type: text/plain;charset=utf-8\n\n"
 
 begin
-  $client = Mysql2::Client.new(host: 'localhost', username: 'research', password: 'do_research', encoding: 'utf8', database: 'do_research')
+  $client = Mysql2::Client.new(YAML.load_file('./database_info.yaml'))
   # デフォルトでkeyをsymbolにする
   $client.query_options[:symbolize_keys] = true
 
