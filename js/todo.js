@@ -69,7 +69,7 @@ let Task = {
 				if (response.ok) {
 					let task = Task.create_task_list(response.data);
 					// document.getElementById("today_list").appendChild(task);
-					let target = document.getElementById("today_list");
+					let target = document.getElementById("todos");
 					target.insertBefore(task, target.firstElementChild);
 				}
 			}
