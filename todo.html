@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<title>ToDoベース | SuperScheduler</title>
 	<link rel="stylesheet" href="./css/todo.css">
+	<link id="favicon" rel="shortcut icon" href="./image/add.png">
 </head>
 
 <body>
@@ -25,62 +26,11 @@
         </button>
 			</header>
 			<div class="todo_area">
-				<div class="todos">
-					<div class="task">
-						<div class="task_main">
-							<div class="change_button">
-								<img class="task_status" src="./image/pause.png" alt="タスクの状態">
-								<span class="task_name">タスクテンプレ</span>
-							</div>
-							<div class="task_info">
-								<div class="memo">
-									<p class="task_detail">タスク情報</p>
-									<p class="task_detail_text">
-										<!-- メモが入る -->
-										がんばるぞがんばるぞがんばるぞ
-									</p>
-								</div>
-								<div class="graph">
-									<!-- タスクの時間差を表すグラフ -->
-									<canvas class="canvas" width="150" height="100"></canvas>
-								</div>
-							</div>
-						</div>
-						<!-- task_main -->
-						<div class="task_sub">
-							<!-- 振り返りがある場合は、ここに入る -->
-							<p class="end_text"></p>
-						</div>
-					</div>
-					<div class="task">
-						<div class="task_main">
-							<div class="change_button">
-								<img class="task_status" src="./image/pause.png" alt="タスクの状態">
-								<span class="task_name">タスクテンプレ</span>
-							</div>
-							<div class="task_info">
-								<div class="memo">
-									<p class="task_detail">タスクの内容やメモ</p>
-									<p class="task_detail_text">
-										<!-- メモが入る -->
-										がんばるぞがんばるぞがんばるぞ
-									</p>
-								</div>
-								<div class="graph">
-									<!-- タスクの時間差を表すグラフ -->
-									<canvas class="canvas" width="150" height="100"></canvas>
-								</div>
-							</div>
-						</div>
-						<!-- task_main -->
-						<div class="task_sub">
-							<!-- 振り返りがある場合は、ここに入る -->
-							<p class="end_text"></p>
-						</div>
-					</div>
+				<div id="todos">
+
 				</div>
 				<!-- todos -->
-				<div class="dones">
+				<div id="dones">
 
 				</div>
 				<!-- dones -->
@@ -128,7 +78,7 @@
         </div>
         <div class="task_info">
           <div class="memo">
-            <p class="task_detail">タスクの内容やメモ</p>
+            <p class="task_detail">タスク情報</p>
             <p class="task_detail_text">
               <!-- メモが入る -->
             </p>
@@ -148,7 +98,8 @@
   </template>
 		<script src="./js/base_object.js"></script>
 		<script src="./js/chart(list_test).js"></script>
-		<script src="./js/task.js"></script>
+		<script src="./js/todo.js"></script>
+		<script src="./js/todo_page.js"></script>
 </body>
 
 </html>

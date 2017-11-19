@@ -1,42 +1,50 @@
 let Task = {
 	create_task_list: function(task_list) {
 		let fragment = document.createDocumentFragment();
-		let todo_fragment = document.createDocumentFragment();
-		let done_fragment = document.createDocumentFragment();
-		let _template = document.getElementById("todo_template");
-		let template = document.importNode(_template.content, true);
 		if (!task_list) {
 			// からの場合は何もしない
 			return;
 		}
 		task_list.forEach(function(item) {
-			let task = template.cloneNode(true).firstElementChild;
-			// iconの設定
-			Task._setting_task_icon(task, item);
-			// タスクの情報に関するもの
-			Task._setting_task_info(task, item);
-			// タスクのクラスを付け替える
-			Task._decoration(task, item.status);
-
-			// もし、状態が実行中ならそうする
-			if (item.status === 1) {
-				// タイマーを実行する
-				ProgressTimer.set(task);
-			}
-
-			console.log(item.status);
-			if ([2, 3].includes(item.status)) {
-				// 完了しているものは、doneの位置に
-				done_fragment.appendChild(task);
-			} else {
-				// 完了していないものはtodoの位置に
-				todo_fragment.appendChild(task);
-			}
+			// タスクを作る
+			let task = Task.create_task(item);
+			fragment.appendChild(task);
 		});
-		// todo / doneの順番にする
-		fragment.appendChild(todo_fragment);
-		fragment.appendChild(done_fragment);
+
 		return fragment;
+	},
+
+	create_task: function(task_info) {
+		let _template = document.getElementById("todo_template");
+		let template = document.importNode(_template.content, true);
+		let task = template.cloneNode(true).firstElementChild;
+		// iconの設定
+		Task._setting_task_icon(task, task_info);
+		// タスクの情報に関するもの
+		Task._setting_task_info(task, task_info);
+		// タスクのクラスを付け替える
+		// Task._decoration(task, task_info.status);
+
+		// もし、状態が実行中ならそうする
+		if (task_info.status === 1) {
+			// タイマーを実行する
+			ProgressTimer.set(task);
+		}
+		// タスクの作成
+		return task;
+	},
+
+	// 引数の状態により、filterを返す
+	filter: function(status) {
+		if (status === "todos") {
+			return function(item) {
+				return ![2, 3].includes(status);
+			}
+		} else if (status === "dones") {
+			return function(item) {
+				return [2, 3].includes(status);
+			}
+		}
 	},
 
 	// タスクの追加をサーバへ送る
@@ -76,22 +84,17 @@ let Task = {
 		// タスク名
 		task.querySelector(".task_name").textContent = info.task;
 
-		// 時間が計画されていれば、それを表示
-		if (info.hour) {
-			task.querySelector(".image > .time").textContent = Base.round_at(info.hour, 5);
-		}
-
 		// 経過時間
 		if (info.time) {
 			task.dataset.progress = info.time;
-			task.querySelector(".real > .time").textContent = ProgressTimer.convert_hms_from_seconds(info.time);
 		} else {
 			task.dataset.progress = 0;
 		}
 
 		// 時間を
-		Chart.draw(task.querySelector(".canvas"), info.hour, info.time);
-
+		let canvas = task.querySelector("canvas");
+		Chart.draw(canvas, info.hour, info.time);
+		console.log(info.hour, info.time);
 
 		if (info.task_detail) {
 			task.querySelector(".task_detail_text").innerHTML = info.task_detail.replace(/\r?\n/g, "<br>");
@@ -105,10 +108,10 @@ let Task = {
 		task.querySelector(".task_status").addEventListener("click", Task.change_status);
 
 		// タスク情報を更新するときのクリックイベント
-		task.querySelector(".modal_open").addEventListener("click", Modal.create_task_modify);
+		// task.querySelector(".modal_open").addEventListener("click", Modal.create_task_modify);
 
 		// 終了時のイベントを付加
-		task.querySelector(".task_finish_area").addEventListener("click", Task.finish);
+		// task.querySelector(".task_finish_area").addEventListener("click", Task.finish);
 	},
 
 	// アイコンの設定
@@ -223,6 +226,14 @@ let Task = {
 		}).send(query);
 
 	},
+
+	// 修正ボタンを押したときの処理
+	modify_button: function(event) {
+
+	},
+
+	// 
+
 
 	// タスクの内容を決めてあるかの確認
 	// true: 決められていない、false: 決められてる

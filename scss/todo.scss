@@ -60,7 +60,8 @@ body {
 			}
 		}
 
-		.todos {
+		#dones,
+		#todos {
 			margin-top: 10px;
 			display: -webkit-box;
 			display: -ms-flexbox;
@@ -99,18 +100,23 @@ body {
 .task {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	border: 1px solid #111;
-	min-width: 200px;
+	// border: 1px solid #111;
+	background-color: rgba(130, 109, 241, 0.10);
+	min-width: 300px;
 	max-width: 400px;
-	margin-right: 20px;
+	margin: 10px 10px 0;
+	padding: 5px 5px 0;
 
 	.task_main {
+		width: 100%;
+
 		.change_button {
 			width: 95%;
 			margin: 5px auto;
 			grid-area: task_title;
 
 			img {
+				display: inline-block;
 				width: 30px;
 				vertical-align: middle;
 			}
@@ -131,7 +137,7 @@ body {
 				// canvasの大きさを引いた分がtextの大きさ
 				width: calc(100% - 165px);
 				grid-area: task_detail;
-				margin: 5px;
+				margin: 5px 10px 5px 5px;
 
 				.task_detail {
 					font-weight: bolder;
@@ -145,11 +151,14 @@ body {
 			}
 
 			.graph {
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
 				grid-area: task_graph;
 				width: 150px;
 
 				canvas {
-					border: 1px solid #111;
+					// border: 1px solid #111;
+					background-color: #fff;
 				}
 			}
 		}
