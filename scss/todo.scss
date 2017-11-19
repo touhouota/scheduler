@@ -106,6 +106,32 @@ body {
 	max-width: 400px;
 	margin: 10px 10px 0;
 	padding: 5px 5px 0;
+	position: relative;
+
+	.button_area {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+
+		img {
+			display: inline;
+		}
+
+		.buttons {
+			display: none;
+			background-color: #eee;
+		}
+
+		&:hover {
+			img {
+				display: none;
+			}
+
+			.buttons {
+				display: inherit;
+			}
+		}
+	}
 
 	.task_main {
 		width: 100%;
