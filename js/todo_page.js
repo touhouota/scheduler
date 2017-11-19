@@ -28,4 +28,7 @@ window.onload = function() {
 			}
 		}
 	}).send(null);
+
+	// タスクを追加するボタンを追加
+	document.getElementById("append_task").addEventListener("click", Task.append_task);
 }
