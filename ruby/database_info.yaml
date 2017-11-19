@@ -1,0 +1,5 @@
+host: 'localhost'
+username: 'research'
+password: 'do_research'
+encoding: 'utf8'
+database: 'do_research'
