@@ -111,9 +111,23 @@
   			<p class="modal_title">
   				タスクの内容、どのくらいかかるかを考えよう
   			</p>
-  			<label class="modal_content">タスク名: <input class="modal_task" type="text" name="task_name" value=""></label>
-  			<label class="modal_content">予想時間(h): <input class="modal_hour" type="number" name="task_hour" placeholder="例：2時間なら「2」と入力" value="" min="0" max="24" step="0.5"></label>
-  			<label class="modal_content">タスクの内容・終了条件など: <br><textarea class="modal_detail" name="task_detail" placeholder="そのタスクがどうなれば完了と言えるか&#13;&#10そのために、まず何をするかを考えてみよう"></textarea></label>
+  			<label class="modal_content">
+          タスク名: 
+          <input class="modal_input modal_task" type="text" name="task_name" value="">
+        </label>
+  			<label class="modal_content">
+          予想時間(m): 
+          <input class="modal_input modal_hour" type="number" name="task_hour" placeholder="例：1時間なら「60」と入力" value="" min="0" max="24" step="0.5">
+        </label>
+        <label class="modal_content">
+          作業時間(m): 
+          <input class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力">
+        </label>
+  			<label class="modal_content">
+          タスクの内容・終了条件など: 
+          <br>
+          <textarea class="modal_detail" name="task_detail" placeholder="そのタスクがどうなれば完了と言えるか&#13;&#10そのために、まず何をするかを考えてみよう"></textarea>
+        </label>
   			<input type="hidden" name="task_id" value="">
   			<button class="modify_button" type="button">変更をサーバへ送る
   			</button>
