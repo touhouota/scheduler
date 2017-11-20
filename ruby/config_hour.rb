@@ -9,15 +9,15 @@ result.each do |item|
   p item
 end
 
-# begin
-#   client.query('BEGIN')
-#   client.query('alter table daily modify hour int default 0')
-#   result.each do |item|
-#     client.query("update daily set hour = #{item[:hour] * 60} where task_id = #{item[:task_id]}")
-#   end
-#   client.query('COMMIT')
-# rescue => e
-#   client.query('ROLLBACK')
-#   p e.class
-#   p e.message
-# end
+begin
+  client.query('BEGIN')
+  client.query('alter table daily modify hour int default 0')
+  result.each do |item|
+    client.query("update daily set hour = #{item[:hour] * 60} where task_id = #{item[:task_id]}")
+  end
+  client.query('COMMIT')
+rescue => e
+  client.query('ROLLBACK')
+  p e.class
+  p e.message
+end
