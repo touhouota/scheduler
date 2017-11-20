@@ -213,22 +213,18 @@ body {
 
 	.modal_content {
 		display: block;
+		margin-top: 5px;
 
-		label {
-			margin: 5px 0;
-		}
-
-		.modal_hour,
-		.modal_task {
+		.modal_input {
 			width: 380px;
 		}
 
 		.modal_task {
-			margin-left: 21px;
+			margin-left: 25px;
 		}
 
 		.modal_detail {
-			min-width: 470px;
+			min-width: 480px;
 			min-height: 100px;
 			resize: vertical;
 		}
