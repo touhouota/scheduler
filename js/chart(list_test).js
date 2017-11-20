@@ -38,8 +38,10 @@ let Chart = {
 
 		// 30分毎に罫線を引く
 		let range = Chart.scale * 30;
+		console.log("range", range);
 		const width = Chart.canvas.width;
-		for (let i = 0; i < width; i = i + range) {
+		// width - 50: 時間を描画するために空けてある 
+		for (let i = 0; i < width - 50; i = i + range) {
 			ctx.beginPath();
 			// 端数を切り捨てて整数の部分に描画する
 			ctx.moveTo((i - 0.5) | 0, 15);
@@ -47,7 +49,7 @@ let Chart = {
 			ctx.stroke();
 			var minutes = Math.round((i / range)) * 0.5;
 			if (minutes !== 0) {
-				//console.log(minutes, "分");
+				// console.log(minutes.toFixed(1), "分");
 				ctx.fillStyle = "#000";
 				ctx.fillText(minutes.toFixed(1), (i - 10.5) | 0, Chart.canvas.height - 2);
 			}
@@ -62,12 +64,16 @@ let Chart = {
 		const size = data.length;
 		let color_range = 360 / size;
 
-		for (var i = 0; i < size; i = (i + 1)) {
+		for (let i = 0; i < size; i = (i + 1)) {
 			ctx.fillStyle = "hsl(" + color_range * i + ", 90%, 50%)";
 			ctx.fillRect(x, graph_height, data[i] * Chart.scale, this.bar_height);
 			x += data[i] * this.scale;
 			//console.log("グラフを描く", x, x * scale);
 		}
+		// 時間を表示する
+		ctx.fillStyle = "#000";
+		ctx.fillText(data + "分", this.canvas.width - 35, graph_height + 18);
+		console.log(data + "分");
 	},
 
 	// canvasの初期化
