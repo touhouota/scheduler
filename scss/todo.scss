@@ -102,8 +102,7 @@ body {
 	box-sizing: border-box;
 	// border: 1px solid #111;
 	background-color: rgba(130, 109, 241, 0.10);
-	min-width: 300px;
-	max-width: 400px;
+	width: 350px;
 	margin: 10px 10px 0;
 	padding: 5px 5px 0;
 	position: relative;
@@ -188,5 +187,55 @@ body {
 				}
 			}
 		}
+	}
+}
+
+#modal_back {
+	background: rgba(0, 0, 0, 0.75);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 120%;
+	z-index: 10;
+}
+
+#modify_modal {
+	padding: 5px 20px 20px;
+	position: fixed;
+	z-index: 1000;
+	background-color: #fff;
+	min-width: 500px;
+
+	.modal_title {
+		text-align: center;
+	}
+
+	.modal_content {
+		display: block;
+
+		label {
+			margin: 5px 0;
+		}
+
+		.modal_hour,
+		.modal_task {
+			width: 380px;
+		}
+
+		.modal_task {
+			margin-left: 21px;
+		}
+
+		.modal_detail {
+			min-width: 470px;
+			min-height: 100px;
+			resize: vertical;
+		}
+	}
+
+	.close:hover {
+		text-decoration: underline;
+		cursor: pointer;
 	}
 }
