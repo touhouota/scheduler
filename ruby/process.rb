@@ -107,7 +107,7 @@ def task_modify(cgi)
   # end_detailを修正・追加
   $client.prepare(sql + 'end_detail = ?' + where).execute(cgi[:end_detail], user_id, task_id) unless cgi[:end_detail].nil?
   # hourを追加・修正
-  $client.prepare(sql + 'hour = ?' + where).execute(cgi[:hour], user_id, task_id) unless cgi[:hour].nil?
+  $client.prepare(sql + 'plan = ?' + where).execute(cgi[:plan], user_id, task_id) unless cgi[:plan].nil?
   # timeを修正
   $client.prepare(sql + 'time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil?
   # start_timeの修正

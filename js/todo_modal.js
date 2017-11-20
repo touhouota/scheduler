@@ -91,22 +91,9 @@ let Modal = {
 		}
 
 		modal.task_name.value = task_name;
-		modal.task_hour.value = plan;
+		modal.task_plan.value = plan;
 		modal.task_time.value = time;
 		modal.task_detail.value = explain;
-		modal.task_id.value = task.id.split(":").pop();
-	},
-
-	get_time_info: function(modal, task) {
-		// taskにある経過時間を取得し、:で分ける
-		let _time = task.querySelector(".time_area > .real").textContent.split("：").pop();
-		let time = _time.split(":");
-		console.log(time);
-		// それぞれを、指定する
-		modal.hour.value = Number(time[0]);
-		modal.minute.value = Number(time[1]);
-		modal.second.value = Number(time[2]);
-		// タスクidを付加
 		modal.task_id.value = task.id.split(":").pop();
 	},
 
@@ -141,7 +128,7 @@ let Modal = {
 			"&user_id=" + Base.get_cookie('user_id'),
 			"&task_id=" + form.task_id.value,
 			"&task_name=", form.task_name.value,
-			"&hour=", form.task_hour.value,
+			"&plan=", form.task_plan.value,
 			"&time=", form.task_time.value,
 			"&task_detail=", encodeURIComponent(form.task_detail.value),
 		].join("");
