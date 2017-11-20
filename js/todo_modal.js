@@ -71,17 +71,17 @@ let Modal = {
 		// タスク名の取得
 		let task_name = task.querySelector(".task_name").textContent;
 		// 予想時間の取得
-		let plan = task.querySelector(".image > .time").textContent;
-		if (plan !== "---") {
+		let plan = task.dataset.plan;
+		if (plan !== "") {
 			plan = parseFloat(plan, 10);
 		} else {
-			plan = "";
+			plan = 0;
 		}
 		// タスクの内容の取得
 		let explain = task.querySelector(".task_detail_text").innerHTML;
 		console.log(explain);
-		let default_detail = "詳細を決めていません<br>タスクを実行する前に決めよう！";
-		if (explain !== default_detail) {
+		// から文字を省いて、大きさが0 => 何も入っていない
+		if (explain.replace(/\s+/g, "").length !== 0) {
 			explain = explain.replace(/<br>/g, "\n");
 		} else {
 			explain = "";
