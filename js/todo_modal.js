@@ -74,8 +74,11 @@ let Modal = {
 		let plan = task.dataset.plan;
 		if (plan !== "") {
 			plan = parseFloat(plan, 10);
-		} else {
-			plan = 0;
+		}
+
+		let time = task.dataset.progress;
+		if (time !== "") {
+			time = parseFloat(time, 10);
 		}
 		// タスクの内容の取得
 		let explain = task.querySelector(".task_detail_text").innerHTML;
@@ -89,6 +92,7 @@ let Modal = {
 
 		modal.task_name.value = task_name;
 		modal.task_hour.value = plan;
+		modal.task_time.value = time;
 		modal.task_detail.value = explain;
 		modal.task_id.value = task.id.split(":").pop();
 	},
@@ -136,27 +140,11 @@ let Modal = {
 			"cmd=task_modify",
 			"&user_id=" + Base.get_cookie('user_id'),
 			"&task_id=" + form.task_id.value,
+			"&task_name=", form.task_name.value,
+			"&hour=", form.task_hour.value,
+			"&time=", form.task_time.value,
+			"&task_detail=", encodeURIComponent(form.task_detail.value),
 		].join("");
-
-		// TODO: switchに書き換え
-		if (form.classList.contains("task_modify")) {
-			// こちらは、タスクの情報を変更する時
-			post = [
-				post,
-				"&task_name=", form.task_name.value,
-				"&hour=", form.task_hour.value,
-				"&task_detail=", encodeURIComponent(form.task_detail.value),
-			].join("");
-		} else if (form.classList.contains("time_modify")) {
-			// 時間の修正に関する修正
-			let hour = Number(form.hour.value);
-			let min = Number(form.minute.value);
-			let sec = Number(form.second.value);
-			post = [
-				post,
-				"&time=", (hour * 3600) + (min * 60) + sec,
-			].join("");
-		}
 
 		Base.create_request("POST", Base.request_path, function() {
 			if (this.status == 200 && this.readyState == 4) {
