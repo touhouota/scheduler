@@ -93,10 +93,10 @@ let Task = {
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		Chart.draw(canvas, [info.hour], [info.time]);
+		Chart.draw(canvas, [info.plan], [info.time]);
 		// 予想時間
-		if (info.hour) {
-			task.dataset.plan = info.hour;
+		if (info.plan) {
+			task.dataset.plan = info.plan;
 		} else {
 			task.dataset.plan = 0;
 		}
@@ -150,7 +150,7 @@ let Task = {
 		let plan = [],
 			real = [];
 		task_list.forEach(function(task) {
-			plan.push(task.hour);
+			plan.push(task.plan);
 			real.push(task.time / 60);
 		});
 
