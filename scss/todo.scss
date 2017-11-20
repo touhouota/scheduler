@@ -102,10 +102,35 @@ body {
 	box-sizing: border-box;
 	// border: 1px solid #111;
 	background-color: rgba(130, 109, 241, 0.10);
-	min-width: 300px;
-	max-width: 400px;
+	width: 350px;
 	margin: 10px 10px 0;
 	padding: 5px 5px 0;
+	position: relative;
+
+	.button_area {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+
+		img {
+			display: inline;
+		}
+
+		.buttons {
+			display: none;
+			background-color: #eee;
+		}
+
+		&:hover {
+			img {
+				display: none;
+			}
+
+			.buttons {
+				display: inherit;
+			}
+		}
+	}
 
 	.task_main {
 		width: 100%;
@@ -147,6 +172,7 @@ body {
 					overflow: hidden;
 					white-space: nowrap;
 					text-overflow: ellipsis;
+					height: 25px;
 				}
 			}
 
@@ -162,5 +188,51 @@ body {
 				}
 			}
 		}
+	}
+}
+
+#modal_back {
+	background: rgba(0, 0, 0, 0.75);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 120%;
+	z-index: 10;
+}
+
+#modify_modal {
+	padding: 5px 20px 20px;
+	position: fixed;
+	z-index: 1000;
+	background-color: #fff;
+	min-width: 500px;
+
+	.modal_title {
+		text-align: center;
+	}
+
+	.modal_content {
+		display: block;
+		margin-top: 5px;
+
+		.modal_input {
+			width: 380px;
+		}
+
+		.modal_task {
+			margin-left: 25px;
+		}
+
+		.modal_detail {
+			min-width: 480px;
+			min-height: 100px;
+			resize: vertical;
+		}
+	}
+
+	.close:hover {
+		text-decoration: underline;
+		cursor: pointer;
 	}
 }

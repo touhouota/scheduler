@@ -93,8 +93,13 @@ let Task = {
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		Chart.draw(canvas, info.hour, info.time);
-		console.log(info.hour, info.time);
+		Chart.draw(canvas, [info.hour], [info.time]);
+		// 予想時間
+		if (info.hour) {
+			task.dataset.plan = info.hour;
+		} else {
+			task.dataset.plan = 0;
+		}
 
 		if (info.task_detail) {
 			task.querySelector(".task_detail_text").innerHTML = info.task_detail.replace(/\r?\n/g, "<br>");
@@ -108,7 +113,7 @@ let Task = {
 		task.querySelector(".task_status").addEventListener("click", Task.change_status);
 
 		// タスク情報を更新するときのクリックイベント
-		// task.querySelector(".modal_open").addEventListener("click", Modal.create_task_modify);
+		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 
 		// 終了時のイベントを付加
 		// task.querySelector(".task_finish_area").addEventListener("click", Task.finish);
@@ -145,7 +150,7 @@ let Task = {
 		let plan = [],
 			real = [];
 		task_list.forEach(function(task) {
-			plan.push(task.hour * 60);
+			plan.push(task.hour);
 			real.push(task.time / 60);
 		});
 
