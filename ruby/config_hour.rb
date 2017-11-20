@@ -12,6 +12,7 @@ end
 begin
   client.query('BEGIN')
   client.query('alter table daily modify hour int default 0')
+  client.query('alter table daily change hour plan int default 0')
   result.each do |item|
     client.query("update daily set hour = #{item[:hour] * 60} where task_id = #{item[:task_id]}")
   end
