@@ -93,10 +93,10 @@ let Task = {
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		Chart.draw(canvas, [info.hour], [info.time]);
+		Chart.draw(canvas, [info.plan], [info.time]);
 		// 予想時間
-		if (info.hour) {
-			task.dataset.plan = info.hour;
+		if (info.plan) {
+			task.dataset.plan = info.plan;
 		} else {
 			task.dataset.plan = 0;
 		}
@@ -122,7 +122,7 @@ let Task = {
 	// アイコンの設定
 	_setting_task_icon: function(task, info) {
 		let icon = task.querySelector(".task_status");
-		console.log(icon);
+		// console.log(icon);
 		icon.classList.add("task_info");
 		// hogehoge.pngの部分を置換する
 		let src_regexp = new RegExp(/[^/]+.png/);
@@ -150,12 +150,9 @@ let Task = {
 		let plan = [],
 			real = [];
 		task_list.forEach(function(task) {
-			plan.push(task.hour);
+			plan.push(task.plan);
 			real.push(task.time / 60);
 		});
-
-		console.table(plan);
-		console.table(real);
 
 		return {
 			plan: plan,

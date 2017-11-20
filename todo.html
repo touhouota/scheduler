@@ -117,11 +117,11 @@
         </label>
   			<label class="modal_content">
           予想時間(m): 
-          <input class="modal_input modal_hour" type="number" name="task_hour" placeholder="例：1時間なら「60」と入力" value="" min="0" max="24" step="0.5">
+          <input class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">
         </label>
         <label class="modal_content">
           作業時間(m): 
-          <input class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力">
+          <input class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力" value="" min="0" step="5">
         </label>
   			<label class="modal_content">
           タスクの内容・終了条件など: 
@@ -129,26 +129,6 @@
           <textarea class="modal_detail" name="task_detail" placeholder="そのタスクがどうなれば完了と言えるか&#13;&#10そのために、まず何をするかを考えてみよう"></textarea>
         </label>
   			<input type="hidden" name="task_id" value="">
-  			<button class="modify_button" type="button">変更をサーバへ送る
-  			</button>
-  			<span class="close">
-  				閉じる
-  			</span>
-  		</form>
-    </template>
-
-		<template id="time_modify">
-      <form class="modal time_modify">
-  			<p class="modal_title">
-  				時間の修正をする
-  			</p>
-  			<label class="modal_content">作業時間： 
-          <input type="number" class="modal_time" name="hour" value="" step="1" min="0">時間
-          <input type="number" class="modal_time" name="minute" value="" step="1" min="0">分
-          <input type="number" class="modal_time" name="second" value="" step="1" min="0">秒
-        </label>
-  			<input type="hidden" name="task_id" value="1063">
-        <br>
   			<button class="modify_button" type="button">変更をサーバへ送る
   			</button>
   			<span class="close">
