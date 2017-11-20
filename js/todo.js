@@ -122,7 +122,7 @@ let Task = {
 	// アイコンの設定
 	_setting_task_icon: function(task, info) {
 		let icon = task.querySelector(".task_status");
-		console.log(icon);
+		// console.log(icon);
 		icon.classList.add("task_info");
 		// hogehoge.pngの部分を置換する
 		let src_regexp = new RegExp(/[^/]+.png/);
@@ -153,9 +153,6 @@ let Task = {
 			plan.push(task.plan);
 			real.push(task.time / 60);
 		});
-
-		console.table(plan);
-		console.table(real);
 
 		return {
 			plan: plan,
