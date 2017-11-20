@@ -96,8 +96,6 @@ let Task = {
 		Chart.draw(canvas, info.hour, info.time);
 		// 予想時間
 		task.dataset.plan = info.hour;
-		// 実際の時間
-		task.dataset.real = info.time;
 
 		if (info.task_detail) {
 			task.querySelector(".task_detail_text").innerHTML = info.task_detail.replace(/\r?\n/g, "<br>");
