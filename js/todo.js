@@ -195,11 +195,11 @@ let Task = {
 			"&task_id=", task.id.split(":").pop(),
 		].join("");
 
-		console.log("status_change", task);
+		// console.log("status_change", task);
 
 		if (task.dataset.status === '1') {
 			let progress = ProgressTimer.calc_diff_seconds(task);
-			console.log("タスクを停止。時間:", progress);
+			// console.log("タスクを停止。時間:", progress);
 			// タイマーを無効にする
 			ProgressTimer.clear(task);
 			// 実行中(1)の時は、一時停止にする(4)
@@ -257,7 +257,7 @@ let Task = {
 
 	// タスクの表示を切り替える
 	_decoration: function(task, status) {
-		console.log("decoration", status);
+		// console.log("decoration", status);
 		let canvas = task.querySelector(".canvas");
 		if (status === 1) {
 			// 実行中の印を付ける
@@ -289,7 +289,7 @@ let Task = {
 		let task = Base.parents(finish_status, "task");
 		let status = finish_status.value;
 		let task_id = task.id.split(":").pop();
-		console.log("finish_task", status, task_id);
+		// console.log("finish_task", status, task_id);
 		// 経過時間を計測
 		let progress = ProgressTimer.calc_diff_seconds(task);
 		// タスクのタイマーを停止
