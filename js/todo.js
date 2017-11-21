@@ -93,7 +93,7 @@ let Task = {
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		let time = (info.time / 60).toFixed(1);
+		let time = (info.time / 60).toFixed(2);
 		Chart.draw(canvas, [info.plan], [time]);
 		// 予想時間
 		if (info.plan) {
