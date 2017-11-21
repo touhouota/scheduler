@@ -93,7 +93,8 @@ let Task = {
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		Chart.draw(canvas, [info.plan], [info.time]);
+		let time = (info.time / 60).toFixed(2);
+		Chart.draw(canvas, [info.plan], [time]);
 		// 予想時間
 		if (info.plan) {
 			task.dataset.plan = info.plan;
@@ -109,6 +110,10 @@ let Task = {
 			task.dataset.start_time = info.start_time;
 		}
 
+		if (info.end_details) {
+			task.querySelector(".end_text").innerHTML = task.end_details.replace(/\r?\n/g, "<br>");
+		}
+
 		// タスクの状態変化イベント
 		task.querySelector(".task_status").addEventListener("click", Task.change_status);
 
@@ -116,7 +121,7 @@ let Task = {
 		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 
 		// 終了時のイベントを付加
-		// task.querySelector(".task_finish_area").addEventListener("click", Task.finish);
+		task.querySelector(".finish_task").addEventListener("click", Task.finish);
 	},
 
 	// アイコンの設定
@@ -194,6 +199,7 @@ let Task = {
 
 		if (task.dataset.status === '1') {
 			let progress = ProgressTimer.calc_diff_seconds(task);
+			console.log("タスクを停止。時間:", progress);
 			// タイマーを無効にする
 			ProgressTimer.clear(task);
 			// 実行中(1)の時は、一時停止にする(4)
@@ -228,20 +234,13 @@ let Task = {
 		}).send(query);
 
 	},
-
-	// 修正ボタンを押したときの処理
-	modify_button: function(event) {
-
-	},
-
 	// 
 
 
 	// タスクの内容を決めてあるかの確認
 	// true: 決められていない、false: 決められてる
 	_check_detail_empty: function(task) {
-		const default_text = "詳細を決めていません<br>タスクを実行する前に決めよう！";
-		if (task.querySelector(".task_detail_text").innerHTML === default_text) {
+		if (task.querySelector(".task_detail_text").innerHTML.replace(/\s/g, "").length === 0) {
 			return true;
 		}
 		return false;
@@ -249,8 +248,8 @@ let Task = {
 
 	// タスクの時間が決まっているのかを確認する
 	_check_plan_empty: function(task) {
-		const default_text = '---';
-		if (task.querySelector(".image > .time").textContent === default_text) {
+		const default_text = '0';
+		if (task.dataset.plan === default_text) {
 			return true;
 		}
 		return false;
@@ -259,23 +258,36 @@ let Task = {
 	// タスクの表示を切り替える
 	_decoration: function(task, status) {
 		console.log("decoration", status);
+		let canvas = task.querySelector(".canvas");
 		if (status === 1) {
-			task.getElementsByClassName("end_detail")[0].open = true;
-			task.classList.add("highlight");
-			task.querySelector(".task_sub").classList.remove("hide");
+			// 実行中の印を付ける
+			task.classList.add("doing");
+			// canvasの大きさを大きくする
+			canvas.width = 350;
+			canvas.height = 200;
+
+			// タスクを移動させる
+			document.getElementById("doing_area").appendChild(task);
 		} else {
-			console.log("閉じるはず");
-			task.getElementsByClassName("end_detail")[0].open = false;
-			task.classList.remove("highlight");
-			task.querySelector(".task_sub").classList.add("hide");
+			// 実行中の印を消す
+			task.classList.remove("doing");
+			// canvasを初期の大きさに戻す
+			canvas.width = 150;
+			canvas.height = 100;
+			// タスクを移動させる
+			let todo = document.getElementById("todos");
+			todo.insertBefore(task, todo.firstElementChild);
 		}
+		// グラフの再描画
+		const time = task.dataset.progress / 60;
+		Chart.draw(canvas, [task.dataset.plan], [time.toFixed(2)]);
 	},
 
 	// task終了のイベント
 	finish: function(e) {
 		let finish_status = Base.parents(e.target, "finish");
 		let task = Base.parents(finish_status, "task");
-		let status = finish_status.dataset.status;
+		let status = finish_status.value;
 		let task_id = task.id.split(":").pop();
 		console.log("finish_task", status, task_id);
 		// 経過時間を計測
@@ -303,6 +315,9 @@ let Task = {
 					Task._setting_task_info(target_task, task_info);
 					Task._setting_task_icon(target_task, task_info);
 					Task._decoration(target_task, task_info.status);
+					// 終了したものは終了した場所に置く
+					let dones = document.getElementById("dones");
+					dones.insertBefore(target_task, dones.firstElementChild);
 
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
