@@ -315,6 +315,9 @@ let Task = {
 					Task._setting_task_info(target_task, task_info);
 					Task._setting_task_icon(target_task, task_info);
 					Task._decoration(target_task, task_info.status);
+					// 終了したものは終了した場所に置く
+					let dones = document.getElementById("dones");
+					dones.insertBefore(target_task, dones.firstElementChild);
 
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
