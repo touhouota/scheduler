@@ -75,7 +75,7 @@ let Chart = {
 		}
 		// 時間を表示する
 		ctx.fillStyle = "#000";
-		ctx.fillText(data + "分", this.canvas.width - 35, graph_height + 18);
+		ctx.fillText(data + "分", this.canvas.width - 40, graph_height + 18);
 		console.log(data + "分");
 	},
 
