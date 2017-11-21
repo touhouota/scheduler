@@ -198,17 +198,14 @@ let Task = {
 		console.log("status_change", task);
 
 		if (task.dataset.status === '1') {
-			let progress = ProgressTimer.calc_diff_seconds(task);
-			// タイマーを無効にする
-			ProgressTimer.clear(task);
+			this._doing_task(task);
 			// 実行中(1)の時は、一時停止にする(4)
 			query = [query, "&status=4", "&time=",
 				Math.floor(progress),
 				"&start_time=", encodeURIComponent(task.dataset.start_time),
 			].join("");
 		} else {
-			// タイマーを実行する
-			ProgressTimer.set(task);
+			this._stop_task(task);
 			// 実行中(1)以外の時は実行中にする
 			query = [query,
 				"&status=1",
@@ -265,6 +262,24 @@ let Task = {
 			task.classList.remove("highlight");
 			task.querySelector(".task_sub").classList.add("hide");
 		}
+	},
+
+	// タスク実行時に行う処理をまとめる
+	_doing_task: function(task) {
+		// タスクを移動させる
+		document.getElementById("doing_area").appendChild(task);
+
+		let progress = ProgressTimer.calc_diff_seconds(task);
+		// タイマーを実行する
+		ProgressTimer.set(task);
+	},
+
+	// タスクが実行時以外のときの処理
+	_stop_task: function(task) {
+		// タスクを移動させる
+		document.getElementById("todo_area").appendChild(task);
+		// タイマーを無効にする
+		ProgressTimer.clear(task);
 	},
 
 	// task終了のイベント
