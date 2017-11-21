@@ -258,14 +258,29 @@ let Task = {
 	// タスクの表示を切り替える
 	_decoration: function(task, status) {
 		console.log("decoration", status);
+		let canvas = task.querySelector(".canvas");
 		if (status === 1) {
+			// 実行中の印を付ける
+			task.classList.add("doing");
+			// canvasの大きさを大きくする
+			canvas.width = 350;
+			canvas.height = 200;
+
 			// タスクを移動させる
 			document.getElementById("doing_area").appendChild(task);
 		} else {
+			// 実行中の印を消す
+			task.classList.remove("doing");
+			// canvasを初期の大きさに戻す
+			canvas.width = 150;
+			canvas.height = 100;
 			// タスクを移動させる
 			let todo = document.getElementById("todos");
 			todo.insertBefore(task, todo.firstElementChild);
 		}
+		// グラフの再描画
+		const time = task.dataset.progress / 60;
+		Chart.draw(canvas, [task.dataset.plan], [time.toFixed(2)]);
 	},
 
 	// task終了のイベント
