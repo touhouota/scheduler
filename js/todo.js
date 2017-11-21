@@ -93,7 +93,8 @@ let Task = {
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		Chart.draw(canvas, [info.plan], [info.time]);
+		let time = (info.time / 60).toFixed(1);
+		Chart.draw(canvas, [info.plan], [time]);
 		// 予想時間
 		if (info.plan) {
 			task.dataset.plan = info.plan;
@@ -253,12 +254,10 @@ let Task = {
 	_decoration: function(task, status) {
 		console.log("decoration", status);
 		if (status === 1) {
-			task.getElementsByClassName("end_detail")[0].open = true;
 			task.classList.add("highlight");
 			task.querySelector(".task_sub").classList.remove("hide");
 		} else {
 			console.log("閉じるはず");
-			task.getElementsByClassName("end_detail")[0].open = false;
 			task.classList.remove("highlight");
 			task.querySelector(".task_sub").classList.add("hide");
 		}
