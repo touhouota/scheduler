@@ -76,7 +76,7 @@ let Chart = {
 		// 時間を表示する
 		ctx.fillStyle = "#000";
 		ctx.fillText(data + "分", this.canvas.width - 40, graph_height + 18);
-		console.log(data + "分");
+		// console.log(data + "分");
 	},
 
 	// canvasの初期化
@@ -119,7 +119,7 @@ let Chart = {
 	},
 
 	reset: function() {
-		console.log(this.canvas);
+		// console.log(this.canvas);
 		// サイズを置き換えるので、中身がリセットされる。
 		this.canvas.width = this.canvas.width;
 	}
