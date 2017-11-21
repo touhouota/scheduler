@@ -121,7 +121,7 @@ let Task = {
 		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 
 		// 終了時のイベントを付加
-		// task.querySelector(".task_finish_area").addEventListener("click", Task.finish);
+		task.querySelector(".finish_task").addEventListener("click", Task.finish);
 	},
 
 	// アイコンの設定
@@ -287,7 +287,7 @@ let Task = {
 	finish: function(e) {
 		let finish_status = Base.parents(e.target, "finish");
 		let task = Base.parents(finish_status, "task");
-		let status = finish_status.dataset.status;
+		let status = finish_status.value;
 		let task_id = task.id.split(":").pop();
 		console.log("finish_task", status, task_id);
 		// 経過時間を計測
