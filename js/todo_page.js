@@ -9,19 +9,19 @@ window.onload = function() {
 	Base.create_request("GET", Base.request_path + query, function() {
 		if (this.status == 200 && this.readyState == 4) {
 			let response = JSON.parse(this.responseText);
-			console.table(response.data);
+			// console.table(response.data);
 			if (response.ok) {
 				let data = response.data;
 
 				// todoの作成
 				let todo = data.filter(Task.filter("todos"));
-				console.log(todo);
+				// console.log(todo);
 				let todo_list = Task.create_task_list(todo);
 				document.getElementById("todos").appendChild(todo_list);
 
 				// doneの作成
 				let done = data.filter(Task.filter("dones"));
-				console.log(done);
+				// console.log(done);
 				let done_list = Task.create_task_list(done);
 				document.getElementById("dones").appendChild(done_list);
 
