@@ -21,6 +21,9 @@ let Chart = {
 			return;
 		};
 
+		// 一旦canvasの中身をまっさらにする
+		this.reset();
+
 		// 罫線を引く
 		this.draw_rule();
 
@@ -114,5 +117,11 @@ let Chart = {
 
 		return true;
 	},
+
+	reset: function() {
+		console.log(this.canvas);
+		// サイズを置き換えるので、中身がリセットされる。
+		this.canvas.width = this.canvas.width;
+	}
 
 }
