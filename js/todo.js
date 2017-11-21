@@ -110,6 +110,10 @@ let Task = {
 			task.dataset.start_time = info.start_time;
 		}
 
+		if (info.end_details) {
+			task.querySelector(".end_text").innerHTML = task.end_details.replace(/\r?\n/g, "<br>");
+		}
+
 		// タスクの状態変化イベント
 		task.querySelector(".task_status").addEventListener("click", Task.change_status);
 
