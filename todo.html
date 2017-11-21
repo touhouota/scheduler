@@ -73,50 +73,59 @@
 
 		<!-- template置き場 -->
 		<template id="todo_template">
-    <div class="task">
-      <div class="button_area">
-        <img src="./image/menu_fill.png" alt="" width="16" height="16">
-        <div class="buttons">
-          <button type="button" class="modify">修正</button>
-          <br>
-          <button type="button" class="delete">削除</button>
-        </div>
-      </div>
-      <div class="task_main">
-        <div class="change_button">
-          <img class="task_status" src="./image/stop.png" alt="タスクの状態">
-          <span class="task_name"></span>
-        </div>
-        <div class="task_info">
-          <div class="memo">
-            <p class="task_detail">タスク情報</p>
-            <!-- ↓メモが入る -->
-            <p class="task_detail_text">
-            </p>
-          </div>
-          <div class="graph">
-            <!-- タスクの時間差を表すグラフ -->
-            <canvas class="canvas" width="150" height="100"></canvas>
+      <div class="task">
+        <div class="button_area">
+          <img src="./image/menu_fill.png" alt="" width="16" height="16">
+          <div class="buttons">
+            <button type="button" class="modify">修正</button>
+            <br>
+            <button type="button" class="delete">削除</button>
           </div>
         </div>
-        <div class="finish_task">
-          <button class="finish button" type="button" name="done" value="2">
-            <img src="./image/succ.png" alt="タスク完了">
-            <span class="button_text">完了</span>
-          </button>
-          <button class="finish button" type="button" name="imparfect" value="3">
-            <img src="./image/nosucc.png" alt="タスク未達成">
-            <span class="button_text">未達成</span>
-          </button>
+        <div class="task_main">
+          <div class="change_button">
+            <img class="task_status" src="./image/stop.png" alt="タスクの状態">
+            <span class="task_name"></span>
+          </div>
+          <div class="task_info">
+            <div class="memo">
+              <p class="task_detail">タスク情報</p>
+              <!-- ↓メモが入る -->
+              <p class="task_detail_text">
+              </p>
+            </div>
+            <div class="graph">
+              <!-- タスクの時間差を表すグラフ -->
+              <canvas class="canvas" width="150" height="100"></canvas>
+            </div>
+          </div>
+          <div class="finish_task">
+            <button class="finish button" type="button" name="done" value="2">
+              <img src="./image/succ.png" alt="タスク完了">
+              <span class="button_text">完了</span>
+            </button>
+            <button class="finish button" type="button" name="imparfect" value="3">
+              <img src="./image/nosucc.png" alt="タスク未達成">
+              <span class="button_text">未達成</span>
+            </button>
+          </div>
+        </div>
+        <!-- task_main -->
+        <div class="task_sub">
+           <!-- 振り返りがある場合は、ここに入る -->
+          <p class="end_text"></p>
         </div>
       </div>
-      <!-- task_main -->
-      <div class="task_sub">
-         <!-- 振り返りがある場合は、ここに入る -->
-        <p class="end_text"></p>
+    </template>
+
+		<template id="timeline_template">
+      <div class="comment_container">
+        <span class="user_name"></span>
+        <span class="tl_time"></span>
+        <p class="comment_text"></p>
+        <span><img src="./image/gj.png" alt=""></span>
       </div>
-    </div>
-  </template>
+    </template>
 
 		<!-- modal -->
 		<template id="end_details">
@@ -169,6 +178,7 @@
 		<script src="./js/base_object.js"></script>
 		<script src="./js/chart(list_test).js"></script>
 		<script src="./js/progress_timer_todo.js"></script>
+		<script src="./js/timeline(list_test).js"></script>
 		<script src="./js/todo.js"></script>
 		<script src="./js/todo_modal.js"></script>
 		<script src="./js/todo_page.js"></script>

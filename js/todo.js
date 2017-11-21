@@ -38,11 +38,11 @@ let Task = {
 	filter: function(status) {
 		if (status === "todos") {
 			return function(item) {
-				return ![2, 3].includes(status);
+				return ![2, 3].includes(item.status);
 			}
 		} else if (status === "dones") {
 			return function(item) {
-				return [2, 3].includes(status);
+				return [2, 3].includes(item.status);
 			}
 		}
 	},
