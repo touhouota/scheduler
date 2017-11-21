@@ -41,7 +41,7 @@ let Chart = {
 
 		// 30分毎に罫線を引く
 		let range = Chart.scale * 30;
-		console.log("range", range);
+		// console.log("range", range);
 		const width = Chart.canvas.width;
 		// width - 50: 時間を描画するために空けてある 
 		for (let i = 0; i < width - 50; i = i + range) {
