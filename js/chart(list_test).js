@@ -21,6 +21,9 @@ let Chart = {
 			return;
 		};
 
+		// 一旦canvasの中身をまっさらにする
+		this.reset();
+
 		// 罫線を引く
 		this.draw_rule();
 
@@ -38,7 +41,7 @@ let Chart = {
 
 		// 30分毎に罫線を引く
 		let range = Chart.scale * 30;
-		console.log("range", range);
+		// console.log("range", range);
 		const width = Chart.canvas.width;
 		// width - 50: 時間を描画するために空けてある 
 		for (let i = 0; i < width - 50; i = i + range) {
@@ -72,8 +75,8 @@ let Chart = {
 		}
 		// 時間を表示する
 		ctx.fillStyle = "#000";
-		ctx.fillText(data + "分", this.canvas.width - 35, graph_height + 18);
-		console.log(data + "分");
+		ctx.fillText(data + "分", this.canvas.width - 40, graph_height + 18);
+		// console.log(data + "分");
 	},
 
 	// canvasの初期化
@@ -114,5 +117,11 @@ let Chart = {
 
 		return true;
 	},
+
+	reset: function() {
+		// console.log(this.canvas);
+		// サイズを置き換えるので、中身がリセットされる。
+		this.canvas.width = this.canvas.width;
+	}
 
 }

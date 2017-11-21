@@ -23,41 +23,6 @@ body {
 
 		header {
 			margin-top: 10px;
-
-			.button {
-				display: inline-block;
-				width: 145px;
-				border-radius: 4px;
-				-webkit-box-shadow: 0 2px 0 #8f9080;
-				box-shadow: 0 2px 0 #8f9080;
-				border: 1px solid #666;
-				position: relative;
-				padding: 5px;
-				cursor: pointer;
-				margin-right: 10px;
-
-				img {
-					width: 30px;
-				}
-
-				.button_text {
-					margin-left: 10px;
-				}
-
-				&:hover {
-					background-color: rgb(232, 232, 232);
-				}
-
-				&:active {
-					top: 3px;
-					-webkit-box-shadow: none;
-					box-shadow: none;
-				}
-
-				& > * {
-					vertical-align: middle;
-				}
-			}
 		}
 
 		#dones,
@@ -95,6 +60,42 @@ body {
 		}
 	}
 }
+// buttonに関するもの
+
+.button {
+	display: inline-block;
+	width: 145px;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 2px 0 #8f9080;
+	box-shadow: 0 2px 0 #8f9080;
+	border: 1px solid #666;
+	position: relative;
+	padding: 5px;
+	cursor: pointer;
+	margin-right: 10px;
+
+	img {
+		width: 30px;
+	}
+
+	.button_text {
+		margin-left: 10px;
+	}
+
+	&:hover {
+		background-color: rgb(232, 232, 232);
+	}
+
+	&:active {
+		top: 3px;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+
+	& > * {
+		vertical-align: middle;
+	}
+}
 // タスクに関するあれこれ
 
 .task {
@@ -104,7 +105,7 @@ body {
 	background-color: rgba(130, 109, 241, 0.10);
 	width: 350px;
 	margin: 10px 10px 0;
-	padding: 5px 5px 0;
+	padding: 5px;
 	position: relative;
 
 	.button_area {
@@ -188,6 +189,10 @@ body {
 				}
 			}
 		}
+
+		.finish_task {
+			display: none;
+		}
 	}
 }
 
@@ -234,5 +239,34 @@ body {
 	.close:hover {
 		text-decoration: underline;
 		cursor: pointer;
+	}
+}
+
+.doing {
+	width: inherit;
+
+	.task_main {
+		.task_info {
+			.memo {
+				width: calc(100% - 370px);
+
+				.task_detail_text {
+					overflow: inherit;
+					white-space: inherit;
+					text-decoration: inherit;
+					height: inherit;
+				}
+			}
+		}
+
+		.finish_task {
+			display: inline-block;
+
+			.finish {
+				img {
+					width: 40px;
+				}
+			}
+		}
 	}
 }

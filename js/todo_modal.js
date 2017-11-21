@@ -14,15 +14,15 @@ let Modal = {
 		Modal.centering(modal);
 	},
 
-	create_time_modify: function(event) {
+	create_end_memo: function(event) {
 		// 初期化
 		Modal.init();
-		// 時間のmodalを初期化
-		let modal = Modal.time_modify_init();
+		// 終了時のmodalを初期化
+		let modal = Modal.end_memo_init();
 		modal.id = "modify_modal";
 		// ターゲットとなるtaskを取得
 		let task = Base.parents(event.target, "task");
-		Modal.get_time_info(modal, task);
+		Modal.set_task_memo(modal, task);
 
 		// documentに追加
 		document.body.appendChild(modal);
@@ -56,7 +56,7 @@ let Modal = {
 	},
 
 	// 経過時間の修正modalの初期化
-	time_modify_init: function() {
+	end_memo_init: function() {
 		let _modify_modal = document.getElementById("time_modify");
 		let modal = document.importNode(_modify_modal.content, true);
 		// フォームの内容をサーバへ送るイベント
@@ -92,9 +92,14 @@ let Modal = {
 
 		modal.task_name.value = task_name;
 		modal.task_plan.value = plan;
-		modal.task_time.value = time;
+		modal.task_time.value = Math.round(time / 60);
 		modal.task_detail.value = explain;
 		modal.task_id.value = task.id.split(":").pop();
+	},
+
+	set_task_memo: function(modal, task) {
+		modal.task_id.value = task.id.split(":").pop()
+		modal.end_details.value = task.querySelector(".end_text").innerHTML.replace(/<br>/g, "\n");
 	},
 
 	centering: function(modal) {
@@ -129,7 +134,7 @@ let Modal = {
 			"&task_id=" + form.task_id.value,
 			"&task_name=", form.task_name.value,
 			"&plan=", form.task_plan.value,
-			"&time=", form.task_time.value,
+			"&time=", Number(form.task_time.value) * 60,
 			"&task_detail=", encodeURIComponent(form.task_detail.value),
 		].join("");
 
