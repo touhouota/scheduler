@@ -92,7 +92,7 @@ let Modal = {
 
 		modal.task_name.value = task_name;
 		modal.task_plan.value = plan;
-		modal.task_time.value = time;
+		modal.task_time.value = Math.round(time / 60);
 		modal.task_detail.value = explain;
 		modal.task_id.value = task.id.split(":").pop();
 	},
@@ -129,7 +129,7 @@ let Modal = {
 			"&task_id=" + form.task_id.value,
 			"&task_name=", form.task_name.value,
 			"&plan=", form.task_plan.value,
-			"&time=", form.task_time.value,
+			"&time=", Number(form.task_time.value) * 60,
 			"&task_detail=", encodeURIComponent(form.task_detail.value),
 		].join("");
 
