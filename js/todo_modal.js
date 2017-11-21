@@ -100,7 +100,7 @@ let Modal = {
 	set_task_memo: function(modal, task) {
 		modal.task_id.value = task.id.split(":").pop()
 		modal.end_details.value = task.querySelector(".end_text").innerHTML.replace(/<br>/g, "\n");
-	}
+	},
 
 	centering: function(modal) {
 		let width = window.innerWidth;
