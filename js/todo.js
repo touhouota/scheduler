@@ -228,20 +228,13 @@ let Task = {
 		}).send(query);
 
 	},
-
-	// 修正ボタンを押したときの処理
-	modify_button: function(event) {
-
-	},
-
 	// 
 
 
 	// タスクの内容を決めてあるかの確認
 	// true: 決められていない、false: 決められてる
 	_check_detail_empty: function(task) {
-		const default_text = "詳細を決めていません<br>タスクを実行する前に決めよう！";
-		if (task.querySelector(".task_detail_text").innerHTML === default_text) {
+		if (task.querySelector(".task_detail_text").innerHTML.replace(/\s/g, "").length === 0) {
 			return true;
 		}
 		return false;
@@ -249,8 +242,8 @@ let Task = {
 
 	// タスクの時間が決まっているのかを確認する
 	_check_plan_empty: function(task) {
-		const default_text = '---';
-		if (task.querySelector(".image > .time").textContent === default_text) {
+		const default_text = '0';
+		if (task.dataset.plan === default_text) {
 			return true;
 		}
 		return false;
