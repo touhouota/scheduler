@@ -195,6 +195,38 @@ body {
 		}
 	}
 }
+// 各項目のタイトル
+
+.list_title {
+	font-size: 14px;
+	text-align: center;
+}
+// task
+// timelineに関するもの
+
+#timeline_area {
+	height: 610px;
+
+	#input_area {
+		width: 380px;
+		margin: 0 auto;
+	}
+
+	#comment_area {
+		height: 500px;
+		overflow-y: auto;
+		border: 1px #444 solid;
+		background-color: #f5f8fa;
+
+		.comment_container {
+			background-color: #fff;
+			border: 1px #222 solid;
+			width: 95%;
+			margin: 5px 4px;
+			padding: 5px;
+		}
+	}
+}
 
 #modal_back {
 	background: rgba(0, 0, 0, 0.75);

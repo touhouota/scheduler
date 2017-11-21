@@ -31,4 +31,15 @@ window.onload = function() {
 
 	// タスクを追加するボタンを追加
 	document.getElementById("append_task").addEventListener("click", Task.append_task);
+
+	// コメントを取得するタイマーのセット
+	Timeline.set_timer();
+
+	// コメント入力欄のイベント
+	// 入力欄の状態によってボタンの表示を変える
+	document.getElementById("comment").addEventListener("input", Timeline.check_comment_textarea);
+	// コメントの送信を行うためのイベント設定
+	const button = document.getElementById("comment_button");
+	button.addEventListener("click", Timeline.append);
+	button.disabled = true;
 }
