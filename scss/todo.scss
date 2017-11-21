@@ -19,7 +19,7 @@ body {
 	display: flex;
 
 	#todo_side {
-		width: 60vw;
+		width: 70vw;
 
 		header {
 			margin-top: 10px;
@@ -44,7 +44,7 @@ body {
 	}
 
 	#comment_side {
-		width: 40%;
+		width: 30vw;
 
 		#progress_area {
 			#progress_list_area {
@@ -224,6 +224,16 @@ body {
 			width: 95%;
 			margin: 5px 4px;
 			padding: 5px;
+
+			.user_name {
+				display: inline-block;
+				width: 100px;
+			}
+
+			.tl_time {
+				float: right;
+				margin-right: 10px;
+			}
 		}
 	}
 }
