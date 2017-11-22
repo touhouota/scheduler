@@ -13,3 +13,4 @@ gulpfile.js
 package-lock.json
 package.json
 database_info.yaml
+vendor/
