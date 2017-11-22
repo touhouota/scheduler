@@ -28,7 +28,8 @@ def search_user(cgi)
 
   sql = 'select user_id from users where user_id = ?'
   result = $client.prepare(sql).execute(cgi[:user_id])
-  hash = { ok: true, data: result.entries.first }
+
+  { ok: true, data: result.entries.first }
 end
 
 # タスク追加

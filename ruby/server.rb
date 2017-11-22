@@ -48,11 +48,6 @@ begin
            when 'insert_timeline'
              insert_timeline(cgi)
 
-          #  when 'date'
-          #    # TODO: メンバーの様子を見せるメソッドの書き換え
-          #    # 現状の方針では、日付ベースではなく個人ごとにすべきだと思う
-          #    get_list_from_date(cgi)
-
            else
              { ok: false, data: cgi, message: 'そんなのないよ' }
   end
