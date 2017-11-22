@@ -1,4 +1,4 @@
-let task_page = '/b1013179/scheduler/list_test.html'
+let task_page = '/b1013179/scheduler/todo.html'
 
 window.onload = function() {
 	// ログイン済みの時は、スキップ
