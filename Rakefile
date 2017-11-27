@@ -1,10 +1,12 @@
 require 'bundler'
 Bundler.require
 
+desc 'ファイルをローカルサーバへ転送する'
 task :sync do
   `cat local_passwd | sudo -S rsync -pr --exclude-from=/Users/touhouota/.rsync/excludes . /Library/WebServer/Documents/b1013179/scheduler/`
 end
 
+desc 'JS/CSSファイルを連結、圧縮する'
 file :minify do
   require 'yui/compressor'
 
