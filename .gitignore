@@ -17,3 +17,5 @@ vendor/
 .bundle/
 Gemfile.lock
 local_passwd
+js/*_min.js
+js/*_concated.js
