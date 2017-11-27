@@ -31,10 +31,12 @@ window.onload = function() {
 
 	// タスクを追加するボタンを追加
 	document.getElementById("append_task").addEventListener("click", Task.append_task);
-	// ログアウトのボタン
-	document.getElementById("logout").addEventListener("click", Base.logout);
+	// 仲間の様子
+	document.getElementById("member").addEventListener("click", Base.member);
 	// 要望ボタン
 	document.getElementById("github").addEventListener("click", Base.request);
+	// ログアウトのボタン
+	document.getElementById("logout").addEventListener("click", Base.logout);
 
 
 	// コメントを取得するタイマーのセット
