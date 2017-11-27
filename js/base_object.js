@@ -86,6 +86,11 @@ var Base = {
 		window.location = "./index.html";
 	},
 
+	// 要望をもらうためのボタンにつけるイベント
+	request: function() {
+		window.open("https://github.com/touhouota/scheduler/issues", "_blank");
+	},
+
 	// 特定のあたい(num)を少数第at位で四捨五入する
 	round_at: function(num, at) {
 		let pow_num = Math.pow(10, Number(at));
