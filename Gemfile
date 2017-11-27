@@ -8,4 +8,5 @@ gem "rake"
 gem 'yui-compressor'
 gem "guard"
 gem "guard-sass"
+gem "guard-concat"
 gem "guard-shell"
