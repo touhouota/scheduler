@@ -98,13 +98,13 @@ let Chart = {
 		let max = {
 			real: 0,
 			plan: 0,
-		}
+		};
 		let i = 0,
 			size = real.length;
 		for (i = 0; i < size; i = i + 1) {
 			max.real += real[i];
 			max.plan += plan[i];
-		}
+		};
 		// 最大のものをまずは保持
 		if (max.real < max.plan) {
 			Chart.scale = max.plan;
@@ -122,6 +122,6 @@ let Chart = {
 		// console.log(this.canvas);
 		// サイズを置き換えるので、中身がリセットされる。
 		this.canvas.width = this.canvas.width;
-	}
+	},
 
-}
+};

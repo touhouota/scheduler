@@ -98,4 +98,4 @@ let Timeline = {
 			button.disabled = false;
 		}
 	}
-}
+};

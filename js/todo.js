@@ -326,4 +326,4 @@ let Task = {
 			}
 		}).send(query);
 	},
-}
+};

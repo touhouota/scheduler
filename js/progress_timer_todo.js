@@ -60,4 +60,4 @@ let ProgressTimer = {
 
 		return [hour, ":", min, ":", sec].join("");
 	},
-}
+};
