@@ -33,6 +33,8 @@ window.onload = function() {
 	document.getElementById("append_task").addEventListener("click", Task.append_task);
 	// ログアウトのボタン
 	document.getElementById("logout").addEventListener("click", Base.logout);
+	// 要望ボタン
+	document.getElementById("github").addEventListener("click", Base.request);
 
 
 	// コメントを取得するタイマーのセット
