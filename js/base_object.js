@@ -86,6 +86,10 @@ var Base = {
 		window.location = "./index.html";
 	},
 
+	member: function() {
+		window.location = "./members_list_test.html";
+	},
+
 	// 要望をもらうためのボタンにつけるイベント
 	request: function() {
 		window.open("https://github.com/touhouota/scheduler/issues", "_blank");
