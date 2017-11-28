@@ -49,4 +49,4 @@ window.onload = function() {
 	const button = document.getElementById("comment_button");
 	button.addEventListener("click", Timeline.append);
 	button.disabled = true;
-}
+};
