@@ -48,6 +48,21 @@ let Modal = {
 	task_modify_init: function() {
 		let _modify_modal = document.getElementById("task_modify");
 		let modal = document.importNode(_modify_modal.content, true);
+		// ↑イベント
+		modal.querySelectorAll(".up").forEach(function(item) {
+			item.addEventListener("click", {
+				button: "UP",
+				handleEvent: Modal.change_plan,
+			});
+		});
+		// ↓イベント
+		modal.querySelectorAll(".down").forEach(function(item) {
+			item.addEventListener("click", {
+				button: "DOWN",
+				handleEvent: Modal.change_plan,
+			});
+		});
+
 		// フォームの内容をサーバへ送るイベント
 		modal.querySelector(".modify_button").addEventListener("click", Modal.send_modify);
 		// モーダルの「閉じる」を押した時のイベント
@@ -98,7 +113,7 @@ let Modal = {
 	},
 
 	set_task_memo: function(modal, task) {
-		modal.task_id.value = task.id.split(":").pop()
+		modal.task_id.value = task.id.split(":").pop();
 		modal.end_details.value = task.querySelector(".end_text").innerHTML.replace(/<br>/g, "\n");
 	},
 
@@ -153,5 +168,33 @@ let Modal = {
 				Modal.remove();
 			}
 		}).send(post);
-	}
+	},
+
+	change_plan: function(event) {
+		let button = event.target;
+		let modal = Base.parents(button, "modal");
+		let modify = null;
+		if (button.classList.contains("plan_button")) {
+			modify = modal.querySelector(".modal_plan");
+		} else if (button.classList.contains("real_button")) {
+			modify = modal.querySelector(".modal_real");
+		} else {
+			// ここに入る場合は、想定外の場合
+			return;
+		}
+		let time = Number(modify.value);
+
+		if (this.button === "UP") {
+			time += 5;
+		} else if (this.button === "DOWN") {
+			time -= 5;
+		}
+
+		// 0 より小さくしない
+		if (time < 0) {
+			time = 0;
+		}
+
+		modify.value = time;
+	},
 };
