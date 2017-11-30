@@ -158,14 +158,18 @@
           タスク名: 
           <input class="modal_input modal_task" type="text" name="task_name" value="">
         </label>
-  			<label class="modal_content">
-          予想時間(m): 
-          <input class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">
-        </label>
-        <label class="modal_content">
-          作業時間(m): 
-          <input class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力" value="" min="0" step="5">
-        </label>
+  			<p class="modal_content">
+          <label for="modal_label">予想時間:</label>
+          <button class="up plan_button" type="button">↑</button>
+          <input id="modal_plan" class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">分
+          <button class="down plan_button" type="button">↓</button>
+        </p>
+        <p class="modal_content">
+          <label class="modal_label" for="modal_real">作業時間:</label>
+          <button class="up real_button" type="button">↑</button>
+          <input id="modal_real" class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力" value="" min="0" step="5">分
+          <button class="down real_button" type="button">↓</button>
+        </p>
   			<label class="modal_content">
           タスクの内容・終了条件など: 
           <br>
