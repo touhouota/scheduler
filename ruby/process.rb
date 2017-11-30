@@ -24,7 +24,7 @@ end
 # ユーザを探す
 def search_user(cgi)
   keys = %i[user_id]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   sql = 'select user_id from users where user_id = ?'
   result = $client.prepare(sql).execute(cgi[:user_id])
@@ -35,7 +35,7 @@ end
 # タスク追加
 def append_task(cgi)
   keys = %i[user_id task_name date]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   # 実施する日付を追加する
   doing_date = Time.parse(cgi[:date])
@@ -55,7 +55,7 @@ end
 # その人のタスクを取得する
 def get_task_list(cgi)
   keys = %i[user_id]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   # sql = 'select * from daily where user_id = ? and !(status in (2, 3))'
   # 終わっていないもの or 今日終わらせたものを取得する
@@ -90,7 +90,7 @@ end
 # タスクの情報を修正する
 def task_modify(cgi)
   keys = %i[user_id task_id]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   sql = 'update daily set '
   where = ' where user_id = ? and task_id = ?'
@@ -123,21 +123,22 @@ end
 # 日付を指定し、その日に登録されているタスクを取得する
 def get_list_from_date(cgi)
   keys = %i[user_id date]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   sql = <<-SQL
   select * from daily join (users join groups using(group_id)) using(user_id)
-  where group_id in (select group_id from users where user_id = ?) and date(doing_date) = ?
+  where group_id in (select group_id from users where user_id = ?) and
+  (status in (0,1,4) and doing_date = date(?)) or (status in (2, 3) and finish_time = ?)
   SQL
   date = Time.parse(cgi[:date]).strftime('%F')
-  result = $client.prepare(sql).execute(cgi[:user_id], date)
+  result = $client.prepare(sql).execute(cgi[:user_id], date, date)
   { ok: true, data: result.entries, test: sql }
 end
 
 # 状態を指定されたものに変更する
 def status_change(cgi)
   keys = %i[user_id status task_id]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   raise 'statusの値が不正(0 ~ 4の間にない)' unless cgi[:status].to_i.between?(0, 4)
 
@@ -150,6 +151,13 @@ def status_change(cgi)
   search = 'select * from daily where user_id = ? and task_id = ?'
   result = $client.prepare(search).execute(cgi[:user_id], cgi[:task_id])
 
+  # 追加(11/27)
+  # タスク終了時、finish_timeにタイムスタンプを打つ。
+  if [2, 3].include?(cgi[:status].to_i)
+    finishtime_sql = 'update daily set finish_time = ? where user_id = ? and task_id = ?'
+    $client.prepare(finishtime_sql).execute(result.entries.dig(0, :modify), cgi[:user_id], cgi[:task_id])
+  end
+
   # コメントを自動投稿する
   auto_comment(cgi[:user_id], cgi[:cmd], cgi[:task_id])
 
@@ -158,7 +166,7 @@ end
 
 def get_timeline(cgi)
   keys = %i[user_id]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   # last => コメントエリアに流れている最後のtl_id
   # lastがあるときは、定期的に取得するとき
@@ -195,7 +203,7 @@ end
 # コメントを投稿する
 def insert_timeline(cgi)
   keys = %i[user_id comment]
-  return return_error(keys, cgi) unless _check_data(keys, cgi)
+  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
 
   sql = <<-SQL
   insert into timeline(user_id, items) values(?, ?)
@@ -239,7 +247,7 @@ end
 # 古いものをそのまましようする。削除すべき(記：2017-10-30)
 # def get_list_from_date(cgi)
 #   keys = %i[user_id date]
-#   return return_error(keys, cgi) unless _check_data(keys, cgi)
+#   raise "必要な情報が来ていません" unless _check_data(keys, cgi)
 #
 #   g_id_sql = 'select group_id from users where user_id = ?'
 #   group_id = $client.prepare(g_id_sql).execute(cgi[:user_id]).first[:group_id]
