@@ -122,6 +122,7 @@ let Task = {
 
 		// 終了時のイベントを付加
 		task.querySelector(".finish_task").addEventListener("click", Task.finish);
+		task.querySelector(".finish_task").addEventListener("click", Modal.create_end_memo);
 	},
 
 	// アイコンの設定
@@ -321,7 +322,7 @@ let Task = {
 
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
-					alert(text);
+					// alert(text);
 				}
 			}
 		}).send(query);
@@ -337,7 +338,7 @@ let Task = {
 		};
 
 		tasks.forEach(function(item) {
-			console.log(item, item.dataset.status, count.todo);
+			// console.log(item, item.dataset.status, count.todo);
 			switch (Number(item.dataset.status)) {
 				case 0:
 				case 1:

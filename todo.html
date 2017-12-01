@@ -134,20 +134,20 @@
 
 	<!-- modal -->
 	<template id="end_details">
-      <div class="modal end_memo">
-        <p class="modal_title">
-          タスク実行時の振り返り
-        </p>
-        <textarea name="end_details" rows="8" cols="80" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう"></textarea>
-      </div>
-      <input type="hidden" name="task_id" value="">
-      <br>
-      <button class="modify_button" type="button">変更をサーバへ送る
-      </button>
-      <span class="close">
-        閉じる
-      </span>
-    </template>
+    <form class="modal end_memo">
+      <p class="modal_title">
+        タスク実行時の振り返り
+      </p>
+      <textarea name="end_details" rows="8" cols="80" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう"></textarea>
+    <input type="hidden" name="task_id" value="">
+    <br>
+    <button class="modify_button" type="button">変更をサーバへ送る
+    </button>
+    <span class="close">
+      閉じる
+    </span>
+  </form>
+  </template>
 
 	<template id="task_modify">
       <form class="modal task_modify">
