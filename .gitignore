@@ -16,6 +16,6 @@ database_info.yaml
 vendor/
 .bundle/
 Gemfile.lock
-local_passwd
+local_passwd.yaml
 js/*_min.js
 js/*_concated.js

@@ -20,4 +20,4 @@ guard 'sass', input: 'scss', output: 'css'
 
 # todoページのものを監視
 guard :concat, type: 'js',
-               files: %w[base_object chart_list_test progress_timer_todo timeline_list_test todo todo_modal todo_page], input_dir: 'js', output: 'js/todo_concated'
+               files: %w[base_object notification chart_list_test progress_timer_todo timeline_list_test todo todo_modal todo_page], input_dir: 'js', output: 'js/todo_concated'
