@@ -22,6 +22,7 @@ let Modal = {
 		modal.id = "modify_modal";
 		// ターゲットとなるtaskを取得
 		let task = Base.parents(event.target, "task");
+		console.log("memo", task);
 		Modal.set_task_memo(modal, task);
 
 		// documentに追加
@@ -72,7 +73,7 @@ let Modal = {
 
 	// 経過時間の修正modalの初期化
 	end_memo_init: function() {
-		let _modify_modal = document.getElementById("time_modify");
+		let _modify_modal = document.getElementById("end_details");
 		let modal = document.importNode(_modify_modal.content, true);
 		// フォームの内容をサーバへ送るイベント
 		modal.querySelector(".modify_button").addEventListener("click", Modal.send_modify);
@@ -121,7 +122,6 @@ let Modal = {
 		let width = window.innerWidth;
 		let height = window.innerHeight;
 
-		console.log(modal);
 		let modal_width = modal.offsetWidth;
 		let modal_height = modal.offsetHeight;
 		modal.style.left = ((width - modal_width) / 2) + "px";
@@ -143,15 +143,27 @@ let Modal = {
 
 	send_modify: function(event) {
 		let form = Base.parents(event.target, "modal");
-		post = [
-			"cmd=task_modify",
-			"&user_id=" + Base.get_cookie('user_id'),
-			"&task_id=" + form.task_id.value,
-			"&task_name=", form.task_name.value,
-			"&plan=", form.task_plan.value,
-			"&time=", Number(form.task_time.value) * 60,
-			"&task_detail=", encodeURIComponent(form.task_detail.value),
-		].join("");
+		let post = null;
+		if (form.classList.contains("task_modify")) {
+			post = [
+				"cmd=task_modify",
+				"&user_id=" + Base.get_cookie('user_id'),
+				"&task_id=" + form.task_id.value,
+				"&task_name=", form.task_name.value,
+				"&plan=", form.task_plan.value,
+				"&time=", Number(form.task_time.value) * 60,
+				"&task_detail=", encodeURIComponent(form.task_detail.value),
+			].join("");
+		} else if (form.classList.contains("end_memo")) {
+			post = [
+				"cmd=task_modify",
+				"&user_id=" + Base.get_cookie("user_id"),
+				"&task_id=" + form.task_id.value,
+				"&end_detail=" + form.end_details.value,
+			].join("");
+		} else {
+			return;
+		}
 
 		Base.create_request("POST", Base.request_path, function() {
 			if (this.status == 200 && this.readyState == 4) {
