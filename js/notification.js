@@ -8,7 +8,7 @@ let Notify = {
 		// すでに通知の許可を得ているか確認する
 		else if (Notification.permission === "granted") {
 			// 許可を得ている場合は、通知を作成する
-			var notification = this.create_instance("コメントなどの通知をします！");
+			var notification = Notify.create_instance("コメントなどの通知をします！");
 		}
 
 		// 許可を得ていない場合は、ユーザに許可を求めなければならない
@@ -16,7 +16,7 @@ let Notify = {
 			Notification.requestPermission(function(permission) {
 				// ユーザが許可した場合は、通知を作成する
 				if (permission === "granted") {
-					var notification = this.create_instance("コメントなどの通知をします！");
+					var notification = Notify.create_instance("コメントなどの通知をします！");
 				}
 			});
 		}
@@ -26,7 +26,11 @@ let Notify = {
 	},
 
 	create_instance: function(txt) {
-		let instance = new Notification(txt);
-		setTimeout(instance.close.bind(instance), 5000);
+		if (Notification.permission === "granted") {
+			let instance = new Notification(txt);
+			setTimeout(instance.close.bind(instance), 5000);
+		} else {
+			alert(txt);
+		}
 	}
 };
