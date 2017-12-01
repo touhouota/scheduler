@@ -326,4 +326,43 @@ let Task = {
 			}
 		}).send(query);
 	},
+
+	// タスクの状態ごとに数を数える
+	progress_count: function() {
+		let tasks = document.querySelectorAll(".task");
+		let count = {
+			done: 0,
+			imperfect: 0,
+			todo: 0,
+		};
+
+		tasks.forEach(function(item) {
+			console.log(item, item.dataset.status, count.todo);
+			switch (Number(item.dataset.status)) {
+				case 0:
+				case 1:
+				case 4:
+					count.todo += 1;
+					break;
+				case 2:
+					count.done += 1;
+					break;
+				case 3:
+					count.imperfect += 1;
+					break;
+				default:
+					console.log("naiyou");
+			};
+		});
+
+		document.querySelectorAll(".num").forEach(function(item) {
+			if (item.classList.contains("todo")) {
+				item.textContent = count.todo;
+			} else if (item.classList.contains("done")) {
+				item.textContent = count.done;
+			} else {
+				item.textContent = count.imperfect;
+			}
+		});
+	},
 };
