@@ -323,6 +323,7 @@ let Task = {
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
 					// alert(text);
+					Notify.create_instance(text);
 				}
 			}
 		}).send(query);
