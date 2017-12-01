@@ -38,7 +38,7 @@ let Timeline = {
 		let comment = encodeURIComponent(document.getElementById("comment").value.replace(/\r?\n/g, "<br>"));
 		if (comment.length === 0) {
 			// コメントの入力欄に何も入っていない場合は、何もしない
-			alert("コメントが空です。\nコメントを入力してください");
+			Notify.create_instance("コメントが空です。\nコメントを入力してください");
 			return
 		}
 		// リクエスト作成
