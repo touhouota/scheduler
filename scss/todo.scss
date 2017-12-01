@@ -48,11 +48,16 @@ body {
 
 		#progress_area {
 			#progress_list_area {
+				margin: 0 auto;
+				width: 70%;
+
 				.progress_list {
 					vertical-align: middle;
+					display: inline-block;
+					width: 100px;
 
 					img {
-						width: 40px;
+						width: 35px;
 						vertical-align: middle;
 					}
 				}
