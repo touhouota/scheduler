@@ -55,4 +55,8 @@ window.onload = function() {
 	const button = document.getElementById("comment_button");
 	button.addEventListener("click", Timeline.append);
 	button.disabled = true;
+
+
+	// このページでNotificationAPIを使うための準備
+	Notify.init();
 }
