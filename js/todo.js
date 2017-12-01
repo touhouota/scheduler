@@ -181,7 +181,7 @@ let Task = {
 		let task = Base.parents(event.target, "task");
 		// 実行前、タスクの情報が付加されていない場合は一旦止める
 		if (Task._check_detail_empty(task) || Task._check_plan_empty(task)) {
-			alert("まずは、時間の見積もり・作業内容を決めましょう！");
+			Notify.create_instance("まずは、時間の見積もり・作業内容を決めましょう！");
 			Modal.create_task_modify(event);
 			return;
 		}
@@ -322,7 +322,6 @@ let Task = {
 
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
-					// alert(text);
 					Notify.create_instance(text);
 				}
 			}
