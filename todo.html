@@ -83,7 +83,9 @@
       <div class="button_area">
         <img src="./image/menu_fill.png" alt="" width="16" height="16">
         <div class="buttons">
-          <button type="button" class="modify">修正</button>
+          <button type="button" class="modify">情報修正</button>
+          <br>
+          <button type="button" class="subtask">サブタスク</button>
           <br>
           <button type="button" class="delete">削除</button>
         </div>
@@ -120,6 +122,9 @@
       <div class="task_sub">
          <!-- 振り返りがある場合は、ここに入る -->
         <p class="end_text"></p>
+        
+        <ul class="subtask_area">
+        </ul>
       </div>
     </div>
   </template>
@@ -147,6 +152,12 @@
       閉じる
     </span>
   </form>
+  </template>
+
+	<template id="subtask_template">
+    <li class="subtask">
+      <p class="task_name"></p>
+    </li>
   </template>
 
 	<template id="task_modify">
