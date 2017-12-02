@@ -38,10 +38,12 @@ def append_task(cgi)
   # 実施する日付を追加する
   doing_date = Time.parse(cgi[:date])
 
-  insert = 'insert into daily(task, user_id, doing_date) values(?, ?, ?)'
+  # insert = 'insert into daily(task, user_id, doing_date) values(?, ?, ?)'
+  insert = 'insert into task(task_name, user_id, start_date) values(?, ?, ?)'
   $client.prepare(insert).execute(cgi[:task_name], cgi[:user_id], doing_date.strftime('%F %T'))
 
-  search = 'select * from daily where task_id = ? and user_id = ?'
+  # search = 'select * from daily where task_id = ? and user_id = ?'
+  search = 'select * from task where task_id = ? and user_id = ?'
   result = $client.prepare(search).execute($client.last_id, cgi[:user_id])
 
   # コメントを投稿する
@@ -57,8 +59,20 @@ def get_task_list(cgi)
 
   # sql = 'select * from daily where user_id = ? and !(status in (2, 3))'
   # 終わっていないもの or 今日終わらせたものを取得する
+  # sql = <<-SQL
+  # select * from daily join users using(user_id) where daily.user_id = ? and
+  # (
+  #   !(status in (2, 3))
+  #   or
+  #   (
+  #     status in (2, 3)
+  #     and
+  #     date(modify) = date(current_timestamp)
+  #   )
+  # ) order by task_id desc
+  # SQL
   sql = <<-SQL
-  select * from daily join users using(user_id) where daily.user_id = ? and
+  select * from task join users using(user_id) where task.user_id = ? and
   (
     !(status in (2, 3))
     or
@@ -73,13 +87,15 @@ def get_task_list(cgi)
 
   # JSが理解できる形式の文字列に変換する
   list.each do |row|
-    next if row['start_time'].nil?
-    time = Time.parse(row['start_time'])
-    row['start_time'] = time.strftime('%a %b %d %Y %T GMT%z (%Z)')
+    # タスクタイムラインの、最後のものがそのタスクの最終状態。
+    task_tl_search = 'select * from task_timeline where user_id = ? and task_id = ?'
+    # 最後のものを取得
+    last_tl = $client.prepare(task_tl_search).execute(row[:user_id], row[:task_id]).entries.last
+    # 1でないものは実行中でないので無視
+    next if last_tl.nil? || last_tl[:status] != 1
 
-    next if row['finish_time'].nil?
-    time = Time.parse(row['finish_time'])
-    row['finish_time'] = time.strftime('%a %b %d %Y %T GMT%z (%Z)')
+    # 最後のものの作成時間が開始時間
+    row[:start_time] = last_tl[:created]
   end
 
   { ok: true, data: list }
@@ -90,30 +106,30 @@ def task_modify(cgi)
   keys = %i[user_id task_id]
   raise $error_string unless _check_data(keys, cgi)
 
-  sql = 'update daily set '
+  # sql = 'update daily set '
+  sql = 'update task set '
   where = ' where user_id = ? and task_id = ?'
   user_id = cgi[:user_id]
   task_id = cgi[:task_id]
   # task_nameを追加・修正
-  $client.prepare(sql + 'task = ?' + where).execute(cgi[:task_name], user_id, task_id) unless cgi[:task_name].nil?
+  $client.prepare(sql + 'task_name = ?' + where).execute(cgi[:task_name], user_id, task_id) unless cgi[:task_name].nil?
   # statusを修正
   unless cgi[:status].nil?
     raise $range_error unless cgi[:status].to_i.between?(0, 4)
     $client.prepare(sql + 'status = ?' + where).execute(cgi[:status], user_id, task_id)
   end
   # task_detailを追加・修正
-  $client.prepare(sql + 'task_detail = ?' + where).execute(cgi[:task_detail], user_id, task_id) unless cgi[:task_detail].nil?
+  $client.prepare(sql + 'memo = ?' + where).execute(cgi[:task_detail], user_id, task_id) unless cgi[:task_detail].nil?
   # end_detailを修正・追加
-  $client.prepare(sql + 'end_detail = ?' + where).execute(cgi[:end_detail], user_id, task_id) unless cgi[:end_detail].nil?
+  $client.prepare(sql + 'reflection = ?' + where).execute(cgi[:end_detail], user_id, task_id) unless cgi[:end_detail].nil?
   # hourを追加・修正
-  $client.prepare(sql + 'plan = ?' + where).execute(cgi[:plan], user_id, task_id) unless cgi[:plan].nil?
+  $client.prepare(sql + 'expected_time = ?' + where).execute(cgi[:plan], user_id, task_id) unless cgi[:plan].nil?
   # timeを修正
-  $client.prepare(sql + 'time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil?
-  # start_timeの修正
-  $client.prepare(sql + 'start_time = ?' + where).execute(cgi[:start_time], user_id, task_id) unless cgi[:start_time].nil?
+  $client.prepare(sql + 'actual_time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil?
 
   # 修正した結果を取得する
-  search = 'select * from daily where user_id = ? and task_id = ?'
+  # search = 'select * from daily where user_id = ? and task_id = ?'
+  search = 'select * from task where user_id = ? and task_id = ?'
   result = $client.prepare(search).execute(user_id, task_id)
   { ok: true, data: result.entries }
 end
@@ -140,19 +156,22 @@ def status_change(cgi)
 
   raise $range_error unless cgi[:status].to_i.between?(0, 4)
 
-  update = 'update daily set status = ? where user_id = ? and task_id = ?'
+  # update = 'update daily set status = ? where user_id = ? and task_id = ?'
+  update = 'update task set status = ? where user_id = ? and task_id = ?'
   $client.prepare(update).execute(cgi[:status], cgi[:user_id], cgi[:task_id])
 
   # 一時停止時、完了時にはそれまでの経過時間が送られてくるので、それをmodifyへ渡す
   task_modify(cgi) if cgi[:time] || cgi[:start_time]
 
-  search = 'select * from daily where user_id = ? and task_id = ?'
+  # search = 'select * from daily where user_id = ? and task_id = ?'
+  search = 'select * from task where user_id = ? and task_id = ?'
   result = $client.prepare(search).execute(cgi[:user_id], cgi[:task_id])
 
   # 追加(11/27)
   # タスク終了時、finish_timeにタイムスタンプを打つ。
   if [2, 3].include?(cgi[:status].to_i)
-    finishtime_sql = 'update daily set finish_time = ? where user_id = ? and task_id = ?'
+    # finishtime_sql = 'update daily set finish_time = ? where user_id = ? and task_id = ?'
+    finishtime_sql = 'update task set finish_time = ? where user_id = ? and task_id = ?'
     $client.prepare(finishtime_sql).execute(result.entries.dig(0, :modify), cgi[:user_id], cgi[:task_id])
   end
 
@@ -217,9 +236,11 @@ end
 # 自動でタイムラインにコメントを投稿するためのメソッド
 # input:user_id, cmd, task_id
 def auto_comment(user_id, cmd, task_id)
-  sql = 'select * from daily join users using(user_id) where user_id = ? and task_id = ?'
+  # sql = 'select * from daily join users using(user_id) where user_id = ? and task_id = ?'
+  sql = 'select * from task join users using(user_id) where user_id = ? and task_id = ?'
   result = $client.prepare(sql).execute(user_id, task_id).entries.first
-  comment = "#{result[:name]}は、「#{result[:task]}」を"
+  # comment = "#{result[:name]}は、「#{result[:task]}」を"
+  comment = "#{result[:name]}は、「#{result[:task_name]}」を"
   comment += case cmd
              when 'append_task'
               '追加しました。'
