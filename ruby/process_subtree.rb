@@ -1,3 +1,4 @@
+
 $error_string = 'Unexpected Data: Please send the expected data.'
 $range_error = 'Unexpected Data: status value should be between "0" and "4"'
 
@@ -37,7 +38,6 @@ def append_task(cgi)
 
   # 実施する日付を追加する
   doing_date = Time.parse(cgi[:date])
-
   # insert = 'insert into daily(task, user_id, doing_date) values(?, ?, ?)'
   insert = 'insert into task(task_name, user_id, start_date) values(?, ?, ?)'
   $client.prepare(insert).execute(cgi[:task_name], cgi[:user_id], doing_date.strftime('%F %T'))
@@ -48,6 +48,26 @@ def append_task(cgi)
 
   # コメントを投稿する
   auto_comment(cgi[:user_id], cgi[:cmd], $client.last_id)
+
+  { ok: true, data: result.entries, test: cgi }
+end
+
+# サブタスクを追加する
+def append_subtask(cgi, task_info)
+  key = %i[user_id parent]
+  raise $error_string unless _check_data(key, cgi)
+
+  p task_info
+
+  parent_id = task_info.dig(:data, 0, :task_id)
+  subtask_sql = 'insert into task_tree values(?, ?)'
+  $client.prepare(subtask_sql).execute(cgi[:parent], parent_id)
+
+  sql = <<-SQL
+  select * from task left outer join task_tree on task.task_id = task_tree.child
+  where user_id = ? and task.task_id = ?
+  SQL
+  result = $client.prepare(sql).execute(cgi[:user_id], parent_id)
 
   { ok: true, data: result.entries }
 end
@@ -244,6 +264,8 @@ def auto_comment(user_id, cmd, task_id)
   comment += case cmd
              when 'append_task'
               '追加しました。'
+             when 'append_subtask'
+              'サブタスクとして追加しました。'
              when 'status_change'
               case result[:status]
               when 1
