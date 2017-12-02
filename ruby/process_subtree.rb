@@ -1,3 +1,6 @@
+$error_string = 'Unexpected Data: Please send the expected data.'
+$range_error = 'Unexpected Data: status value should be between "0" and "4"'
+
 # 期待したものが入っているか？
 # 入っている => true
 # 入っていない => false
@@ -16,15 +19,10 @@ def _check_data(hope, real)
   end
 end
 
-# えらー用の文字を返す
-def return_error(hope, real)
-  { ok: false, message: '期待するデータを送ってくれ', hope: hope, real: real }
-end
-
 # ユーザを探す
 def search_user(cgi)
   keys = %i[user_id]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise '' unless _check_data(keys, cgi)
 
   sql = 'select user_id from users where user_id = ?'
   result = $client.prepare(sql).execute(cgi[:user_id])
@@ -35,7 +33,7 @@ end
 # タスク追加
 def append_task(cgi)
   keys = %i[user_id task_name date]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise $error_string unless _check_data(keys, cgi)
 
   # 実施する日付を追加する
   doing_date = Time.parse(cgi[:date])
@@ -55,7 +53,7 @@ end
 # その人のタスクを取得する
 def get_task_list(cgi)
   keys = %i[user_id]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise $error_string unless _check_data(keys, cgi)
 
   # sql = 'select * from daily where user_id = ? and !(status in (2, 3))'
   # 終わっていないもの or 今日終わらせたものを取得する
@@ -90,7 +88,7 @@ end
 # タスクの情報を修正する
 def task_modify(cgi)
   keys = %i[user_id task_id]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise $error_string unless _check_data(keys, cgi)
 
   sql = 'update daily set '
   where = ' where user_id = ? and task_id = ?'
@@ -100,7 +98,7 @@ def task_modify(cgi)
   $client.prepare(sql + 'task = ?' + where).execute(cgi[:task_name], user_id, task_id) unless cgi[:task_name].nil?
   # statusを修正
   unless cgi[:status].nil?
-    raise 'statusの値が不正(0 ~ 4の間にない)' unless cgi[:status].to_i.between?(0, 4)
+    raise $range_error unless cgi[:status].to_i.between?(0, 4)
     $client.prepare(sql + 'status = ?' + where).execute(cgi[:status], user_id, task_id)
   end
   # task_detailを追加・修正
@@ -123,7 +121,7 @@ end
 # 日付を指定し、その日に登録されているタスクを取得する
 def get_list_from_date(cgi)
   keys = %i[user_id date]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise $error_string unless _check_data(keys, cgi)
 
   sql = <<-SQL
   select * from daily join (users join groups using(group_id)) using(user_id)
@@ -138,9 +136,9 @@ end
 # 状態を指定されたものに変更する
 def status_change(cgi)
   keys = %i[user_id status task_id]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise $error_string unless _check_data(keys, cgi)
 
-  raise 'statusの値が不正(0 ~ 4の間にない)' unless cgi[:status].to_i.between?(0, 4)
+  raise $range_error unless cgi[:status].to_i.between?(0, 4)
 
   update = 'update daily set status = ? where user_id = ? and task_id = ?'
   $client.prepare(update).execute(cgi[:status], cgi[:user_id], cgi[:task_id])
@@ -166,7 +164,7 @@ end
 
 def get_timeline(cgi)
   keys = %i[user_id]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise $error_string unless _check_data(keys, cgi)
 
   # last => コメントエリアに流れている最後のtl_id
   # lastがあるときは、定期的に取得するとき
@@ -181,7 +179,6 @@ def get_timeline(cgi)
     SQL
     result = $client.prepare(sql).execute(cgi[:user_id]).entries.reverse
   else
-    last = cgi[:last].to_i
     sql = <<-SQL
       select tl_id, timeline.user_id, name, items, datetime, gj
       from timeline join users using(user_id)
@@ -203,7 +200,7 @@ end
 # コメントを投稿する
 def insert_timeline(cgi)
   keys = %i[user_id comment]
-  raise '必要な情報が来ていません' unless _check_data(keys, cgi)
+  raise $error_string unless _check_data(keys, cgi)
 
   sql = <<-SQL
   insert into timeline(user_id, items) values(?, ?)
