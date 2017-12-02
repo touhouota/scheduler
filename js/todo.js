@@ -82,36 +82,36 @@ let Task = {
 		// idをつける
 		task.id = "task_id:" + info.task_id;
 		// タスク名
-		task.querySelector(".task_name").textContent = info.task;
+		task.querySelector(".task_name").textContent = info.task_name;
 
 		// 経過時間
-		if (info.time) {
-			task.dataset.progress = info.time;
+		if (info.actual_time) {
+			task.dataset.progress = info.actual_time;
 		} else {
 			task.dataset.progress = 0;
 		}
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		let time = (info.time / 60).toFixed(2);
-		Chart.draw(canvas, [info.plan], [time]);
+		let time = (info.actual_time / 60).toFixed(2);
+		Chart.draw(canvas, [info.expected_time], [time]);
 		// 予想時間
-		if (info.plan) {
-			task.dataset.plan = info.plan;
+		if (info.expected_time) {
+			task.dataset.expected_time = info.expected_time;
 		} else {
-			task.dataset.plan = 0;
+			task.dataset.expected_time = 0;
 		}
 
-		if (info.task_detail) {
-			task.querySelector(".task_detail_text").innerHTML = info.task_detail.replace(/\r?\n/g, "<br>");
+		if (info.memo) {
+			task.querySelector(".task_detail_text").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
 		}
 
 		if (info.start_time) {
 			task.dataset.start_time = info.start_time;
 		}
 
-		if (info.end_detail) {
-			task.querySelector(".end_text").innerHTML = info.end_detail.replace(/\r?\n/g, "<br>");
+		if (info.reflection) {
+			task.querySelector(".end_text").innerHTML = info.reflection.replace(/\r?\n/g, "<br>");
 		}
 
 		// タスクの状態変化イベント
@@ -250,7 +250,7 @@ let Task = {
 	// タスクの時間が決まっているのかを確認する
 	_check_plan_empty: function(task) {
 		const default_text = '0';
-		if (task.dataset.plan === default_text) {
+		if (task.dataset.expected_time === default_text) {
 			return true;
 		}
 		return false;
@@ -281,7 +281,7 @@ let Task = {
 		}
 		// グラフの再描画
 		const time = task.dataset.progress / 60;
-		Chart.draw(canvas, [task.dataset.plan], [time.toFixed(2)]);
+		Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
 	},
 
 	// task終了のイベント
