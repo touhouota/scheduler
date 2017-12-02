@@ -5,7 +5,8 @@ require 'mysql2'
 require 'uri'
 require 'time'
 require 'yaml'
-load './process.rb'
+# load './process.rb'
+load './process_subtree.rb'
 
 print "Content-Type: text/plain;charset=utf-8\n\n"
 
