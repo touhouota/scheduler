@@ -27,6 +27,8 @@ let Modal = {
 
 		// documentに追加
 		document.body.appendChild(modal);
+		// テキストエリアにfocusを当てる(Firefoxのための処理)
+		modal.querySelector("[name=end_details]").focus();
 
 		// modalを中央揃え
 		Modal.centering(modal);
