@@ -88,14 +88,14 @@ def get_task_list(cgi)
   # JSが理解できる形式の文字列に変換する
   list.each do |row|
     # タスクタイムラインの、最後のものがそのタスクの最終状態。
-    task_tl_search = 'select * from task_timeline where user_id = ? and task_id = ?'
+    task_tl_search = 'select * from task_timeline where user_id = ? and task_id = ? order by task_tl_id desc limit 1'
     # 最後のものを取得
     last_tl = $client.prepare(task_tl_search).execute(row[:user_id], row[:task_id]).entries.last
     # 1でないものは実行中でないので無視
     next if last_tl.nil? || last_tl[:status] != 1
 
     # 最後のものの作成時間が開始時間
-    row[:start_time] = last_tl[:created]
+    row[:start_time] = last_tl[:created].strftime('%a %b %d %Y %T GMT%z (%Z)')
   end
 
   { ok: true, data: list }
@@ -155,7 +155,6 @@ def status_change(cgi)
   raise $error_string unless _check_data(keys, cgi)
 
   raise $range_error unless cgi[:status].to_i.between?(0, 4)
-
   # update = 'update daily set status = ? where user_id = ? and task_id = ?'
   update = 'update task set status = ? where user_id = ? and task_id = ?'
   $client.prepare(update).execute(cgi[:status], cgi[:user_id], cgi[:task_id])
@@ -167,18 +166,19 @@ def status_change(cgi)
   search = 'select * from task where user_id = ? and task_id = ?'
   result = $client.prepare(search).execute(cgi[:user_id], cgi[:task_id])
 
-  # 追加(11/27)
-  # タスク終了時、finish_timeにタイムスタンプを打つ。
-  if [2, 3].include?(cgi[:status].to_i)
-    # finishtime_sql = 'update daily set finish_time = ? where user_id = ? and task_id = ?'
-    finishtime_sql = 'update task set finish_time = ? where user_id = ? and task_id = ?'
-    $client.prepare(finishtime_sql).execute(result.entries.dig(0, :modify), cgi[:user_id], cgi[:task_id])
-  end
+  # タスクを更新するたびに、状態をタスクタイムラインに追加する
+  insert_task_tl(cgi)
 
   # コメントを自動投稿する
   auto_comment(cgi[:user_id], cgi[:cmd], cgi[:task_id])
 
   { ok: true, data: result.entries }
+end
+
+# タスクタイムラインに状態を保持する
+def insert_task_tl(cgi)
+  sql = 'insert into task_timeline(task_id, user_id, status) values(?, ?, ?)'
+  $client.prepare(sql).execute(cgi[:task_id], cgi[:user_id], cgi[:status])
 end
 
 def get_timeline(cgi)
