@@ -76,6 +76,47 @@ let Task = {
 		}).send(post);
 	},
 
+	// subtask作成を行う。
+	create_subtask: function(task_info) {
+		let _template = document.getElementById("subtask_template");
+		let template = document.importNode(_template.content, true);
+		let task = template.cloneNode(true).firstElementChild;
+
+		// iconの設定
+		Task._setting_task_icon(task, task_info);
+		// タスク情報を付加
+		Task._setting_task_info(task, task_info);
+	},
+
+	// subtaskを追加する
+	append_subtask: function(event) {
+		let parent_task = Base.parents(event.target, "task");
+		var input = prompt("サブタスク名を入力してください");
+		if (!input) {
+			// escを押されたとき、テキストがからのとき。
+			return;
+		}
+
+		// これ以降は、タスクの名前が入力されている
+		const post = [
+			"cmd=append_subtask",
+			"&task_name=", encodeURIComponent(input),
+			"&user_id=", Base.get_cookie('user_id'),
+			"&date=", Date(),
+			"&parent=", parent_task.id.split(":").pop(),
+		].join("");
+
+		Base.create_request("POST", Base.request_path, function() {
+			if (this.status == 200 && this.readyState == 4) {
+				let response = JSON.parse(this.responseText);
+				console.table(response.data);
+				if (response.ok) {
+					console.log("hoge");
+				}
+			}
+		}).send(post);
+	},
+
 
 	// タスクの情報を付加する
 	_setting_task_info: function(task, info) {
@@ -119,6 +160,8 @@ let Task = {
 
 		// タスク情報を更新するときのクリックイベント
 		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
+
+		task.querySelector(".subtask").addEventListener("click", Task.append_subtask);
 
 		// 終了時のイベントを付加
 		task.querySelector(".finish_task").addEventListener("click", Task.finish);
@@ -164,6 +207,11 @@ let Task = {
 			plan: plan,
 			real: real,
 		}
+	},
+
+	// サブタスクの情報を付加する
+	_setting_subtask: function(task, info) {
+		task.querySelector(".task_name").textContent = info.task_name;
 	},
 
 	change_favicon: function(status) {
