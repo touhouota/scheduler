@@ -101,5 +101,5 @@ let Timeline = {
 		} else {
 			button.disabled = false;
 		}
-	}
+	},
 };
