@@ -163,7 +163,7 @@
 	<template id="subtask_modal">
     <form class="modal subtask_modal">
       <p class="modal_title">
-        サブタスクを追加します。
+        「<span class="parent_name"></span>」へサブタスクを追加します。
       </p>
       <label class="modal_label">
         タスク名：
@@ -175,7 +175,6 @@
         <input id="modal_plan" class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">分
         <button tabindex="-1" class="down plan_button" type="button">↓</button>
       </p>
-      <input type="hidden" name="task_id" value="">
       <input type="hidden" name="parent" value="">
       <button class="modify_button" type="button">変更をサーバへ送る
       </button>
