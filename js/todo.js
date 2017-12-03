@@ -5,10 +5,24 @@ let Task = {
 			// からの場合は何もしない
 			return;
 		}
+		let subtasks = [];
 		task_list.forEach(function(item) {
-			// タスクを作る
-			let task = Task.create_task(item);
-			fragment.appendChild(task);
+			if (item.child) {
+				let subtask = Task.create_subtask(item);
+				subtasks.push(subtask);
+			} else {
+				// タスクを作る
+				let task = Task.create_task(item);
+				fragment.appendChild(task);
+			}
+		});
+
+		console.log(fragment);
+
+		subtasks.reverse().forEach(function(item) {
+			console.log(item);
+			let parent = fragment.getElementById("task_id:" + item.dataset.parent);
+			parent.querySelector(".subtask_area").appendChild(item);
 		});
 
 		return fragment;
@@ -22,8 +36,6 @@ let Task = {
 		Task._setting_task_icon(task, task_info);
 		// タスクの情報に関するもの
 		Task._setting_task_info(task, task_info);
-		// タスクのクラスを付け替える
-		// Task._decoration(task, task_info.status);
 
 		// もし、状態が実行中ならそうする
 		if (task_info.status === 1) {
@@ -80,12 +92,14 @@ let Task = {
 	create_subtask: function(task_info) {
 		let _template = document.getElementById("subtask_template");
 		let template = document.importNode(_template.content, true);
-		let task = template.cloneNode(true).firstElementChild;
+		let subtask = template.cloneNode(true).firstElementChild;
 
 		// iconの設定
-		Task._setting_task_icon(task, task_info);
+		// Task._setting_task_icon(subtask, task_info);
 		// タスク情報を付加
-		Task._setting_task_info(task, task_info);
+		Task._setting_subtask(subtask, task_info);
+
+		return subtask;
 	},
 
 	// subtaskを追加する
@@ -212,6 +226,8 @@ let Task = {
 	// サブタスクの情報を付加する
 	_setting_subtask: function(task, info) {
 		task.querySelector(".task_name").textContent = info.task_name;
+		task.id = "task_id:" + info.task_id;
+		task.dataset.parent = info.parent;
 	},
 
 	change_favicon: function(status) {
