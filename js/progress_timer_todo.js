@@ -29,8 +29,25 @@ let ProgressTimer = {
 	display: function(task) {
 		// タスクの進捗により、グラフを更新する
 		let canvas = task.querySelector(".canvas");
-		let seconds = ProgressTimer.calc_diff_seconds(task) / 60;
-		Chart.draw(canvas, [task.dataset.expected_time], [seconds.toFixed(2)]);
+		let plan = [],
+			real = [];
+		if (!task.querySelector(".subtask_area").children.length) {
+			// 予想時間を取得
+			plan.push(task.dataset.expected_time);
+			// 実際の作業時間を計測
+			const second = ProgressTimer.calc_diff_seconds(task) / 60;
+			real.push(seconds.toFixed(2));
+		} else {
+			let subtasks = task.querySelector(".subtask_area").children;
+			let i = 0;
+			let length = subtasks.length;
+			for (i = 0; i < length; i += 1) {
+				plan.push(Number(subtasks[i].dataset.plan));
+				real.push(Number(subtasks[i].dataset.real));
+			}
+			console.log(plan, real);
+		}
+		Chart.draw(canvas, plan, real);
 	},
 
 	calc_diff_seconds: function(task_element) {
