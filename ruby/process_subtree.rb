@@ -34,7 +34,7 @@ end
 # タスク追加
 def append_task(cgi)
   keys = %i[user_id task_name date]
-  raise $error_string unless _check_data(keys, cgi)
+  raise $error_string + ' (append_task)' unless _check_data(keys, cgi)
 
   # 実施する日付を追加する
   doing_date = Time.parse(cgi[:date])
@@ -42,13 +42,14 @@ def append_task(cgi)
   insert = 'insert into task(task_name, user_id, start_date) values(?, ?, ?)'
   $client.prepare(insert).execute(cgi[:task_name], cgi[:user_id], doing_date.strftime('%F %T'))
 
-  task_modify_init(cgi) if cgi[:plan]
-
   search = 'select * from task where task_id = ? and user_id = ?'
   result = $client.prepare(search).execute($client.last_id, cgi[:user_id])
 
+  cgi[:task_id] = $client.last_id.to_s
+  task_modify(cgi) if cgi[:plan]
+
   # コメントを投稿する
-  auto_comment(cgi[:user_id], cgi[:cmd], $client.last_id)
+  auto_comment(cgi[:user_id], cgi[:cmd], cgi[:task_id])
 
   { ok: true, data: result.entries, test: cgi }
 end
@@ -56,7 +57,7 @@ end
 # サブタスクを追加する
 def append_subtask(cgi, task_info)
   key = %i[user_id parent]
-  raise $error_string unless _check_data(key, cgi)
+  raise $error_string + ' (append_subtask)' unless _check_data(key, cgi)
 
   parent_id = task_info.dig(:data, 0, :task_id)
   subtask_sql = 'insert into task_tree values(?, ?)'
@@ -74,7 +75,7 @@ end
 # その人のタスクを取得する
 def get_task_list(cgi)
   keys = %i[user_id]
-  raise $error_string unless _check_data(keys, cgi)
+  raise $error_string + ' (get_task_list)' unless _check_data(keys, cgi)
 
   sql = <<-SQL
   select * from task join users using(user_id) left outer join task_tree on task.task_id = task_tree.child
@@ -110,7 +111,7 @@ end
 # タスクの情報を修正する
 def task_modify(cgi)
   keys = %i[user_id task_id]
-  raise $error_string unless _check_data(keys, cgi)
+  raise $error_string + ' (task_modify)' unless _check_data(keys, cgi)
 
   # sql = 'update daily set '
   sql = 'update task set '
