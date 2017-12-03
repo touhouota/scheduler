@@ -75,22 +75,9 @@ def get_task_list(cgi)
   keys = %i[user_id]
   raise $error_string unless _check_data(keys, cgi)
 
-  # sql = 'select * from daily where user_id = ? and !(status in (2, 3))'
-  # 終わっていないもの or 今日終わらせたものを取得する
-  # sql = <<-SQL
-  # select * from daily join users using(user_id) where daily.user_id = ? and
-  # (
-  #   !(status in (2, 3))
-  #   or
-  #   (
-  #     status in (2, 3)
-  #     and
-  #     date(modify) = date(current_timestamp)
-  #   )
-  # ) order by task_id desc
-  # SQL
   sql = <<-SQL
-  select * from task join users using(user_id) where task.user_id = ? and
+  select * from task join users using(user_id) left outer join task_tree on task.task_id = task_tree.child
+  where task.user_id = ? and
   (
     !(status in (2, 3))
     or
