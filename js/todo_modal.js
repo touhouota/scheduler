@@ -38,9 +38,13 @@ let Modal = {
 		Modal.init();
 		// サブタスクのモーダル初期化
 		let modal = Modal.subtask_init();
+		modal.id = "modify_modal";
 		// 親要素を取得
 		let parent_task = Base.parents(event.target, "task");
+		Modal.set_parent_info(modal, parent_task);
 
+		document.body.appendChild(modal);
+		Modal.centering(modal);
 	},
 
 	// すべてのモーダル作成における、初期状態の作成
@@ -99,9 +103,24 @@ let Modal = {
 		let modal = document.importNode(_modal.content, true);
 
 		// フォームの内容をサーバへ送るイベント
-		modal.querySelector(".modify_button").addEventListener("click", Modal.send_modify);
+		modal.querySelector(".modify_button").addEventListener("click", Modal.send_subtask);
 		// モーダルの閉じるを押した時のイベント
 		modal.querySelector(".close").addEventListener("click", Modal.remove);
+
+		// ↑イベント
+		modal.querySelectorAll(".up").forEach(function(item) {
+			item.addEventListener("click", {
+				button: "UP",
+				handleEvent: Modal.change_plan,
+			});
+		});
+		// ↓イベント
+		modal.querySelectorAll(".down").forEach(function(item) {
+			item.addEventListener("click", {
+				button: "DOWN",
+				handleEvent: Modal.change_plan,
+			});
+		});
 
 		return modal.firstElementChild;
 	},
@@ -139,6 +158,14 @@ let Modal = {
 	set_task_memo: function(modal, task) {
 		modal.task_id.value = task.id.split(":").pop();
 		modal.end_details.value = task.querySelector(".end_text").innerHTML.replace(/<br>/g, "\n");
+	},
+
+	// サブタスク用の初期情報を追加
+	set_parent_info: function(modal, task) {
+		// 親タスク名を表示
+		modal.querySelector(".parent_name").textContent = task.querySelector(".task_name").textContent;
+		modal.querySelector("[name=parent]").value = task.id.split(":").pop();
+
 	},
 
 	centering: function(modal) {
@@ -201,6 +228,34 @@ let Modal = {
 					// new Chart("canvas", response.chart).render();
 				}
 				Modal.remove();
+			}
+		}).send(post);
+	},
+
+	send_subtask: function(event) {
+		console.log("send_subtask");
+		let form = Base.parents(event.target, "modal");
+		let post = [
+			"cmd=append_subtask",
+			"&task_name=" + form.task_name.value,
+			"&user_id=" + Base.get_cookie("user_id"),
+			"&plan=" + form.task_plan.value,
+			"&parent=" + form.parent.value,
+			"&date=" + Date(),
+		].join("");
+
+		Base.create_request("POST", Base.request_path, function() {
+			if (this.status == 200 && this.readyState == 4) {
+				let response = JSON.parse(this.responseText);
+				console.table(response.data);
+				if (response.ok) {
+					const data = response.data[0];
+					let subtask = Task.create_subtask(data);
+					let task = document.getElementById("task_id:" + data.parent);
+					task.querySelector(".subtask_area").appendChild(subtask);
+				}
+				// Modal.remove();
+				form.reset();
 			}
 		}).send(post);
 	},
