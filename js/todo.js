@@ -198,6 +198,7 @@ let Task = {
 		task.id = "task_id:" + info.task_id;
 		task.dataset.parent = info.parent;
 		task.dataset.plan = info.expected_time;
+		task.querySelector(".plan").textContent = info.expected_time;
 		task.dataset.real = info.actual_time;
 	},
 
