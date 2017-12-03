@@ -108,7 +108,7 @@ body {
 	box-sizing: border-box;
 	// border: 1px solid #111;
 	background-color: rgba(130, 109, 241, 0.10);
-	width: 350px;
+	width: 400px;
 	margin: 10px 10px 0;
 	padding: 5px;
 	position: relative;
@@ -144,8 +144,7 @@ body {
 		.change_button {
 			width: 95%;
 			margin: 5px auto;
-			grid-area: task_title;
-
+			// grid-area: task_title;
 			img {
 				display: inline-block;
 				width: 30px;
@@ -160,18 +159,44 @@ body {
 		}
 
 		.task_info {
-			display: -webkit-box;
-			display: -ms-flexbox;
-			display: flex;
+			// display: -webkit-box;
+			// display: -ms-flexbox;
+			// display: flex;
+			.graph {
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				float: right;
+				// grid-area: task_graph;
+				width: 150px;
+				margin-left: 10px;
+
+				canvas {
+					// border: 1px solid #111;
+					background-color: #fff;
+				}
+			}
 
 			.memo {
 				// canvasの大きさを引いた分がtextの大きさ
-				width: calc(100% - 165px);
-				grid-area: task_detail;
+				// width: calc(100% - 165px);
+				// grid-area: task_detail;
 				margin: 5px 10px 5px 5px;
 
 				.task_detail {
 					font-weight: bolder;
+				}
+
+				.subtask_area {
+					padding-left: 20px;
+					list-style: none;
+
+					.subtask {
+						margin-bottom: 20px;
+
+						.task_status {
+							vertical-align: middle;
+						}
+					}
 				}
 
 				.task_detail_text {
@@ -179,18 +204,6 @@ body {
 					white-space: nowrap;
 					text-overflow: ellipsis;
 					height: 25px;
-				}
-			}
-
-			.graph {
-				-webkit-box-sizing: border-box;
-				box-sizing: border-box;
-				grid-area: task_graph;
-				width: 150px;
-
-				canvas {
-					// border: 1px solid #111;
-					background-color: #fff;
 				}
 			}
 		}
