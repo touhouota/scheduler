@@ -57,8 +57,6 @@ def append_subtask(cgi, task_info)
   key = %i[user_id parent]
   raise $error_string unless _check_data(key, cgi)
 
-  p task_info
-
   parent_id = task_info.dig(:data, 0, :task_id)
   subtask_sql = 'insert into task_tree values(?, ?)'
   $client.prepare(subtask_sql).execute(cgi[:parent], parent_id)
