@@ -196,10 +196,16 @@ let Task = {
 		console.table(info);
 		task.querySelector(".task_name").textContent = info.task_name;
 		task.id = "task_id:" + info.task_id;
+		// タスクに時間の情報を付加
 		task.dataset.parent = info.parent;
 		task.dataset.plan = info.expected_time;
 		task.querySelector(".plan").textContent = info.expected_time;
 		task.dataset.real = info.actual_time;
+
+		// タスクスタート
+		task.querySelector(".task_status").addEventListener("click", function() {
+			console.log("click");
+		})
 	},
 
 	change_favicon: function(status) {
@@ -216,7 +222,8 @@ let Task = {
 	change_status: function(event) {
 		let task = Base.parents(event.target, "task");
 		// 実行前、タスクの情報が付加されていない場合は一旦止める
-		if (Task._check_detail_empty(task) || Task._check_plan_empty(task)) {
+		let subtask = task.querySelector(".subtask_area").children;
+		if (Task._check_detail_empty(task) || Task._check_plan_empty(task) || subtask.length === 0) {
 			Notify.create_instance("まずは、時間の見積もり・作業内容を決めましょう！");
 			Modal.create_task_modify(event);
 			return;
