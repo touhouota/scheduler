@@ -96,13 +96,13 @@
           <span class="task_name"></span>
         </div>
         <div class="task_info">
+          <div class="graph">
+            <!-- タスクの時間差を表すグラフ -->
+            <canvas class="canvas" width="150" height="100"></canvas>
+          </div>
           <div class="memo">
             <p class="task_detail">タスク情報</p>
             <ul class="subtask_area">
-              <div class="graph">
-                <!-- タスクの時間差を表すグラフ -->
-                <canvas class="canvas" width="150" height="100"></canvas>
-              </div>
             </ul>
             <!-- ↓メモが入る -->
             <p class="task_detail_text">
@@ -156,7 +156,9 @@
 	<template id="subtask_template">
     <li class="subtask">
       <img class="task_status" src="./image/stop.png" alt="タスクの状態" width="30">
-      <span class="task_name"></span>(予定：<span class="plan"></span>分)
+      <span class="task_name"></span>
+      <br>
+      (予定：<span class="plan"></span>分)
     </li>
   </template>
 
