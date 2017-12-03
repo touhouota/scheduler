@@ -34,6 +34,15 @@ let Modal = {
 		Modal.centering(modal);
 	},
 
+	create_subtask: function(event) {
+		Modal.init();
+		// サブタスクのモーダル初期化
+		let modal = Modal.subtask_init();
+		// 親要素を取得
+		let parent_task = Base.parents(event.target, "task");
+
+	},
+
 	// すべてのモーダル作成における、初期状態の作成
 	init: function(task_info) {
 		let div = document.createElement("div");
@@ -77,6 +86,18 @@ let Modal = {
 	end_memo_init: function() {
 		let _modify_modal = document.getElementById("end_details");
 		let modal = document.importNode(_modify_modal.content, true);
+		// フォームの内容をサーバへ送るイベント
+		modal.querySelector(".modify_button").addEventListener("click", Modal.send_modify);
+		// モーダルの閉じるを押した時のイベント
+		modal.querySelector(".close").addEventListener("click", Modal.remove);
+
+		return modal.firstElementChild;
+	},
+
+	subtask_init: function() {
+		const _modal = document.getElementById("subtask_modal");
+		let modal = document.importNode(_modal.content, true);
+
 		// フォームの内容をサーバへ送るイベント
 		modal.querySelector(".modify_button").addEventListener("click", Modal.send_modify);
 		// モーダルの閉じるを押した時のイベント
