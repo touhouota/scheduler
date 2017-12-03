@@ -197,6 +197,8 @@ let Task = {
 		task.querySelector(".task_name").textContent = info.task_name;
 		task.id = "task_id:" + info.task_id;
 		task.dataset.parent = info.parent;
+		task.dataset.plan = info.expected_time;
+		task.dataset.real = info.actual_time;
 	},
 
 	change_favicon: function(status) {
