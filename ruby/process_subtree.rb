@@ -42,7 +42,8 @@ def append_task(cgi)
   insert = 'insert into task(task_name, user_id, start_date) values(?, ?, ?)'
   $client.prepare(insert).execute(cgi[:task_name], cgi[:user_id], doing_date.strftime('%F %T'))
 
-  # search = 'select * from daily where task_id = ? and user_id = ?'
+  task_modify_init(cgi) if cgi[:plan]
+
   search = 'select * from task where task_id = ? and user_id = ?'
   result = $client.prepare(search).execute($client.last_id, cgi[:user_id])
 
@@ -133,9 +134,9 @@ def task_modify(cgi)
   $client.prepare(sql + 'actual_time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil?
 
   # 修正した結果を取得する
-  # search = 'select * from daily where user_id = ? and task_id = ?'
-  search = 'select * from task where user_id = ? and task_id = ?'
-  result = $client.prepare(search).execute(user_id, task_id)
+  search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and task_id = ? or parent = ? order by task_id'
+  # サブタスクを取得する
+  result = $client.prepare(search).execute(user_id, task_id, task_id)
   { ok: true, data: result.entries }
 end
 
