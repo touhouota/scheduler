@@ -48,11 +48,16 @@ body {
 
 		#progress_area {
 			#progress_list_area {
+				margin: 0 auto;
+				width: 70%;
+
 				.progress_list {
 					vertical-align: middle;
+					display: inline-block;
+					width: 100px;
 
 					img {
-						width: 40px;
+						width: 35px;
 						vertical-align: middle;
 					}
 				}
@@ -64,7 +69,7 @@ body {
 
 .button {
 	display: inline-block;
-	width: 145px;
+	width: 155px;
 	border-radius: 4px;
 	-webkit-box-shadow: 0 2px 0 #8f9080;
 	box-shadow: 0 2px 0 #8f9080;
@@ -73,6 +78,7 @@ body {
 	padding: 5px;
 	cursor: pointer;
 	margin-right: 10px;
+	background-color: #fff;
 
 	img {
 		width: 30px;
@@ -265,6 +271,11 @@ body {
 
 		.modal_input {
 			width: 380px;
+		}
+
+		.modal_plan,
+		.modal_real {
+			width: 50px;
 		}
 
 		.modal_task {

@@ -25,6 +25,8 @@ window.onload = function() {
 				let done_list = Task.create_task_list(done);
 				document.getElementById("dones").appendChild(done_list);
 
+				// タスクの状態を数える
+				Task.progress_count();
 			}
 		}
 	}).send(null);
@@ -37,6 +39,12 @@ window.onload = function() {
 	document.getElementById("github").addEventListener("click", Base.request);
 	// ログアウトのボタン
 	document.getElementById("logout").addEventListener("click", Base.logout);
+	// タスクを監視し、変化があれば数を数え直す
+	let mo = new MutationObserver(Task.progress_count);
+	mo.observe(document.querySelector(".todo_area"), {
+		childList: true,
+		subtree: true,
+	});
 
 
 	// コメントを取得するタイマーのセット
@@ -49,4 +57,7 @@ window.onload = function() {
 	const button = document.getElementById("comment_button");
 	button.addEventListener("click", Timeline.append);
 	button.disabled = true;
+
+	// このページでNotificationAPIを使うための準備
+	Notify.init();
 };

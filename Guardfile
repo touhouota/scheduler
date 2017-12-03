@@ -8,7 +8,7 @@ end
 
 guard :shell do
   # js
-  watch(%r{^(js|css|[^.!])?\/[\S]+_min.(js|css)|ruby\/[\S]+.rb|[\S]*.html}) do |m|
+  watch(%r{^js\/[\S]+_min.js|css/[\S]+.css|ruby\/[\S]+.rb|[\S]*.html}) do |m|
     puts "#{m[0]}が変更されたので、サーバへ上げ直すよ"
     `rake sync`
     # Macの画面に更新完了した旨をポップアップ
@@ -20,7 +20,4 @@ guard 'sass', input: 'scss', output: 'css'
 
 # todoページのものを監視
 guard :concat, type: 'js',
-               files: %w[base_object chart_list_test progress_timer_todo timeline_list_test todo todo_modal todo_page], input_dir: 'js', output: 'js/todo_concated'
-
-guard :concat, type: 'js',
-               files: %w[base_object members_list_test members_page], input_dir: 'js', output: 'js/members_concated'
+               files: %w[base_object notification chart_list_test progress_timer_todo timeline_list_test todo todo_modal todo_page], input_dir: 'js', output: 'js/todo_concated'

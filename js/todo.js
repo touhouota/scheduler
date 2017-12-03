@@ -122,6 +122,7 @@ let Task = {
 
 		// 終了時のイベントを付加
 		task.querySelector(".finish_task").addEventListener("click", Task.finish);
+		task.querySelector(".finish_task").addEventListener("click", Modal.create_end_memo);
 	},
 
 	// アイコンの設定
@@ -180,7 +181,7 @@ let Task = {
 		let task = Base.parents(event.target, "task");
 		// 実行前、タスクの情報が付加されていない場合は一旦止める
 		if (Task._check_detail_empty(task) || Task._check_plan_empty(task)) {
-			alert("まずは、時間の見積もり・作業内容を決めましょう！");
+			Notify.create_instance("まずは、時間の見積もり・作業内容を決めましょう！");
 			Modal.create_task_modify(event);
 			return;
 		}
@@ -321,9 +322,48 @@ let Task = {
 
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
-					alert(text);
+					Notify.create_instance(text);
 				}
 			}
 		}).send(query);
+	},
+
+	// タスクの状態ごとに数を数える
+	progress_count: function() {
+		let tasks = document.querySelectorAll(".task");
+		let count = {
+			done: 0,
+			imperfect: 0,
+			todo: 0,
+		};
+
+		tasks.forEach(function(item) {
+			// console.log(item, item.dataset.status, count.todo);
+			switch (Number(item.dataset.status)) {
+				case 0:
+				case 1:
+				case 4:
+					count.todo += 1;
+					break;
+				case 2:
+					count.done += 1;
+					break;
+				case 3:
+					count.imperfect += 1;
+					break;
+				default:
+					console.log("naiyou");
+			};
+		});
+
+		document.querySelectorAll(".num").forEach(function(item) {
+			if (item.classList.contains("todo")) {
+				item.textContent = count.todo;
+			} else if (item.classList.contains("done")) {
+				item.textContent = count.done;
+			} else {
+				item.textContent = count.imperfect;
+			}
+		});
 	},
 };

@@ -18,7 +18,7 @@
         </button>
 				<button type="button" class="button" id="member">
           <img src="./image/tasks.png" alt="">
-          <span class="button_text">member</span>
+          <span class="button_text">仲間の様子</span>
         </button>
 				<button type="button" class="button" id="github">
           <img src="./image/github.png" alt="要望ボタン">
@@ -50,13 +50,13 @@
 				<h2 class="list_title">今日の進捗</h2>
 				<div id="progress_list_area">
 					<p class="progress_list">
-						<img src="./image/succ.png" alt=""> × <span class="num"></span>個
+						<img src="./image/succ.png" alt=""> × <span class="num done"></span>個
 					</p>
 					<p class="progress_list">
-						<img src="./image/nosucc.png" alt=""> × <span class="num"></span>個
+						<img src="./image/nosucc.png" alt=""> × <span class="num imperfect"></span>個
 					</p>
 					<p class="progress_list">
-						<img src="./image/stop.png" alt=""> × <span class="num"></span>個
+						<img src="./image/stop.png" alt=""> × <span class="num todo"></span>個
 					</p>
 				</div>
 			</div>
@@ -134,20 +134,20 @@
 
 	<!-- modal -->
 	<template id="end_details">
-      <div class="modal end_memo">
-        <p class="modal_title">
-          タスク実行時の振り返り
-        </p>
-        <textarea name="end_details" rows="8" cols="80" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう"></textarea>
-      </div>
-      <input type="hidden" name="task_id" value="">
-      <br>
-      <button class="modify_button" type="button">変更をサーバへ送る
-      </button>
-      <span class="close">
-        閉じる
-      </span>
-    </template>
+    <form class="modal end_memo">
+      <p class="modal_title">
+        タスク実行時の振り返り
+      </p>
+      <textarea name="end_details" rows="8" cols="80" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう" autofocus></textarea>
+    <input type="hidden" name="task_id" value="">
+    <br>
+    <button class="modify_button" type="button">変更をサーバへ送る
+    </button>
+    <span class="close">
+      閉じる
+    </span>
+  </form>
+  </template>
 
 	<template id="task_modify">
       <form class="modal task_modify">
@@ -158,14 +158,18 @@
           タスク名: 
           <input class="modal_input modal_task" type="text" name="task_name" value="">
         </label>
-  			<label class="modal_content">
-          予想時間(m): 
-          <input class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">
-        </label>
-        <label class="modal_content">
-          作業時間(m): 
-          <input class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力" value="" min="0" step="5">
-        </label>
+  			<p class="modal_content">
+          <label for="modal_label">予想時間:</label>
+          <button tabindex="-1" class="up plan_button" type="button">↑</button>
+          <input id="modal_plan" class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">分
+          <button tabindex="-1" class="down plan_button" type="button">↓</button>
+        </p>
+        <p class="modal_content">
+          <label class="modal_label" for="modal_real">作業時間:</label>
+          <button tabindex="-1" class="up real_button" type="button">↑</button>
+          <input id="modal_real" class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力" value="" min="0" step="5">分
+          <button tabindex="-1" class="down real_button" type="button">↓</button>
+        </p>
   			<label class="modal_content">
           タスクの内容・終了条件など: 
           <br>
