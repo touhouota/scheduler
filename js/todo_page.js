@@ -37,13 +37,17 @@ window.onload = function() {
 	document.getElementById("logout").addEventListener("click", Base.logout);
 	// 要望ボタン
 	document.getElementById("github").addEventListener("click", Base.request);
+
 	// タスクを監視し、変化があれば数を数え直す
-	let mo = new MutationObserver(Task.progress_count);
-	mo.observe(document.querySelector(".todo_area"), {
+	new MutationObserver(Task.progress_count).observe(document.querySelector(".todo_area"), {
 		childList: true,
 		subtree: true,
 	});
-
+	// タスクを監視し、変化があればサブタスク数を数える
+	new MutationObserver(Task.subtask_count).observe(document.querySelector(".todo_area"), {
+		childList: true,
+		subtree: true,
+	});
 
 	// コメントを取得するタイマーのセット
 	Timeline.set_timer();
