@@ -145,10 +145,8 @@ body {
 			width: 95%;
 			margin: 5px auto;
 			// grid-area: task_title;
-			img {
-				display: inline-block;
-				width: 30px;
-				vertical-align: middle;
+			.task_status {
+				display: none;
 			}
 
 			.task_name {
@@ -319,6 +317,12 @@ body {
 
 	.task_main {
 		.change_button {
+			.task_status {
+				display: inline-block;
+				width: 30px;
+				vertical-align: middle;
+			}
+
 			.plan_time_area {
 				display: inherit;
 			}
