@@ -31,16 +31,6 @@
 			</header>
 			<div class="todo_area">
 				<div id="doing_area">
-					<div id="doing_buttons">
-						<button class="finish button" type="button" name="done" value="2">
-              <img src="./image/succ.png" alt="タスク完了">
-              <span class="button_text">完了</span>
-            </button>
-						<button class="finish button" type="button" name="imparfect" value="3">
-              <img src="./image/nosucc.png" alt="タスク未達成">
-              <span class="button_text">未達成</span>
-            </button>
-					</div>
 				</div>
 				<div id="todos">
 
@@ -90,7 +80,7 @@
 	<template id="todo_template">
     <div class="task">
       <div class="button_area">
-        <!-- <img src="./image/menu_fill.png" alt="" width="16" height="16"> -->
+        <img src="./image/menu_fill.png" alt="" width="16" height="16">
         <div class="buttons">
           <button type="button" class="modify">情報修正</button>
           <br>
@@ -103,24 +93,27 @@
         <div class="change_button">
           <img class="task_status" src="./image/stop.png" alt="タスクの状態">
           <span class="task_name"></span>
+          <span class="plan_time_area">
+            (予定：<span class="plan_time"></span>分)
+          </span>
         </div>
         <div class="task_info">
+          <div class="task_memo">
+            <p class="task_title">タスク情報</p>
+            <!-- ↓メモが入る -->
+            <p class="memo">
+            </p>
+          </div>
           <div class="graph">
             <!-- タスクの時間差を表すグラフ -->
             <canvas class="canvas" width="150" height="100"></canvas>
           </div>
-          <div class="memo">
-            <p class="task_title">タスク情報</p>
-            <!-- ↓メモが入る -->
-            <p class="memo_text">
-            </p>
-          </div>
-          <details class="subtask_area">
-            <summary>サブタスク一覧(<span class="done_num"></span>/<span class="todo_num"></span>)</summary>
-            <ul class="subtask_list">
-            </ul>
-          </details>
         </div>
+        <details class="subtask_area">
+          <summary>サブタスク一覧(<span class="todo_num"></span>個)</summary>
+          <div class="subtask_list">
+          </div>
+        </details>
         <div class="finish_task">
           <button class="finish button" type="button" name="done" value="2">
             <img src="./image/succ.png" alt="タスク完了">
@@ -157,6 +150,7 @@
       </p>
       <textarea name="end_details" rows="8" cols="80" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう" autofocus></textarea>
     <input type="hidden" name="task_id" value="">
+    <input type="hidden" name="parent" value="">
     <br>
     <button class="modify_button" type="button">変更をサーバへ送る
     </button>
@@ -167,7 +161,16 @@
   </template>
 
 	<template id="subtask_template">
-    <li class="subtask">
+    <li class="task sub">
+      <div class="button_area">
+        <img src="./image/menu_fill.png" alt="" width="16" height="16">
+        <div class="buttons">
+          <button type="button" class="modify">情報修正</button>
+          <!-- <br>
+          <button type="button" class="delete">削除</button> -->
+        </div>
+      </div>
+      <!-- button_area -->
       <div class="task_main">
         <img class="task_status" src="./image/stop.png" alt="タスクの状態" width="30">
         <span class="task_name"></span>
@@ -183,6 +186,10 @@
         <p class="real">
           作業時間： <span class="time">0</span>分
         </p>
+        <div class="graph hide">
+          <!-- タスクの時間差を表すグラフ -->
+          <canvas class="canvas" width="150" height="100"></canvas>
+        </div>
         <p class="task_memo">
           <span class="task_title">タスクメモ</span>
           <span class="memo"></span>
@@ -247,6 +254,7 @@
           <textarea class="modal_detail" name="task_detail" placeholder="そのタスクがどうなれば完了と言えるか&#13;&#10そのために、まず何をするかを考えてみよう"></textarea>
         </label>
   			<input type="hidden" name="task_id" value="">
+        <input type="hidden" name="parent" value="">
   			<button class="modify_button" type="button">変更をサーバへ送る
   			</button>
   			<span class="close">
