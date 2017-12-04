@@ -259,10 +259,8 @@ let Task = {
 
 		// console.log("status_change", task);
 
-		let parent = document.getElementById("task_id:" + task.dataset.parent);
-
 		if (task.dataset.status === '1') {
-			let progress = ProgressTimer.calc_diff_seconds(parent);
+			let progress = ProgressTimer.calc_diff_seconds(task);
 			// console.log("タスクを停止。時間:", progress);
 			// タイマーを無効にする
 			ProgressTimer.clear(task);
@@ -445,10 +443,9 @@ let Task = {
 			tasks[i].querySelector(".todo_num").textContent = subs.length;
 			if (subs.length === 0) {
 				tasks[i].querySelector(".subtask_area").classList.add("hide");
-				tasks[i].querySelector(".finish_task").classList.remove("finish_task");
+
 			} else {
 				tasks[i].querySelector(".subtask_area").classList.remove("hide");
-				tasks[i].querySelector(".finish_task").classList.add("finish_task");
 			}
 		}
 	},
