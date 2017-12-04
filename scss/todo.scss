@@ -156,29 +156,32 @@ body {
 				vertical-align: middle;
 				width: calc(95% - 35px);
 			}
+
+			.plan_time_area {
+				display: none;
+			}
 		}
 
 		.task_info {
-			// display: -webkit-box;
-			// display: -ms-flexbox;
-			// display: flex;
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+
 			.graph {
 				-webkit-box-sizing: border-box;
 				box-sizing: border-box;
-				float: right;
 				// grid-area: task_graph;
 				width: 150px;
-				margin-left: 10px;
-
+				// margin-left: 10px;
 				canvas {
 					// border: 1px solid #111;
 					background-color: #fff;
 				}
 			}
 
-			.memo {
+			.task_memo {
 				// canvasの大きさを引いた分がtextの大きさ
-				// width: calc(100% - 165px);
+				width: calc(100% - 165px);
 				// grid-area: task_detail;
 				margin: 5px 10px 5px 5px;
 
@@ -186,7 +189,7 @@ body {
 					font-weight: bolder;
 				}
 
-				.memo_text {
+				.memo {
 					overflow: hidden;
 					white-space: nowrap;
 					text-overflow: ellipsis;
@@ -197,15 +200,6 @@ body {
 			.subtask_area {
 				padding-left: 20px;
 				list-style: none;
-
-				.subtask {
-					margin-bottom: 20px;
-
-					.task_status {
-						vertical-align: middle;
-						margin-right: 5px;
-					}
-				}
 			}
 		}
 
@@ -308,15 +302,51 @@ body {
 	}
 }
 
-.doing {
-	width: inherit;
+.sub {
+	background-color: inherit;
+	width: calc(100% - 20px);
+
+	.button_area {
+		top: 0;
+		right: 0;
+	}
 
 	.task_main {
+		.change_button {
+			.plan_time_area {
+				display: inherit;
+			}
+		}
+
 		.task_info {
-			.memo {
+			.task_memo > p {
+				margin: 5px;
+			}
+		}
+	}
+
+	.canvas,
+	.subtask_area {
+		display: none;
+	}
+}
+
+.doing {
+	width: inherit;
+	background-color: rgba(130, 109, 241, 0.10);
+
+	.task_main {
+		.graph {
+			.canvas {
+				display: block;
+			}
+		}
+
+		.task_info {
+			.task_memo {
 				width: calc(100% - 370px);
 
-				.task_detail_text {
+				.memo {
 					overflow: inherit;
 					white-space: inherit;
 					text-decoration: inherit;
