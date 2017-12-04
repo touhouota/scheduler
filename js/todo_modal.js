@@ -261,9 +261,10 @@ let Modal = {
 				console.table(response.data);
 				if (response.ok) {
 					const data = response.data[0];
-					let subtask = Task.create_subtask(data);
+					let subtask = Task.create_task(data);
+					subtask.classList.add("sub");
 					let task = document.getElementById("task_id:" + data.parent);
-					task.querySelector(".subtask_area").appendChild(subtask);
+					task.querySelector(".subtask_list").appendChild(subtask);
 				}
 				// Modal.remove();
 				form.reset();
