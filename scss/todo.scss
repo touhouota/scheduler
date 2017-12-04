@@ -309,6 +309,12 @@ body {
 	.button_area {
 		top: 0;
 		right: 0;
+
+		.buttons {
+			.subtask {
+				display: none;
+			}
+		}
 	}
 
 	.task_main {
