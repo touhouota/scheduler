@@ -182,28 +182,29 @@ body {
 				// grid-area: task_detail;
 				margin: 5px 10px 5px 5px;
 
-				.task_detail {
+				.task_title {
 					font-weight: bolder;
 				}
 
-				.subtask_area {
-					padding-left: 20px;
-					list-style: none;
-
-					.subtask {
-						margin-bottom: 20px;
-
-						.task_status {
-							vertical-align: middle;
-						}
-					}
-				}
-
-				.task_detail_text {
+				.memo_text {
 					overflow: hidden;
 					white-space: nowrap;
 					text-overflow: ellipsis;
 					height: 25px;
+				}
+			}
+
+			.subtask_area {
+				padding-left: 20px;
+				list-style: none;
+
+				.subtask {
+					margin-bottom: 20px;
+
+					.task_status {
+						vertical-align: middle;
+						margin-right: 5px;
+					}
 				}
 			}
 		}
