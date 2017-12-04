@@ -33,12 +33,12 @@ window.onload = function() {
 
 	// タスクを追加するボタンを追加
 	document.getElementById("append_task").addEventListener("click", Task.append_task);
-	// 仲間の様子
-	document.getElementById("member").addEventListener("click", Base.member);
-	// 要望ボタン
-	document.getElementById("github").addEventListener("click", Base.request);
+	// member
+	document.getElementById("member_list").addEventListener("click", Base.member);
 	// ログアウトのボタン
 	document.getElementById("logout").addEventListener("click", Base.logout);
+	// 要望ボタン
+	document.getElementById("github").addEventListener("click", Base.request);
 	// タスクを監視し、変化があれば数を数え直す
 	let mo = new MutationObserver(Task.progress_count);
 	mo.observe(document.querySelector(".todo_area"), {
@@ -58,6 +58,7 @@ window.onload = function() {
 	button.addEventListener("click", Timeline.append);
 	button.disabled = true;
 
+
 	// このページでNotificationAPIを使うための準備
 	Notify.init();
-};
+}
