@@ -31,22 +31,23 @@ let ProgressTimer = {
 		let canvas = task.querySelector(".canvas");
 		let plan = [],
 			real = [];
-		if (!task.querySelector(".subtask_area").children.length) {
+		if (!task.querySelector(".subtask_list").children.length) {
+			console.log(task);
 			// 予想時間を取得
 			plan.push(task.dataset.expected_time);
 			// 実際の作業時間を計測
-			const second = ProgressTimer.calc_diff_seconds(task) / 60;
+			const seconds = ProgressTimer.calc_diff_seconds(task) / 60;
 			real.push(seconds.toFixed(2));
 		} else {
-			let subtasks = task.querySelector(".subtask_area").children;
+			let subtasks = task.querySelector(".subtask_list").children;
 			let i = 0;
 			let length = subtasks.length;
 			for (i = 0; i < length; i += 1) {
-				plan.push(Number(subtasks[i].dataset.plan));
-				real.push(Number(subtasks[i].dataset.real));
+				plan.push(Number(subtasks[i].dataset.expected_time));
+				real.push(Number(subtasks[i].dataset.progress || 0));
 			}
-			console.log(plan, real);
 		}
+		console.log(plan, real);
 		Chart.draw(canvas, plan, real);
 	},
 
