@@ -107,30 +107,30 @@ let Task = {
 		task.querySelector(".task_name").textContent = info.task_name;
 
 		// 経過時間
-		if (info.actual_time) {
-			task.dataset.progress = info.actual_time;
-		} else {
-			task.dataset.progress = 0;
-		}
+		// if (info.actual_time) {
+		// 	task.dataset.progress = info.actual_time;
+		// } else {
+		// 	task.dataset.progress = 0;
+		// }
 
 		// 時間を
-		let canvas = task.querySelector("canvas");
-		let time = (info.actual_time / 60).toFixed(2);
-		Chart.draw(canvas, [info.expected_time], [time]);
+		// let canvas = task.querySelector("canvas");
+		// let time = (info.actual_time / 60).toFixed(2);
+		// Chart.draw(canvas, [info.expected_time], [time]);
 		// 予想時間
-		if (info.expected_time) {
-			task.dataset.expected_time = info.expected_time;
-		} else {
-			task.dataset.expected_time = 0;
-		}
+		// if (info.expected_time) {
+		// 	task.dataset.expected_time = info.expected_time;
+		// } else {
+		// 	task.dataset.expected_time = 0;
+		// }
 
 		if (info.memo) {
-			task.querySelector(".task_detail_text").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
+			task.querySelector(".memo_text").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
 		}
 
-		if (info.start_time) {
-			task.dataset.start_time = info.start_time;
-		}
+		// if (info.start_time) {
+		// 	task.dataset.start_time = info.start_time;
+		// }
 
 		if (info.reflection) {
 			task.querySelector(".end_text").innerHTML = info.reflection.replace(/\r?\n/g, "<br>");
@@ -196,11 +196,24 @@ let Task = {
 		console.table(info);
 		task.querySelector(".task_name").textContent = info.task_name;
 		task.id = "task_id:" + info.task_id;
-		// タスクに時間の情報を付加
+		// 親タスクの情報
 		task.dataset.parent = info.parent;
-		task.dataset.plan = info.expected_time;
-		task.querySelector(".plan").textContent = info.expected_time;
-		task.dataset.real = info.actual_time;
+
+		// タスクに予想時間の情報を付加
+		if (info.expected_time) {
+			task.querySelector(".plan > .time").textContent = info.expected_time;
+		}
+
+		// 実際の作業時間を付加
+		if (info.actual_time) {
+			task.querySelector(".real > .time").textContent = info.actual_time;
+		}
+
+		// タスクの情報を付加
+		if (info.memo) {
+			// 改行文字をbrタグに置き換え。
+			task.querySelector(".memo").textContent = info.memo.replace(/\r?\n/g, "<br>");
+		}
 
 		// タスクスタート
 		task.querySelector(".task_status").addEventListener("click", function() {
