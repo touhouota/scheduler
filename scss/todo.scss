@@ -380,3 +380,17 @@ body {
 .hide {
 	display: none;
 }
+
+#dones {
+	.task {
+		.task_main {
+			.change_button {
+				.task_status {
+					display: inline-block;
+					width: 30px;
+					vertical-align: middle;
+				}
+			}
+		}
+	}
+}
