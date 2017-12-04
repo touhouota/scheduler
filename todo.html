@@ -81,7 +81,7 @@
 	<template id="todo_template">
     <div class="task">
       <div class="button_area">
-        <img src="./image/menu_fill.png" alt="" width="16" height="16">
+        <!-- <img src="./image/menu_fill.png" alt="" width="16" height="16"> -->
         <div class="buttons">
           <button type="button" class="modify">情報修正</button>
           <br>
@@ -105,8 +105,11 @@
             <!-- ↓メモが入る -->
             <p class="task_detail_text">
             </p>
-            <ul class="subtask_area">
-            </ul>
+            <details class="subtask_area">
+              <summary>サブタスク一覧(<span class="done_num"></span>/<span class="todo_num"></span>)</summary>
+              <ul class="subtask_list">
+              </ul>
+            </details>
           </div>
         </div>
         <div class="finish_task">
@@ -127,6 +130,7 @@
       </div>
     </div>
   </template>
+
 	<template id="timeline_template">
       <div class="comment_container">
         <span class="user_name"></span>
@@ -155,10 +159,31 @@
 
 	<template id="subtask_template">
     <li class="subtask">
-      <img class="task_status" src="./image/stop.png" alt="タスクの状態" width="30">
-      <span class="task_name"></span>
-      <br>
-      (予定：<span class="plan"></span>分)
+      <div class="task_main">
+        <img class="task_status" src="./image/stop.png" alt="タスクの状態" width="30">
+        <span class="task_name"></span>
+        <br>
+        (予定：<span class="plan"></span>分)
+      </div>
+      <!-- task_main -->
+      
+      <div class="task_sub">
+        <p class="plan">
+          予想時間：<span class="time">00:00:00</span>
+        </p>
+        <p class="real">
+          作業時間： <span class="time">00:00:00</span>
+        </p>
+        <p class="task_memo">
+          <span class="task_title">タスクメモ</span>
+          <span class="memo"></span>
+        </p>
+        <details class="reflection_area">
+          <summary>振り返り</summary>
+          <p class="reflection"></p>
+        </details>
+        <!-- task_sub -->
+      </div>
     </li>
   </template>
 
