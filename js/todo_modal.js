@@ -129,7 +129,7 @@ let Modal = {
 		// タスク名の取得
 		let task_name = task.querySelector(".task_name").textContent;
 		// 予想時間の取得
-		let plan = task.dataset.plan;
+		let plan = task.dataset.expected_time;
 		console.log(plan);
 		if (plan !== "") {
 			plan = parseFloat(plan, 10);
