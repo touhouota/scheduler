@@ -121,23 +121,31 @@ def task_modify(cgi)
   # task_nameを追加・修正
   $client.prepare(sql + 'task_name = ?' + where).execute(cgi[:task_name], user_id, task_id) unless cgi[:task_name].nil?
   # statusを修正
-  unless cgi[:status].nil?
+  unless cgi[:status].nil? || cgi[:status].empty?
     raise $range_error unless cgi[:status].to_i.between?(0, 4)
     $client.prepare(sql + 'status = ?' + where).execute(cgi[:status], user_id, task_id)
   end
   # task_detailを追加・修正
-  $client.prepare(sql + 'memo = ?' + where).execute(cgi[:task_detail], user_id, task_id) unless cgi[:task_detail].nil?
+  $client.prepare(sql + 'memo = ?' + where).execute(cgi[:task_detail], user_id, task_id) unless cgi[:task_detail].nil? || cgi[:task_detail].to_s.empty?
   # end_detailを修正・追加
-  $client.prepare(sql + 'reflection = ?' + where).execute(cgi[:end_detail], user_id, task_id) unless cgi[:end_detail].nil?
+  $client.prepare(sql + 'reflection = ?' + where).execute(cgi[:end_detail], user_id, task_id) unless cgi[:end_detail].nil? || cgi[:end_detail].to_s.empty?
   # hourを追加・修正
-  $client.prepare(sql + 'expected_time = ?' + where).execute(cgi[:plan], user_id, task_id) unless cgi[:plan].nil?
+  $client.prepare(sql + 'expected_time = ?' + where).execute(cgi[:plan], user_id, task_id) unless cgi[:plan].nil? || cgi[:plan].to_s.empty?
   # timeを修正
-  $client.prepare(sql + 'actual_time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil?
+  $client.prepare(sql + 'actual_time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil? || cgi[:time].to_s.empty?
+
+  # 親タスクの時は、parent_id=自分自身
+  # 子タスクの時は、parent_id=親のID
+  parent_id = if cgi[:parent].to_s.empty?
+    cgi[:task_id]
+              else
+    cgi[:parent]
+              end
 
   # 修正した結果を取得する
-  search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and task_id = ? or parent = ? order by task_id'
+  search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and (task_id = ? or parent = ?) order by task_id'
   # サブタスクを取得する
-  result = $client.prepare(search).execute(user_id, task_id, task_id)
+  result = $client.prepare(search).execute(user_id, parent_id, parent_id)
   { ok: true, data: result.entries }
 end
 
