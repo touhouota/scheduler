@@ -46,7 +46,7 @@ let ProgressTimer = {
 			let length = subtasks.length;
 			for (i = 0; i < length; i += 1) {
 				plan.push(Number(subtasks[i].dataset.expected_time || 0));
-				real.push(Number(subtasks[i].dataset.progress || 0));
+				real.push(Number(subtasks[i].dataset.progress / 60 || 0));
 			}
 		}
 		console.log(plan, real);
