@@ -9,6 +9,7 @@ window.onload = function() {
 				let fragment = document.createDocumentFragment();
 				for (let i = 0; i < data.length; i++) {
 					let task = Task.create_task(data[i]);
+					Task.parent.push(data[i].task_id);
 
 					fragment.appendChild(task);
 				}
@@ -30,16 +31,16 @@ function get_child(parents) {
 		Base.create_request("GET", Base.request_path + query, function() {
 			if (this.status == 200 && this.readyState == 4) {
 				let response = JSON.parse(this.responseText);
-				console.table(response.data);
 				if (response.ok) {
 					let data = response.data;
+					console.table(data);
 					let fragment = document.createDocumentFragment();
-					for (let i = 0; i < data.length; i++) {
-						let subtask = Task.create_task(data[i]);
+					for (let num = 0; num < data.length; num++) {
+						Task.child.push(data[num].task_id);
+						let subtask = Task.create_task(data[num]);
 						subtask.classList.add("sub");
 						fragment.appendChild(subtask);
 					}
-
 					let sub = document.getElementById("task_id:" + data[0].parent).querySelector(".subtask_list");
 					sub.appendChild(fragment);
 
