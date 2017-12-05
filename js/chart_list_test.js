@@ -64,18 +64,20 @@ let Chart = {
 		let ctx = this.context;
 		// グラフのX座標
 		let x = 0;
+		let sum_time = 0;
 		const size = data.length;
 		let color_range = 360 / size;
 
 		for (let i = 0; i < size; i = (i + 1)) {
 			ctx.fillStyle = "hsl(" + color_range * i + ", 90%, 50%)";
 			ctx.fillRect(x, graph_height, data[i] * Chart.scale, this.bar_height);
-			x += data[i] * this.scale;
+			x += Number(data[i]) * this.scale;
+			sum_time += data[i];
 			//console.log("グラフを描く", x, x * scale);
 		}
 		// 時間を表示する
 		ctx.fillStyle = "#000";
-		ctx.fillText(data + "分", this.canvas.width - 40, graph_height + 18);
+		ctx.fillText(sum_time + "分", this.canvas.width - 40, graph_height + 18);
 		// console.log(data + "分");
 	},
 

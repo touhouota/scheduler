@@ -130,6 +130,7 @@ let Modal = {
 		let task_name = task.querySelector(".task_name").textContent;
 		// 予想時間の取得
 		let plan = task.dataset.expected_time;
+		console.log(plan);
 		if (plan !== "") {
 			plan = parseFloat(plan, 10);
 		}
@@ -139,7 +140,7 @@ let Modal = {
 			time = parseFloat(time, 10);
 		}
 		// タスクの内容の取得
-		let explain = task.querySelector(".task_detail_text").innerHTML;
+		let explain = task.querySelector(".memo").innerHTML.trim();
 		console.log(explain);
 		// から文字を省いて、大きさが0 => 何も入っていない
 		if (explain.replace(/\s+/g, "").length !== 0) {
@@ -152,6 +153,7 @@ let Modal = {
 		modal.task_plan.value = plan;
 		modal.task_time.value = Math.round(time / 60);
 		modal.task_detail.value = explain;
+		modal.parent.value = task.dataset.parent || "";
 		modal.task_id.value = task.id.split(":").pop();
 	},
 
@@ -199,6 +201,7 @@ let Modal = {
 				"cmd=task_modify",
 				"&user_id=" + Base.get_cookie('user_id'),
 				"&task_id=" + form.task_id.value,
+				"&parent=", form.parent.value,
 				"&task_name=", form.task_name.value,
 				"&plan=", form.task_plan.value,
 				"&time=", Number(form.task_time.value) * 60,
@@ -209,6 +212,7 @@ let Modal = {
 				"cmd=task_modify",
 				"&user_id=" + Base.get_cookie("user_id"),
 				"&task_id=" + form.task_id.value,
+				"&parent=", form.parent.value,
 				"&end_detail=" + form.end_details.value,
 			].join("");
 		} else {
@@ -221,11 +225,18 @@ let Modal = {
 				console.table(response.data);
 				if (response.ok) {
 					const data = response.data;
-					let task = Task.create_task_list(data);
+					// let new_task;
+					// if (data.parent !== data.child) {
+					// 	// ここに入る時は、親タスクのとき
+					// 	// 親タスクのときは、親も子供も指定されていない
+					// 	new_task = Task.create_task_list(data);
+					// } else {
+					// 	// parentとchildが異なる時は、子タスクのとき
+					// 	new_task = Task.create_subtask(data[0]);
+					// }
+					let new_task = Task.create_task_list(data);
 					let old_task = document.getElementById("task_id:" + data[0].task_id);
-					//console.log("callback_send_modify", task);
-					old_task.parentElement.replaceChild(task, old_task);
-					// new Chart("canvas", response.chart).render();
+					old_task.parentElement.replaceChild(new_task, old_task);
 				}
 				Modal.remove();
 			}
@@ -250,9 +261,10 @@ let Modal = {
 				console.table(response.data);
 				if (response.ok) {
 					const data = response.data[0];
-					let subtask = Task.create_subtask(data);
+					let subtask = Task.create_task(data);
+					subtask.classList.add("sub");
 					let task = document.getElementById("task_id:" + data.parent);
-					task.querySelector(".subtask_area").appendChild(subtask);
+					task.querySelector(".subtask_list").appendChild(subtask);
 				}
 				// Modal.remove();
 				form.reset();
