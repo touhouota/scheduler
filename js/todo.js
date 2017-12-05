@@ -30,12 +30,22 @@ let Task = {
 		});
 
 		console.log(fragment);
-
+		// サブタスクを親に追加
 		subtasks.reverse().forEach(function(item) {
 			console.log(item);
 			let parent = fragment.getElementById("task_id:" + item.dataset.parent);
 			parent.querySelector(".subtask_list").appendChild(item);
 		});
+
+		let task = fragment.querySelectorAll(".task");
+		let i = 0,
+			length = task.length;
+		for (i = 0; i < length; i += 1) {
+			if (task[i].classList.contains("sub")) {
+				continue;
+			}
+			ProgressTimer.display(task[i]);
+		}
 
 		return fragment;
 	},
@@ -129,9 +139,10 @@ let Task = {
 		}
 
 		// 時間を
-		let canvas = task.querySelector("canvas");
-		let time = (info.progress / 60).toFixed(2);
-		Chart.draw(canvas, [info.expected_time], [time]);
+		// let canvas = task.querySelector("canvas");
+		// let time = (info.progress / 60).toFixed(2);
+		// Chart.draw(canvas, [info.expected_time], [time]);
+		ProgressTimer.display(task);
 		// 予想時間
 		if (info.expected_time) {
 			task.dataset.expected_time = info.expected_time;
@@ -348,8 +359,9 @@ let Task = {
 			subtask.insertBefore(task, subtask.firstElementChild);
 		}
 		// グラフの再描画
-		const time = task.dataset.progress / 60;
-		Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
+		// const time = task.dataset.progress / 60;
+		// Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
+		ProgressTimer.display(task);
 	},
 
 	// task終了のイベント
@@ -386,6 +398,7 @@ let Task = {
 					Task._decoration(target_task, task_info.status);
 					// 終了したものは終了した場所に置く
 					let dones = document.getElementById("dones");
+					console.log("finish_task, target_task", target_task);
 					dones.insertBefore(target_task, dones.firstElementChild);
 
 					// 終わった旨を表示する
