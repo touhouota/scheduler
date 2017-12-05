@@ -6,46 +6,21 @@ let Task = {
 			return;
 		}
 		let subtasks = [];
-		const fin_status = [2, 3];
 		task_list.forEach(function(item) {
-			if (item.parent && !fin_status.includes(item.status)) {
-				console.log(item);
-				let subtask = Task.create_task(item);
-
-				// 親にIDが入っていれば、それはサブタスク
-				if (item.parent) {
-					// サブの印をつける
-					subtask.classList.add("sub");
-					// 親の情報を載せる
-					subtask.dataset.parent = item.parent;
-				}
-
+			if (item.child) {
+				let subtask = Task.create_subtask(item);
 				subtasks.push(subtask);
 			} else {
 				// タスクを作る
 				let task = Task.create_task(item);
-
 				fragment.appendChild(task);
 			}
 		});
 
-		console.log(fragment);
-		// サブタスクを親に追加
 		subtasks.reverse().forEach(function(item) {
-			console.log(item);
 			let parent = fragment.getElementById("task_id:" + item.dataset.parent);
-			parent.querySelector(".subtask_list").appendChild(item);
+			parent.querySelector(".subtask_area").appendChild(item);
 		});
-
-		let task = fragment.querySelectorAll(".task");
-		let i = 0,
-			length = task.length;
-		for (i = 0; i < length; i += 1) {
-			if (task[i].classList.contains("sub")) {
-				continue;
-			}
-			ProgressTimer.display(task[i]);
-		}
 
 		return fragment;
 	},
@@ -139,20 +114,18 @@ let Task = {
 		}
 
 		// 時間を
-		// let canvas = task.querySelector("canvas");
-		// let time = (info.progress / 60).toFixed(2);
-		// Chart.draw(canvas, [info.expected_time], [time]);
-		ProgressTimer.display(task);
+		let canvas = task.querySelector("canvas");
+		let time = (info.actual_time / 60).toFixed(2);
+		Chart.draw(canvas, [info.expected_time], [time]);
 		// 予想時間
 		if (info.expected_time) {
 			task.dataset.expected_time = info.expected_time;
-			task.querySelector(".plan_time").textContent = info.expected_time;
 		} else {
 			task.dataset.expected_time = 0;
 		}
 
 		if (info.memo) {
-			task.querySelector(".memo").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
+			task.querySelector(".task_detail_text").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
 		}
 
 		if (info.start_time) {
@@ -169,11 +142,7 @@ let Task = {
 		// タスク情報を更新するときのクリックイベント
 		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 
-		// サブタスクを追加する
 		task.querySelector(".subtask").addEventListener("click", Modal.create_subtask);
-
-		// 親タスクを終わらせる
-		task.querySelector(".finish").addEventListener("click", Task.finish);
 
 		// 終了時のイベントを付加
 		task.querySelector(".finish_task").addEventListener("click", Task.finish);
@@ -207,39 +176,27 @@ let Task = {
 		Task.change_favicon(info.status);
 	},
 
+	calc_task_time: function(task_list) {
+		let plan = [],
+			real = [];
+		task_list.forEach(function(task) {
+			plan.push(task.plan);
+			real.push(task.time / 60);
+		});
+
+		return {
+			plan: plan,
+			real: real,
+		}
+	},
+
 	// サブタスクの情報を付加する
 	_setting_subtask: function(task, info) {
 		console.log("setting_subtask");
 		console.table(info);
 		task.querySelector(".task_name").textContent = info.task_name;
 		task.id = "task_id:" + info.task_id;
-		// 親タスクの情報
 		task.dataset.parent = info.parent;
-
-		// タスクに予想時間の情報を付加
-		if (info.expected_time) {
-			task.dataset.plan = info.expected_time;
-			task.querySelector(".plan").textContent = task.dataset.plan;
-			task.querySelector(".plan > .time").textContent = task.dataset.plan;
-		}
-
-		// 実際の作業時間を付加
-		if (info.actual_time) {
-			task.querySelector(".real > .time").textContent = info.actual_time;
-			task.dataset.progress = info.actual_time;
-		}
-
-		// タスクの情報を付加
-		if (info.memo) {
-			// 改行文字をbrタグに置き換え。
-			task.querySelector(".memo").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
-		}
-
-		// タスクの状態変化のためのイベント
-		task.querySelector(".task_status").addEventListener("click", Task.change_status);
-
-		// タスク情報を更新するときのクリックイベント
-		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 	},
 
 	change_favicon: function(status) {
@@ -317,7 +274,7 @@ let Task = {
 	// タスクの内容を決めてあるかの確認
 	// true: 決められていない、false: 決められてる
 	_check_detail_empty: function(task) {
-		if (task.querySelector(".memo").innerHTML.replace(/\s/g, "").length === 0) {
+		if (task.querySelector(".task_detail_text").innerHTML.replace(/\s/g, "").length === 0) {
 			return true;
 		}
 		return false;
@@ -352,16 +309,12 @@ let Task = {
 			canvas.width = 150;
 			canvas.height = 100;
 			// タスクを移動させる
-			// let todo = document.getElementById("todos");
-			// todo.insertBefore(task, todo.firstElementChild);
-			let parent = document.getElementById("task_id:" + task.dataset.parent);
-			let subtask = parent.querySelector(".subtask_list");
-			subtask.insertBefore(task, subtask.firstElementChild);
+			let todo = document.getElementById("todos");
+			todo.insertBefore(task, todo.firstElementChild);
 		}
 		// グラフの再描画
-		// const time = task.dataset.progress / 60;
-		// Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
-		ProgressTimer.display(task);
+		const time = task.dataset.progress / 60;
+		Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
 	},
 
 	// task終了のイベント
@@ -398,7 +351,6 @@ let Task = {
 					Task._decoration(target_task, task_info.status);
 					// 終了したものは終了した場所に置く
 					let dones = document.getElementById("dones");
-					console.log("finish_task, target_task", target_task);
 					dones.insertBefore(target_task, dones.firstElementChild);
 
 					// 終わった旨を表示する
@@ -446,26 +398,5 @@ let Task = {
 				item.textContent = count.imperfect;
 			}
 		});
-	},
-
-	// subtaskの数を数える
-	subtask_count: function() {
-		let tasks = document.getElementById("todos").children;
-		let i = 0,
-			length = tasks.length;
-		for (i = 0; i < length; i += 1) {
-			console.log("subtask", tasks[i]);
-			// subtask_listの子供を配列として貰おう
-			let subs = tasks[i].querySelector(".subtask_list").children;
-			// その大きさをつけよう
-			tasks[i].querySelector(".todo_num").textContent = subs.length;
-			if (subs.length === 0) {
-				tasks[i].querySelector(".subtask_area").classList.add("hide");
-				tasks[i].querySelector(".finish").classList.remove("hide");
-			} else {
-				tasks[i].querySelector(".subtask_area").classList.remove("hide");
-				tasks[i].querySelector(".finish").classList.add("hide");
-			}
-		}
 	},
 };
