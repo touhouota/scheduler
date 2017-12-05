@@ -1,4 +1,6 @@
 let Task = {
+	parent: [],
+	child: [],
 	create_task_list: function(task_list) {
 		let fragment = document.createDocumentFragment();
 		if (!task_list) {
@@ -130,17 +132,17 @@ let Task = {
 		task.querySelector(".task_status").addEventListener("click", Task.change_status);
 
 		// タスク情報を更新するときのクリックイベント
-		// task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
+		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 
 		// サブタスクを追加する
-		// task.querySelector(".subtask").addEventListener("click", Modal.create_subtask);
+		task.querySelector(".subtask").addEventListener("click", Modal.create_subtask);
 
 		// 親タスクを終わらせる
 		task.querySelector(".finish").addEventListener("click", Task.finish);
 
 		// 終了時のイベントを付加
-		// task.querySelector(".finish_task").addEventListener("click", Task.finish);
-		// task.querySelector(".finish_task").addEventListener("click", Modal.create_end_memo);
+		task.querySelector(".finish_task").addEventListener("click", Task.finish);
+		task.querySelector(".finish_task").addEventListener("click", Modal.create_end_memo);
 	},
 
 	// アイコンの設定
