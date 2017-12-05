@@ -5,10 +5,21 @@ let Task = {
 			// からの場合は何もしない
 			return;
 		}
+		let subtasks = [];
 		task_list.forEach(function(item) {
-			// タスクを作る
-			let task = Task.create_task(item);
-			fragment.appendChild(task);
+			if (item.child) {
+				let subtask = Task.create_subtask(item);
+				subtasks.push(subtask);
+			} else {
+				// タスクを作る
+				let task = Task.create_task(item);
+				fragment.appendChild(task);
+			}
+		});
+
+		subtasks.reverse().forEach(function(item) {
+			let parent = fragment.getElementById("task_id:" + item.dataset.parent);
+			parent.querySelector(".subtask_area").appendChild(item);
 		});
 
 		return fragment;
@@ -22,8 +33,6 @@ let Task = {
 		Task._setting_task_icon(task, task_info);
 		// タスクの情報に関するもの
 		Task._setting_task_info(task, task_info);
-		// タスクのクラスを付け替える
-		// Task._decoration(task, task_info.status);
 
 		// もし、状態が実行中ならそうする
 		if (task_info.status === 1) {
@@ -76,42 +85,55 @@ let Task = {
 		}).send(post);
 	},
 
+	// subtask作成を行う。
+	create_subtask: function(task_info) {
+		let _template = document.getElementById("subtask_template");
+		let template = document.importNode(_template.content, true);
+		let subtask = template.cloneNode(true).firstElementChild;
+
+
+		// タスク情報を付加
+		Task._setting_subtask(subtask, task_info);
+
+		return subtask;
+	},
+
 
 	// タスクの情報を付加する
 	_setting_task_info: function(task, info) {
 		// idをつける
 		task.id = "task_id:" + info.task_id;
 		// タスク名
-		task.querySelector(".task_name").textContent = info.task;
+		task.querySelector(".task_name").textContent = info.task_name;
 
 		// 経過時間
-		if (info.time) {
-			task.dataset.progress = info.time;
+		if (info.actual_time) {
+			task.dataset.progress = info.actual_time;
 		} else {
 			task.dataset.progress = 0;
 		}
 
 		// 時間を
 		let canvas = task.querySelector("canvas");
-		let time = (info.time / 60).toFixed(2);
-		Chart.draw(canvas, [info.plan], [time]);
+		let time = (info.actual_time / 60).toFixed(2);
+		Chart.draw(canvas, [info.expected_time], [time]);
 		// 予想時間
-		if (info.plan) {
-			task.dataset.plan = info.plan;
+		if (info.expected_time) {
+			task.dataset.expected_time = info.expected_time;
 		} else {
-			task.dataset.plan = 0;
+			task.dataset.expected_time = 0;
 		}
 
-		if (info.task_detail) {
-			task.querySelector(".task_detail_text").innerHTML = info.task_detail.replace(/\r?\n/g, "<br>");
+		if (info.memo) {
+			task.querySelector(".task_detail_text").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
 		}
 
 		if (info.start_time) {
 			task.dataset.start_time = info.start_time;
 		}
 
-		if (info.end_details) {
-			task.querySelector(".end_text").innerHTML = task.end_details.replace(/\r?\n/g, "<br>");
+		if (info.reflection) {
+			task.querySelector(".end_text").innerHTML = info.reflection.replace(/\r?\n/g, "<br>");
 		}
 
 		// タスクの状態変化イベント
@@ -119,6 +141,8 @@ let Task = {
 
 		// タスク情報を更新するときのクリックイベント
 		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
+
+		task.querySelector(".subtask").addEventListener("click", Modal.create_subtask);
 
 		// 終了時のイベントを付加
 		task.querySelector(".finish_task").addEventListener("click", Task.finish);
@@ -164,6 +188,15 @@ let Task = {
 			plan: plan,
 			real: real,
 		}
+	},
+
+	// サブタスクの情報を付加する
+	_setting_subtask: function(task, info) {
+		console.log("setting_subtask");
+		console.table(info);
+		task.querySelector(".task_name").textContent = info.task_name;
+		task.id = "task_id:" + info.task_id;
+		task.dataset.parent = info.parent;
 	},
 
 	change_favicon: function(status) {
@@ -250,7 +283,7 @@ let Task = {
 	// タスクの時間が決まっているのかを確認する
 	_check_plan_empty: function(task) {
 		const default_text = '0';
-		if (task.dataset.plan === default_text) {
+		if (task.dataset.expected_time === default_text) {
 			return true;
 		}
 		return false;
@@ -281,7 +314,7 @@ let Task = {
 		}
 		// グラフの再描画
 		const time = task.dataset.progress / 60;
-		Chart.draw(canvas, [task.dataset.plan], [time.toFixed(2)]);
+		Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
 	},
 
 	// task終了のイベント

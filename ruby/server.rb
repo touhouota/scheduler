@@ -5,7 +5,8 @@ require 'mysql2'
 require 'uri'
 require 'time'
 require 'yaml'
-load './process.rb'
+# load './process.rb'
+load './process_subtree.rb'
 
 print "Content-Type: text/plain;charset=utf-8\n\n"
 
@@ -30,6 +31,10 @@ begin
            when 'append_task'
              append_task(cgi)
 
+           when 'append_subtask'
+             task_info = append_task(cgi)
+             append_subtask(cgi, task_info)
+
            when 'task_list'
              get_task_list(cgi)
 
@@ -49,7 +54,7 @@ begin
              insert_timeline(cgi)
 
            else
-             { ok: false, data: cgi, message: 'そんなのないよ' }
+             { ok: false, data: cgi, message: 'don\'t exist yout command' }
   end
   # トランザクションの終了
   $client.query('COMMIT')

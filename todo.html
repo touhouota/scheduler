@@ -83,9 +83,11 @@
       <div class="button_area">
         <img src="./image/menu_fill.png" alt="" width="16" height="16">
         <div class="buttons">
-          <button type="button" class="button modify">修正</button>
-          <!-- <br>
-          <button type="button" class="delete">削除</button> -->
+          <button type="button" class="modify">情報修正</button>
+          <br>
+          <button type="button" class="subtask">サブタスク</button>
+          <br>
+          <button type="button" class="delete">削除</button>
         </div>
       </div>
       <div class="task_main">
@@ -120,6 +122,9 @@
       <div class="task_sub">
          <!-- 振り返りがある場合は、ここに入る -->
         <p class="end_text"></p>
+        
+        <ul class="subtask_area">
+        </ul>
       </div>
     </div>
   </template>
@@ -147,6 +152,36 @@
       閉じる
     </span>
   </form>
+  </template>
+
+	<template id="subtask_template">
+    <li class="subtask">
+      <p class="task_name"></p>
+    </li>
+  </template>
+
+	<template id="subtask_modal">
+    <form class="modal subtask_modal">
+      <p class="modal_title">
+        「<span class="parent_name"></span>」へサブタスクを追加します。
+      </p>
+      <label class="modal_label">
+        タスク名：
+        <input type="text" name="task_name" value="">
+      </label>
+      <p class="modal_content">
+        <label for="modal_label">予想時間:</label>
+        <button tabindex="-1" class="up plan_button" type="button">↑</button>
+        <input id="modal_plan" class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">分
+        <button tabindex="-1" class="down plan_button" type="button">↓</button>
+      </p>
+      <input type="hidden" name="parent" value="">
+      <button class="modify_button" type="button">変更をサーバへ送る
+      </button>
+      <span class="close">
+        閉じる
+      </span>
+    </form>
   </template>
 
 	<template id="task_modify">

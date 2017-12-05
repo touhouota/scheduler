@@ -30,7 +30,7 @@ let ProgressTimer = {
 		// タスクの進捗により、グラフを更新する
 		let canvas = task.querySelector(".canvas");
 		let seconds = ProgressTimer.calc_diff_seconds(task) / 60;
-		Chart.draw(canvas, [task.dataset.plan], [seconds.toFixed(2)]);
+		Chart.draw(canvas, [task.dataset.expected_time], [seconds.toFixed(2)]);
 	},
 
 	calc_diff_seconds: function(task_element) {
