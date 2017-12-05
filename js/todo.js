@@ -158,7 +158,11 @@ let Task = {
 		// タスク情報を更新するときのクリックイベント
 		task.querySelector(".modify").addEventListener("click", Modal.create_task_modify);
 
+		// サブタスクを追加する
 		task.querySelector(".subtask").addEventListener("click", Modal.create_subtask);
+
+		// 親タスクを終わらせる
+		task.querySelector(".finish").addEventListener("click", Task.finish);
 
 		// 終了時のイベントを付加
 		task.querySelector(".finish_task").addEventListener("click", Task.finish);
@@ -437,15 +441,17 @@ let Task = {
 		let i = 0,
 			length = tasks.length;
 		for (i = 0; i < length; i += 1) {
+			console.log("subtask", tasks[i]);
 			// subtask_listの子供を配列として貰おう
 			let subs = tasks[i].querySelector(".subtask_list").children;
 			// その大きさをつけよう
 			tasks[i].querySelector(".todo_num").textContent = subs.length;
 			if (subs.length === 0) {
 				tasks[i].querySelector(".subtask_area").classList.add("hide");
-
+				tasks[i].querySelector(".finish").classList.remove("hide");
 			} else {
 				tasks[i].querySelector(".subtask_area").classList.remove("hide");
+				tasks[i].querySelector(".finish").classList.add("hide");
 			}
 		}
 	},
