@@ -38,6 +38,12 @@ begin
            when 'task_list'
              get_task_list(cgi)
 
+           when 'task_parent'
+             get_task_parent(cgi)
+
+           when 'task_child'
+             get_task_child(cgi)
+
            when 'task_modify'
              task_modify(cgi)
 
