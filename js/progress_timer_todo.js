@@ -31,8 +31,6 @@ let ProgressTimer = {
 		let canvas = task.querySelector(".canvas");
 		let plan = [],
 			real = [];
-		console.log(task);
-		console.log(task.querySelector(".subtask_list").children);
 		if (!task.querySelector(".subtask_list").children.length) {
 			let _plan_time = Number(task.dataset.expected_time);
 			plan.push(_plan_time || 0);
@@ -40,7 +38,6 @@ let ProgressTimer = {
 			let _real_time = ProgressTimer.calc_diff_seconds(task) / 60;
 			real.push(_real_time.toFixed(2) || 0);
 		} else {
-			console.log("subtaskあり");
 			let subtasks = task.querySelector(".subtask_list").children;
 			let i = 0;
 			let length = subtasks.length;
@@ -49,7 +46,7 @@ let ProgressTimer = {
 				real.push(Number(subtasks[i].dataset.progress / 60 || 0));
 			}
 		}
-		console.log(plan, real);
+		// console.log(plan, real);
 		Chart.draw(canvas, plan, real);
 	},
 
@@ -65,9 +62,6 @@ let ProgressTimer = {
 
 		// これまでの経過時間 + タスク開始時間と現在時間の差分を返す
 		let diff_millis = progress + (now.getTime() - start_time);
-		console.log("calc_diff_time:", diff_millis / 1000);
-		console.log("progress:", progress);
-		console.log("start_time:", start_time);
 		return (diff_millis / 1000) || 0;
 	},
 
