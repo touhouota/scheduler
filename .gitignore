@@ -4,6 +4,7 @@
 .sass-cache
 css/
 error
+secret.json
 *~
 sass/
 *.old
