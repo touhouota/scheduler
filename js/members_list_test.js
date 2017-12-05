@@ -40,7 +40,7 @@ let Members = {
 			"?cmd=date",
 			"&user_id=", Base.get_cookie('user_id'),
 			"&date=", date_str
-		].join("")
+		].join("");
 
 		Base.create_request("GET", Base.request_path + query, function() {
 			if (this.status == 200 && this.readyState == 4) {
@@ -180,4 +180,4 @@ let Members = {
 		modal.style.left = ((width - modal_width) / 2) + "px";
 		modal.style.top = ((height - modal_height) / 2) + "px";
 	},
-}
+};
