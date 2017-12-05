@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>ToDoベース | SuperScheduler</title>
+	<link rel="stylesheet" href="./css/todo.css">
+	<link id="favicon" rel="shortcut icon" href="./image/add.png">
+</head>
+
+<body>
+	<div class="container">
+		<div id="todo_side">
+			<header>
+				<button type="button" class="button" id="append_task">
+          <img src="./image/add.png" alt="">
+          <span class="button_text">タスク追加</span>
+        </button>
+				<button type="button" class="button" id="member">
+          <img src="./image/tasks.png" alt="">
+          <span class="button_text">仲間の様子</span>
+        </button>
+				<button type="button" class="button" id="github">
+          <img src="./image/github.png" alt="要望ボタン">
+          <span class="button_text">ご要望はこちら</span>
+        </button>
+				<button type="button" class="button" id="logout">
+          <img src="./image/logout.png" alt="">
+          <span class="button_text">ログアウト</span>
+        </button>
+			</header>
+			<div class="todo_area">
+				<div id="doing_area">
+				</div>
+				<div id="todos">
+
+				</div>
+				<!-- todos -->
+				<div id="dones">
+
+				</div>
+				<!-- dones -->
+			</div>
+		</div>
+		<!-- todo_side -->
+
+		<div id="comment_side">
+			<div id="progress_area">
+				<h2 class="list_title">今日の進捗</h2>
+				<div id="progress_list_area">
+					<p class="progress_list">
+						<img src="./image/succ.png" alt=""> × <span class="num done"></span>個
+					</p>
+					<p class="progress_list">
+						<img src="./image/nosucc.png" alt=""> × <span class="num imperfect"></span>個
+					</p>
+					<p class="progress_list">
+						<img src="./image/stop.png" alt=""> × <span class="num todo"></span>個
+					</p>
+				</div>
+			</div>
+			<div id="timeline_area" class="tab">
+				<h2 class="list_title">みんなの動き</h2>
+				<div id="input_area">
+					<textarea id="comment" placeholder="コメントをどうぞ" rows="4" cols="45"></textarea>
+					<button id="comment_button">送信</button>
+				</div>
+				<!-- input_area -->
+				<div id="comment_area">
+					<!-- ここコメントの一覧 -->
+				</div>
+			</div>
+			<!-- timeline_area -->
+		</div>
+		<!-- right_side -->
+	</div>
+	<!-- container -->
+
+	<!-- template置き場 -->
+	<template id="todo_template">
+    <div class="task">
+      <div class="button_area">
+        <img src="./image/menu_fill.png" alt="" width="16" height="16">
+        <div class="buttons">
+          <button type="button" class="modify">情報修正</button>
+          <button type="button" class="subtask">サブタスク</button>
+          <button type="button" class="finish hide" value="2">タスク完了</button>
+          <!-- <button type="button" class="delete">削除</button> -->
+        </div>
+      </div>
+      <div class="task_main">
+        <div class="change_button">
+          <img class="task_status" src="./image/stop.png" alt="タスクの状態">
+          <span class="task_name"></span>
+          <span class="plan_time_area">
+            (予定：<span class="plan_time"></span>分)
+          </span>
+        </div>
+        <div class="task_info">
+          <div class="task_memo">
+            <p class="task_title">タスク情報</p>
+            <!-- ↓メモが入る -->
+            <p class="memo">
+            </p>
+          </div>
+          <div class="graph">
+            <!-- タスクの時間差を表すグラフ -->
+            <canvas class="canvas" width="150" height="100"></canvas>
+          </div>
+        </div>
+        <details class="subtask_area" open>
+          <summary>サブタスク一覧(<span class="todo_num">0</span>個)</summary>
+          <div class="subtask_list">
+          </div>
+        </details>
+        <div class="finish_task">
+          <button class="finish button" type="button" name="done" value="2">
+            <img src="./image/succ.png" alt="タスク完了">
+            <span class="button_text">完了</span>
+          </button>
+          <button class="finish button" type="button" name="imparfect" value="3">
+            <img src="./image/nosucc.png" alt="タスク未達成">
+            <span class="button_text">未達成</span>
+          </button>
+        </div>
+      </div>
+      <!-- task_main -->
+      <div class="task_sub">
+         <!-- 振り返りがある場合は、ここに入る -->
+        <p class="end_text"></p>
+      </div>
+    </div>
+  </template>
+
+	<template id="timeline_template">
+      <div class="comment_container">
+        <span class="user_name"></span>
+        <span class="tl_time"></span>
+        <p class="comment_text"></p>
+        <span><img src="./image/gj.png" alt=""></span>
+      </div>
+    </template>
+
+	<!-- modal -->
+	<template id="end_details">
+    <form class="modal end_memo">
+      <p class="modal_title">
+        タスク実行時の振り返り
+      </p>
+      <textarea name="end_details" rows="8" cols="80" placeholder="タスクを進めている時の状況や、困ったこと、対処方法などをメモしておこう" autofocus></textarea>
+    <input type="hidden" name="task_id" value="">
+    <input type="hidden" name="parent" value="">
+    <br>
+    <button class="modify_button" type="button">変更をサーバへ送る
+    </button>
+    <span class="close">
+      閉じる
+    </span>
+  </form>
+  </template>
+
+	<template id="subtask_template">
+    <li class="task sub">
+      <div class="button_area">
+        <img src="./image/menu_fill.png" alt="" width="16" height="16">
+        <div class="buttons">
+          <button type="button" class="modify">情報修正</button>
+          <!-- <br>
+          <button type="button" class="delete">削除</button> -->
+        </div>
+      </div>
+      <!-- button_area -->
+      <div class="task_main">
+        <img class="task_status" src="./image/stop.png" alt="タスクの状態" width="30">
+        <span class="task_name"></span>
+        <br>
+        (予定：<span class="plan"></span>分)
+      </div>
+      <!-- task_main -->
+      
+      <div class="task_sub">
+        <p class="plan">
+          予想時間：<span class="time">0</span>分
+        </p>
+        <p class="real">
+          作業時間： <span class="time">0</span>分
+        </p>
+        <div class="graph hide">
+          <!-- タスクの時間差を表すグラフ -->
+          <canvas class="canvas" width="150" height="100"></canvas>
+        </div>
+        <p class="task_memo">
+          <span class="task_title">タスクメモ</span>
+          <span class="memo"></span>
+        </p>
+        <details class="reflection_area　hide">
+          <summary>振り返り</summary>
+          <p class="reflection"></p>
+        </details>
+        <!-- task_sub -->
+      </div>
+    </li>
+  </template>
+
+	<template id="subtask_modal">
+    <form class="modal subtask_modal">
+      <p class="modal_title">
+        「<span class="parent_name"></span>」へサブタスクを追加します。
+      </p>
+      <label class="modal_label">
+        タスク名：
+        <input type="text" name="task_name" value="" autofocus>
+      </label>
+      <p class="modal_content">
+        <label for="modal_label">予想時間:</label>
+        <button tabindex="-1" class="up plan_button" type="button">↑</button>
+        <input id="modal_plan" class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">分
+        <button tabindex="-1" class="down plan_button" type="button">↓</button>
+      </p>
+      <input type="hidden" name="parent" value="">
+      <button class="modify_button" type="button">変更をサーバへ送る
+      </button>
+      <span class="close">
+        閉じる
+      </span>
+    </form>
+  </template>
+
+	<template id="task_modify">
+      <form class="modal task_modify">
+  			<p class="modal_title">
+  				タスクの内容、どのくらいかかるかを考えよう
+  			</p>
+  			<label class="modal_content">
+          タスク名: 
+          <input class="modal_input modal_task" type="text" name="task_name" value="" autofocus>
+        </label>
+  			<p class="modal_content">
+          <label for="modal_label">予想時間:</label>
+          <button tabindex="-1" class="up plan_button" type="button">↑</button>
+          <input id="modal_plan" class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">分
+          <button tabindex="-1" class="down plan_button" type="button">↓</button>
+        </p>
+        <p class="modal_content">
+          <label class="modal_label" for="modal_real">作業時間:</label>
+          <button tabindex="-1" class="up real_button" type="button">↑</button>
+          <input id="modal_real" class="modal_input modal_real" type="number" name="task_time" placeholder="例：2時間なら「120」と入力" value="" min="0" step="5">分
+          <button tabindex="-1" class="down real_button" type="button">↓</button>
+        </p>
+  			<label class="modal_content">
+          タスクの内容・終了条件など: 
+          <br>
+          <textarea class="modal_detail" name="task_detail" placeholder="そのタスクがどうなれば完了と言えるか&#13;&#10そのために、まず何をするかを考えてみよう"></textarea>
+        </label>
+  			<input type="hidden" name="task_id" value="">
+        <input type="hidden" name="parent" value="">
+  			<button class="modify_button" type="button">変更をサーバへ送る
+  			</button>
+  			<span class="close">
+  				閉じる
+  			</span>
+  		</form>
+    </template>
+	<script src="./js/base_object.js">
+	</script>
+	<script src="./js/chart_list_test.js">
+	</script>
+	<script src="./js/todo_simple.js">
+	</script>
+	<script src="./js/progress_timer_todo.js">
+	</script>
+	<script src="./js/todo_page_simple.js">
+	</script>
+</body>
+
+</html>
