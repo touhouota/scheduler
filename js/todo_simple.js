@@ -236,6 +236,11 @@ let Task = {
 				icon.src = icon.src.replace(src_regexp, "pause.png");
 				break;
 		}
+		if (info.status === 1) {
+			task.classList.add("doing");
+		} else {
+			task.classList.remove("doing");
+		}
 		// ファビコンをセットする
 		Task.change_favicon(info.status);
 	},
@@ -398,9 +403,9 @@ let Task = {
 					Task._setting_task_icon(target_task, task_info);
 					// Task._decoration(target_task, task_info.status);
 					// 終了したものは終了した場所に置く
-					let dones = document.getElementById("dones");
-					console.log("finish_task, target_task", target_task);
-					dones.insertBefore(target_task, dones.firstElementChild);
+					// let dones = document.getElementById("dones");
+					// console.log("finish_task, target_task", target_task);
+					// dones.insertBefore(target_task, dones.firstElementChild);
 
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
