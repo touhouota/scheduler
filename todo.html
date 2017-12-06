@@ -165,8 +165,8 @@
         <img src="./image/menu_fill.png" alt="" width="16" height="16">
         <div class="buttons">
           <button type="button" class="modify">情報修正</button>
-          <!-- <br>
-          <button type="button" class="delete">削除</button> -->
+          <button type="button" class="subtask">サブタスク</button>
+          <!-- <button type="button" class="finish hide" value="2">タスク完了</button> -->
         </div>
       </div>
       <!-- button_area -->
@@ -208,7 +208,7 @@
         「<span class="parent_name"></span>」へサブタスクを追加します。
       </p>
       <label class="modal_label">
-        タスク名：
+        タスク名:
         <input type="text" name="task_name" value="" autofocus>
       </label>
       <p class="modal_content">
@@ -217,7 +217,13 @@
         <input id="modal_plan" class="modal_input modal_plan" type="number" name="task_plan" placeholder="例：1時間なら「60」と入力" value="" min="0" step="5">分
         <button tabindex="-1" class="down plan_button" type="button">↓</button>
       </p>
+        <label class="modal_content">
+          タスクのメモ:
+          <br>
+          <textarea class="modal_detail" name="memo" placeholder="そのタスクがどうなれば完了と言えるか。そのために、まず何をするかを考えてみよう。"></textarea>
+        </label>
       <input type="hidden" name="parent" value="">
+      <br>
       <button class="modify_button" type="button">変更をサーバへ送る
       </button>
       <span class="close">
