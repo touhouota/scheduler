@@ -16,8 +16,17 @@ guard :shell do
   end
 end
 
+guard :shell do
+  watch(/^js|/) do |m|
+    puts "#{m[0]}が変更されたので、サーバへ上げ直すよ"
+    `rake sync`
+    # Macの画面に更新完了した旨をポップアップ
+    `osascript -e 'display notification "rsync done!!" with title "Guard Auto Message"'`
+  end
+end
+
 guard 'sass', input: 'scss', output: 'css'
 
 # todoページのものを監視
 guard :concat, type: 'js',
-               files: %w[base_object notification chart_list_test progress_timer_todo timeline_list_test todo todo_modal todo_page], input_dir: 'js', output: 'js/todo_concated'
+               files: %w[base_object notification chart_list_test progress_timer_todo timeline_list_test todo_simple todo_modal todo_page_simple], input_dir: 'js', output: 'js/todo_concated'
