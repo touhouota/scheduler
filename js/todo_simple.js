@@ -8,8 +8,6 @@ let Task = {
 			// からの場合は何もしない
 			return;
 		}
-		let subtasks = [];
-		const fin_status = [2, 3];
 		task_list.forEach(function(item) {
 			let task = Task.create_task(item);
 
@@ -30,7 +28,7 @@ let Task = {
 		// もし、状態が実行中ならそうする
 		if (task_info.status === 1) {
 			// タイマーを実行する
-			// ProgressTimer.set(task);
+			ProgressTimer.set(task);
 		}
 		// タスクの作成
 		return task;
@@ -175,9 +173,6 @@ let Task = {
 			task.dataset.progress = 0;
 		}
 
-		// 時間を
-		ProgressTimer.display(task);
-
 		// 予想時間
 		if (info.expected_time) {
 			task.dataset.expected_time = info.expected_time;
@@ -185,6 +180,9 @@ let Task = {
 		} else {
 			task.dataset.expected_time = 0;
 		}
+
+		// グラフを描画
+		ProgressTimer.display(task);
 
 		if (info.memo) {
 			task.querySelector(".memo").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
@@ -340,7 +338,7 @@ let Task = {
 					// 新しく来たタスクの情報をもとに、書き換える
 					Task._setting_task_info(target_task, task_info);
 					Task._setting_task_icon(target_task, task_info);
-					Task._decoration(target_task, task_info.status);
+					// Task._decoration(target_task, task_info.status);
 				}
 			}
 		}).send(query);
@@ -365,38 +363,6 @@ let Task = {
 			return true;
 		}
 		return false;
-	},
-
-	// タスクの表示を切り替える
-	_decoration: function(task, status) {
-		// console.log("decoration", status);
-		let canvas = task.querySelector(".canvas");
-		if (status === 1) {
-			// 実行中の印を付ける
-			task.classList.add("doing");
-			// canvasの大きさを大きくする
-			canvas.width = 350;
-			canvas.height = 200;
-
-			// タスクを移動させる
-			// document.getElementById("doing_area").appendChild(task);
-		} else {
-			// 実行中の印を消す
-			task.classList.remove("doing");
-			// canvasを初期の大きさに戻す
-			canvas.width = 150;
-			canvas.height = 100;
-			// タスクを移動させる
-			// let todo = document.getElementById("todos");
-			// todo.insertBefore(task, todo.firstElementChild);
-			// let parent = document.getElementById("task_id:" + task.dataset.parent);
-			// let subtask = parent.querySelector(".subtask_list");
-			// subtask.insertBefore(task, subtask.firstElementChild);
-		}
-		// グラフの再描画
-		// const time = task.dataset.progress / 60;
-		// Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
-		ProgressTimer.display(task);
 	},
 
 	// task終了のイベント
@@ -430,7 +396,7 @@ let Task = {
 					// 新しく来たタスクの情報をもとに、書き換える
 					Task._setting_task_info(target_task, task_info);
 					Task._setting_task_icon(target_task, task_info);
-					Task._decoration(target_task, task_info.status);
+					// Task._decoration(target_task, task_info.status);
 					// 終了したものは終了した場所に置く
 					let dones = document.getElementById("dones");
 					console.log("finish_task, target_task", target_task);
