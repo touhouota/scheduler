@@ -455,7 +455,7 @@ let Task = {
 		let i = 0,
 			length = tasks.length;
 		for (i = 0; i < length; i += 1) {
-			console.log("subtask", tasks[i]);
+			// console.log("subtask", tasks[i]);
 			// subtask_listの子供を配列として貰おう
 			let subs = tasks[i].querySelector(".subtask_list").children;
 			// その大きさをつけよう
