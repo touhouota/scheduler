@@ -221,11 +221,20 @@ let Modal = {
 				console.table(response.data);
 				if (response.ok) {
 					const data = response.data;
-					let task = Task.create_task_list(data);
-					let old_task = document.getElementById("task_id:" + data[0].task_id);
-					//console.log("callback_send_modify", task);
-					old_task.parentElement.replaceChild(task, old_task);
-					// new Chart("canvas", response.chart).render();
+					let new_task = Task.create_task(data[0]);
+					if (data[0].parent === null) {
+						// parentに値がなければ、それは親タスク
+						let old_task = document.getElementById("task_id:" + data[0].task_id);
+						old_task.parentElement.replaceChild(new_task, old_task);
+						Task.get_child(data[0].task_id);
+					} else {
+						console.log(new_task);
+						// parentに値があれば、それはサブタスク
+						new_task.classList.add("sub");
+						// 自分自身を見つけて、入れ替える
+						let old_task = document.getElementById("task_id:" + data[0].task_id);
+						old_task.parentElement.replaceChild(new_task, old_task);
+					}
 				}
 				Modal.remove();
 			}

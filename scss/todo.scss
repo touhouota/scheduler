@@ -294,6 +294,47 @@ body {
 	}
 }
 
+
+.sub {
+	background-color: inherit;
+	width: calc(100% - 20px);
+
+	.button_area {
+		top: 0;
+		right: 0;
+
+		.buttons {
+			.subtask {
+				display: none;
+			}
+		}
+	}
+
+	.task_main {
+		.change_button {
+			.task_status {
+				display: inline-block;
+				width: 30px;
+				vertical-align: middle;
+			}
+
+			.plan_time_area {
+				display: inherit;
+			}
+		}
+
+		.task_info {
+			.task_memo > p {
+				margin: 5px;
+			}
+		}
+	}
+
+	.subtask_area {
+		display: none;
+	}
+}
+
 .doing {
 	width: inherit;
 
