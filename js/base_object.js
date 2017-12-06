@@ -110,5 +110,5 @@ var Base = {
 	format_hms: function(date) {
 		// toTimeString: 14:39:07 GMT-0600 (PDT)という形式
 		return date.toTimeString().split(" ").shift();
-	},
+	}
 };

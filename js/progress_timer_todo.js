@@ -52,17 +52,14 @@ let ProgressTimer = {
 
 	calc_diff_seconds: function(task_element) {
 		// 指定されたタスクの経過時間を取得 => ミリ秒に変換
-		let progress = parseInt(task_element.dataset.progress || 0) * 1000;
-		if (isNaN(progress)) {
-			// NaNの場合は、0とする
-			progress = 0;
-		}
-		let start_time = Date.parse(task_element.dataset.start_time || Date());
+		let progress = parseInt(task_element.dataset.progress) * 1000;
+		let start_time = Date.parse(task_element.dataset.start_time);
 		let now = new Date();
 
 		// これまでの経過時間 + タスク開始時間と現在時間の差分を返す
 		let diff_millis = progress + (now.getTime() - start_time);
 		return (diff_millis / 1000) || 0;
+
 	},
 
 	// 秒数をhh:mm:ddに変換
