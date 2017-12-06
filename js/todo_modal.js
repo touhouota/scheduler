@@ -253,6 +253,7 @@ let Modal = {
 			"&task_name=" + form.task_name.value,
 			"&user_id=" + Base.get_cookie("user_id"),
 			"&plan=" + form.task_plan.value,
+			"&task_detail=" + form.memo.value,
 			"&parent=" + form.parent.value,
 			"&date=" + Date(),
 		].join("");
