@@ -133,7 +133,12 @@ body {
 			}
 
 			.buttons {
-				display: inherit;
+				display: flex;
+				flex-flow: column;
+
+				button {
+					margin-bottom: 10px;
+				}
 			}
 		}
 	}
@@ -341,29 +346,7 @@ body {
 }
 
 .doing {
-	width: inherit;
-	background-color: rgba(130, 109, 241, 0.10);
-
 	.task_main {
-		.graph {
-			.canvas {
-				display: block;
-			}
-		}
-
-		.task_info {
-			.task_memo {
-				width: calc(100% - 370px);
-
-				.memo {
-					overflow: inherit;
-					white-space: inherit;
-					text-decoration: inherit;
-					height: inherit;
-				}
-			}
-		}
-
 		.finish_task {
 			display: inline-block;
 
