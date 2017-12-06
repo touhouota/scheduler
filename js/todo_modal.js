@@ -225,18 +225,17 @@ let Modal = {
 				console.table(response.data);
 				if (response.ok) {
 					const data = response.data;
-					// let new_task;
-					// if (data.parent !== data.child) {
-					// 	// ここに入る時は、親タスクのとき
-					// 	// 親タスクのときは、親も子供も指定されていない
-					// 	new_task = Task.create_task_list(data);
-					// } else {
-					// 	// parentとchildが異なる時は、子タスクのとき
-					// 	new_task = Task.create_subtask(data[0]);
-					// }
-					let new_task = Task.create_task_list(data);
-					let old_task = document.getElementById("task_id:" + data[0].task_id);
-					old_task.parentElement.replaceChild(new_task, old_task);
+					let new_task = Task.create_task(data[0]);
+					if (data[0].parent !== null) {
+						console.log(new_task);
+						// parentに値があれば、それはサブタスク
+						new_task.classList.add("sub");
+						// 自分自身を見つけて、入れ替える
+						let old_task = document.getElementById("task_id:" + data[0].task_id);
+						old_task.parentElement.replaceChild(new_task, old_task);
+					} else {
+
+					}
 				}
 				Modal.remove();
 			}
