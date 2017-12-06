@@ -4,9 +4,11 @@
 .sass-cache
 css/
 error
+secret.json
 *~
 sass/
 *.old
+old/
 temp_db/
 node_modules/
 gulpfile.js
