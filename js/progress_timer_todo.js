@@ -54,7 +54,7 @@ let ProgressTimer = {
 
 	calc_diff_seconds: function(task_element) {
 		// 指定されたタスクの経過時間を取得 => ミリ秒に変換
-		let progress = parseInt(task_element.dataset.progress || 0) * 1000;
+		let progress = parseInt(task_element.dataset.progress || 0, 10) * 1000;
 		if (isNaN(progress)) {
 			// NaNの場合は、0とする
 			progress = 0;
