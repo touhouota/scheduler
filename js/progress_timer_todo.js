@@ -42,11 +42,13 @@ let ProgressTimer = {
 			let i = 0;
 			let length = subtasks.length;
 			for (i = 0; i < length; i += 1) {
-				plan.push(Number(subtasks[i].dataset.expected_time || 0));
-				real.push(Number(subtasks[i].dataset.progress / 60 || 0));
+				let plan_time = Number(subtasks[i].dataset.expected_time);
+				let real_time = Number(subtasks[i].dataset.progress) / 60;
+				plan.push(plan_time || 0);
+				real.push(real_time.toFixed(2) || 0);
 			}
 		}
-		// console.log(plan, real);
+		console.log(plan, real);
 		Chart.draw(canvas, plan, real);
 	},
 
