@@ -2,22 +2,12 @@ let task_page = '/b1013179/scheduler/todo.html'
 
 window.onload = function() {
 	// ログイン済みの時は、スキップ
-	if (can_skip_login()) {
+	if (Base.get_cookie("user_id")) {
 		console.log("skipできるよ！");
 		// window.location = '/b1013179/scheduler/list.html';
 		window.location = task_page;
 	}
 	console.log("skipできないよ！！");
-}
-
-// ログインをスキップしたい
-function can_skip_login() {
-	// ユーザIDがあれば、falseを返す
-	// つまり、check_userid === falseの時はskip出来る
-	if (check_userid()) {
-		return false;
-	}
-	return true;
 }
 
 // formの情報を取得し、URLとする
@@ -47,7 +37,7 @@ function callback_create_user() {
 // ユーザを作成するようにサーバへ要求する
 function create_user() {
 	var url = "?cmd=create&user_id=" + document.forms[0].user_id.value;
-	create_request("GET", request_path + url, callback_create_user).send(null);
+	Base.create_request("GET", Base.request_path + url, callback_create_user).send(null);
 }
 
 // login関数のコールバック関数
@@ -79,9 +69,9 @@ function callback_login() {
 // ログインする
 function login() {
 	var url = get_form();
-	console.log(request_path + url);
+	console.log(Base.request_path + url);
 	if (url.length) {
-		create_request("GET", request_path + url, callback_login).send(null);
+		Base.create_request("GET", Base.request_path + url, callback_login).send(null);
 		console.log("send");
 	} else {
 		console.log("からだよ");
