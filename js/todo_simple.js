@@ -1,52 +1,18 @@
 let Task = {
+	parent: [],
+	child: [],
+	tree: {},
 	create_task_list: function(task_list) {
 		let fragment = document.createDocumentFragment();
 		if (!task_list) {
 			// からの場合は何もしない
 			return;
 		}
-		let subtasks = [];
-		const fin_status = [2, 3];
 		task_list.forEach(function(item) {
-			if (item.parent && !fin_status.includes(item.status)) {
-				console.log(item);
-				let subtask = Task.create_task(item);
+			let task = Task.create_task(item);
 
-				// 親にIDが入っていれば、それはサブタスク
-				if (item.parent) {
-					// サブの印をつける
-					subtask.classList.add("sub");
-					// 親の情報を載せる
-					subtask.dataset.parent = item.parent;
-				}
-
-				subtasks.push(subtask);
-			} else {
-				// タスクを作る
-				let task = Task.create_task(item);
-
-				fragment.appendChild(task);
-			}
+			fragment.appendChild(task);
 		});
-
-		console.log(fragment);
-		// サブタスクを親に追加
-		subtasks.reverse().forEach(function(item) {
-			console.log(item);
-			let parent = fragment.getElementById("task_id:" + item.dataset.parent);
-			parent.querySelector(".subtask_list").appendChild(item);
-		});
-
-		let task = fragment.querySelectorAll(".task");
-		let i = 0,
-			length = task.length;
-		for (i = 0; i < length; i += 1) {
-			if (task[i].classList.contains("sub")) {
-				continue;
-			}
-			ProgressTimer.display(task[i]);
-		}
-
 		return fragment;
 	},
 
@@ -66,6 +32,81 @@ let Task = {
 		}
 		// タスクの作成
 		return task;
+	},
+
+	get_parents: function() {
+		const query = "?cmd=task_parent&user_id=" + Base.get_cookie("user_id");
+		Base.create_request("GET", Base.request_path + query, function() {
+			if (this.status == 200 && this.readyState == 4) {
+				let response = JSON.parse(this.responseText);
+				// console.table(response.data);
+				if (response.ok) {
+					let data = response.data;
+					let fragment = document.createDocumentFragment();
+					for (let i = 0; i < data.length; i++) {
+						let task_info = data[i];
+						let task = Task.create_task(task_info);
+						Task.tree[task_info.task_id] = [];
+						Task.parent.push(task_info.task_id);
+
+						fragment.appendChild(task);
+
+						// タスクを監視し、変化があればサブタスク数を数える
+						// new MutationObserver(Task.subtask_count).observe(task, {
+						// 	childList: true,
+						// 	subtree: true,
+						// });
+					}
+					document.getElementById("todos").appendChild(fragment);
+					// 親の処理が終われば、子供を取得
+					Task.get_child();
+				}
+			}
+		}).send(null);
+	},
+
+	get_child: function() {
+		let parents = Object.keys(Task.tree);
+		// console.log(parents);
+		parents.forEach(function(parent_id) {
+			let query = [
+				"?cmd=task_child",
+				"&parent=", parent_id,
+				"&user_id=" + Base.get_cookie("user_id"),
+			].join("");
+			Base.create_request("GET", Base.request_path + query, function() {
+				if (this.status == 200 && this.readyState == 4) {
+					let response = JSON.parse(this.responseText);
+					if (response.ok) {
+						let data = response.data;
+						// console.table(data);
+
+						// 子供がいない場合は、何もしない
+						if (response.data.length === 0) {
+							return;
+						}
+						// 子供をひとまとめにするfragment作成
+						let fragment = document.createDocumentFragment();
+
+						data.forEach(function(item) {
+							Task.tree[item.parent].push(item.task_id)
+							Task.child.push(item.task_id);
+							let subtask = Task.create_task(item);
+							subtask.classList.add("sub");
+							fragment.appendChild(subtask);
+						});
+
+						let sub = document.getElementById("task_id:" + data[0].parent).querySelector(".subtask_list");
+						sub.appendChild(fragment);
+
+						let tasks = document.querySelectorAll(".task");
+						for (i = 0; i < tasks.length; i++) {
+							ProgressTimer.display(tasks[i]);
+						}
+					}
+				}
+			}).send(null);
+		});
 	},
 
 	// 引数の状態により、filterを返す
@@ -138,11 +179,6 @@ let Task = {
 			task.dataset.progress = 0;
 		}
 
-		// 時間を
-		// let canvas = task.querySelector("canvas");
-		// let time = (info.progress / 60).toFixed(2);
-		// Chart.draw(canvas, [info.expected_time], [time]);
-		ProgressTimer.display(task);
 		// 予想時間
 		if (info.expected_time) {
 			task.dataset.expected_time = info.expected_time;
@@ -150,6 +186,9 @@ let Task = {
 		} else {
 			task.dataset.expected_time = 0;
 		}
+
+		// グラフを描画
+		ProgressTimer.display(task);
 
 		if (info.memo) {
 			task.querySelector(".memo").innerHTML = info.memo.replace(/\r?\n/g, "<br>");
@@ -202,6 +241,11 @@ let Task = {
 			case 4:
 				icon.src = icon.src.replace(src_regexp, "pause.png");
 				break;
+		}
+		if (info.status === 1) {
+			task.classList.add("doing");
+		} else {
+			task.classList.remove("doing");
 		}
 		// ファビコンをセットする
 		Task.change_favicon(info.status);
@@ -305,7 +349,7 @@ let Task = {
 					// 新しく来たタスクの情報をもとに、書き換える
 					Task._setting_task_info(target_task, task_info);
 					Task._setting_task_icon(target_task, task_info);
-					Task._decoration(target_task, task_info.status);
+					// Task._decoration(target_task, task_info.status);
 				}
 			}
 		}).send(query);
@@ -330,38 +374,6 @@ let Task = {
 			return true;
 		}
 		return false;
-	},
-
-	// タスクの表示を切り替える
-	_decoration: function(task, status) {
-		// console.log("decoration", status);
-		let canvas = task.querySelector(".canvas");
-		if (status === 1) {
-			// 実行中の印を付ける
-			task.classList.add("doing");
-			// canvasの大きさを大きくする
-			canvas.width = 350;
-			canvas.height = 200;
-
-			// タスクを移動させる
-			document.getElementById("doing_area").appendChild(task);
-		} else {
-			// 実行中の印を消す
-			task.classList.remove("doing");
-			// canvasを初期の大きさに戻す
-			canvas.width = 150;
-			canvas.height = 100;
-			// タスクを移動させる
-			// let todo = document.getElementById("todos");
-			// todo.insertBefore(task, todo.firstElementChild);
-			let parent = document.getElementById("task_id:" + task.dataset.parent);
-			let subtask = parent.querySelector(".subtask_list");
-			subtask.insertBefore(task, subtask.firstElementChild);
-		}
-		// グラフの再描画
-		// const time = task.dataset.progress / 60;
-		// Chart.draw(canvas, [task.dataset.expected_time], [time.toFixed(2)]);
-		ProgressTimer.display(task);
 	},
 
 	// task終了のイベント
@@ -395,11 +407,11 @@ let Task = {
 					// 新しく来たタスクの情報をもとに、書き換える
 					Task._setting_task_info(target_task, task_info);
 					Task._setting_task_icon(target_task, task_info);
-					Task._decoration(target_task, task_info.status);
+					// Task._decoration(target_task, task_info.status);
 					// 終了したものは終了した場所に置く
-					let dones = document.getElementById("dones");
-					console.log("finish_task, target_task", target_task);
-					dones.insertBefore(target_task, dones.firstElementChild);
+					// let dones = document.getElementById("dones");
+					// console.log("finish_task, target_task", target_task);
+					// dones.insertBefore(target_task, dones.firstElementChild);
 
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
@@ -417,6 +429,8 @@ let Task = {
 			imperfect: 0,
 			todo: 0,
 		};
+
+		tasks = [].slice.call(tasks);
 
 		tasks.forEach(function(item) {
 			// console.log(item, item.dataset.status, count.todo);
@@ -454,7 +468,7 @@ let Task = {
 		let i = 0,
 			length = tasks.length;
 		for (i = 0; i < length; i += 1) {
-			console.log("subtask", tasks[i]);
+			// console.log("subtask", tasks[i]);
 			// subtask_listの子供を配列として貰おう
 			let subs = tasks[i].querySelector(".subtask_list").children;
 			// その大きさをつけよう

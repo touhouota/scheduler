@@ -10,6 +10,9 @@ let Modal = {
 
 		document.body.appendChild(modal);
 
+		// モーダル内のタスク名入力欄にフォーカスを入れる。
+		modal.querySelector("[name=task_name]").focus();
+
 		// 中央に表示
 		Modal.centering(modal);
 	},
@@ -27,8 +30,26 @@ let Modal = {
 
 		// documentに追加
 		document.body.appendChild(modal);
+		// テキストエリアにfocusを当てる(Firefoxのための処理)
+		modal.querySelector("[name=end_details]").focus();
 
 		// modalを中央揃え
+		Modal.centering(modal);
+	},
+
+	create_subtask: function(event) {
+		Modal.init();
+		// サブタスクのモーダル初期化
+		let modal = Modal.subtask_init();
+		modal.id = "modify_modal";
+		// 親要素を取得
+		let parent_task = Base.parents(event.target, "task");
+		Modal.set_parent_info(modal, parent_task);
+
+		document.body.appendChild(modal);
+		// モーダル内のタスク名入力欄にフォーカスを入れる。
+		modal.querySelector("[name=task_name]").focus();
+
 		Modal.centering(modal);
 	},
 
@@ -83,11 +104,39 @@ let Modal = {
 		return modal.firstElementChild;
 	},
 
+	subtask_init: function() {
+		const _modal = document.getElementById("subtask_modal");
+		let modal = document.importNode(_modal.content, true);
+
+		// フォームの内容をサーバへ送るイベント
+		modal.querySelector(".modify_button").addEventListener("click", Modal.send_subtask);
+		// モーダルの閉じるを押した時のイベント
+		modal.querySelector(".close").addEventListener("click", Modal.remove);
+
+		// ↑イベント
+		modal.querySelectorAll(".up").forEach(function(item) {
+			item.addEventListener("click", {
+				button: "UP",
+				handleEvent: Modal.change_plan,
+			});
+		});
+		// ↓イベント
+		modal.querySelectorAll(".down").forEach(function(item) {
+			item.addEventListener("click", {
+				button: "DOWN",
+				handleEvent: Modal.change_plan,
+			});
+		});
+
+		return modal.firstElementChild;
+	},
+
 	get_task_info: function(modal, task) {
 		// タスク名の取得
 		let task_name = task.querySelector(".task_name").textContent;
 		// 予想時間の取得
-		let plan = task.dataset.plan;
+		let plan = task.dataset.expected_time;
+		console.log(plan);
 		if (plan !== "") {
 			plan = parseFloat(plan, 10);
 		}
@@ -97,7 +146,7 @@ let Modal = {
 			time = parseFloat(time, 10);
 		}
 		// タスクの内容の取得
-		let explain = task.querySelector(".task_detail_text").innerHTML;
+		let explain = task.querySelector(".memo").innerHTML.trim();
 		console.log(explain);
 		// から文字を省いて、大きさが0 => 何も入っていない
 		if (explain.replace(/\s+/g, "").length !== 0) {
@@ -110,12 +159,21 @@ let Modal = {
 		modal.task_plan.value = plan;
 		modal.task_time.value = Math.round(time / 60);
 		modal.task_detail.value = explain;
+		modal.parent.value = task.dataset.parent || "";
 		modal.task_id.value = task.id.split(":").pop();
 	},
 
 	set_task_memo: function(modal, task) {
 		modal.task_id.value = task.id.split(":").pop();
 		modal.end_details.value = task.querySelector(".end_text").innerHTML.replace(/<br>/g, "\n");
+	},
+
+	// サブタスク用の初期情報を追加
+	set_parent_info: function(modal, task) {
+		// 親タスク名を表示
+		modal.querySelector(".parent_name").textContent = task.querySelector(".task_name").textContent;
+		modal.querySelector("[name=parent]").value = task.id.split(":").pop();
+
 	},
 
 	centering: function(modal) {
@@ -149,6 +207,7 @@ let Modal = {
 				"cmd=task_modify",
 				"&user_id=" + Base.get_cookie('user_id'),
 				"&task_id=" + form.task_id.value,
+				"&parent=", form.parent.value,
 				"&task_name=", form.task_name.value,
 				"&plan=", form.task_plan.value,
 				"&time=", Number(form.task_time.value) * 60,
@@ -159,6 +218,7 @@ let Modal = {
 				"cmd=task_modify",
 				"&user_id=" + Base.get_cookie("user_id"),
 				"&task_id=" + form.task_id.value,
+				"&parent=", form.parent.value,
 				"&end_detail=" + form.end_details.value,
 			].join("");
 		} else {
@@ -171,13 +231,54 @@ let Modal = {
 				console.table(response.data);
 				if (response.ok) {
 					const data = response.data;
-					let task = Task.create_task_list(data);
-					let old_task = document.getElementById("task_id:" + data[0].task_id);
-					//console.log("callback_send_modify", task);
-					old_task.parentElement.replaceChild(task, old_task);
-					// new Chart("canvas", response.chart).render();
+					let new_task = Task.create_task(data[0]);
+					if (data[0].parent === null) {
+						// parentに値がなければ、それは親タスク
+						let old_task = document.getElementById("task_id:" + data[0].task_id);
+						old_task.parentElement.replaceChild(new_task, old_task);
+						Task.get_child(data[0].task_id);
+					} else {
+						console.log(new_task);
+						// parentに値があれば、それはサブタスク
+						new_task.classList.add("sub");
+						// 自分自身を見つけて、入れ替える
+						let old_task = document.getElementById("task_id:" + data[0].task_id);
+						old_task.parentElement.replaceChild(new_task, old_task);
+					}
 				}
 				Modal.remove();
+			}
+		}).send(post);
+	},
+
+	send_subtask: function(event) {
+		console.log("send_subtask");
+		let form = Base.parents(event.target, "modal");
+		let post = [
+			"cmd=append_subtask",
+			"&task_name=" + form.task_name.value,
+			"&user_id=" + Base.get_cookie("user_id"),
+			"&plan=" + form.task_plan.value,
+			"&task_detail=" + form.memo.value,
+			"&parent=" + form.parent.value,
+			"&date=" + Date(),
+		].join("");
+
+		Base.create_request("POST", Base.request_path, function() {
+			if (this.status == 200 && this.readyState == 4) {
+				let response = JSON.parse(this.responseText);
+				console.table(response.data);
+				if (response.ok) {
+					const data = response.data[0];
+					let subtask = Task.create_task(data);
+					subtask.classList.add("sub");
+					let task = document.getElementById("task_id:" + data.parent);
+					task.querySelector(".subtask_list").appendChild(subtask);
+				}
+				// modalを初期化
+				form.reset();
+				// 入力欄にfocus
+				form.task_name.focus();
 			}
 		}).send(post);
 	},

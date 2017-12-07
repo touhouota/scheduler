@@ -40,6 +40,7 @@ body {
 			-webkit-box-pack: start;
 			-ms-flex-pack: start;
 			justify-content: flex-start;
+			align-items: flex-start;
 		}
 	}
 
@@ -48,8 +49,7 @@ body {
 
 		#progress_area {
 			#progress_list_area {
-				margin: 0 auto;
-				width: 70%;
+				text-align: center;
 
 				.progress_list {
 					vertical-align: middle;
@@ -109,7 +109,7 @@ body {
 	box-sizing: border-box;
 	// border: 1px solid #111;
 	background-color: rgba(130, 109, 241, 0.10);
-	width: 350px;
+	width: 400px;
 	margin: 10px 10px 0;
 	padding: 5px;
 	position: relative;
@@ -134,7 +134,12 @@ body {
 			}
 
 			.buttons {
-				display: inherit;
+				display: flex;
+				flex-flow: column;
+
+				button {
+					margin-bottom: 10px;
+				}
 			}
 		}
 	}
@@ -145,18 +150,19 @@ body {
 		.change_button {
 			width: 95%;
 			margin: 5px auto;
-			grid-area: task_title;
-
-			img {
-				display: inline-block;
-				width: 30px;
-				vertical-align: middle;
+			// grid-area: task_title;
+			.task_status {
+				display: none;
 			}
 
 			.task_name {
 				display: inline-block;
 				vertical-align: middle;
 				width: calc(95% - 35px);
+			}
+
+			.plan_time_area {
+				display: none;
 			}
 		}
 
@@ -165,17 +171,29 @@ body {
 			display: -ms-flexbox;
 			display: flex;
 
-			.memo {
+			.graph {
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				// grid-area: task_graph;
+				width: 150px;
+				// margin-left: 10px;
+				canvas {
+					// border: 1px solid #111;
+					background-color: #fff;
+				}
+			}
+
+			.task_memo {
 				// canvasの大きさを引いた分がtextの大きさ
 				width: calc(100% - 165px);
-				grid-area: task_detail;
+				// grid-area: task_detail;
 				margin: 5px 10px 5px 5px;
 
-				.task_detail {
+				.task_title {
 					font-weight: bolder;
 				}
 
-				.task_detail_text {
+				.memo {
 					overflow: hidden;
 					white-space: nowrap;
 					text-overflow: ellipsis;
@@ -183,16 +201,9 @@ body {
 				}
 			}
 
-			.graph {
-				-webkit-box-sizing: border-box;
-				box-sizing: border-box;
-				grid-area: task_graph;
-				width: 150px;
-
-				canvas {
-					// border: 1px solid #111;
-					background-color: #fff;
-				}
+			.subtask_area {
+				padding-left: 20px;
+				list-style: none;
 			}
 		}
 
@@ -295,29 +306,72 @@ body {
 	}
 }
 
-.doing {
-	width: inherit;
+.sub {
+	background-color: inherit;
+	width: calc(100% - 20px);
+
+	.button_area {
+		top: 0;
+		right: 0;
+
+		.buttons {
+			.subtask {
+				display: none;
+			}
+		}
+	}
 
 	.task_main {
-		.task_info {
-			.memo {
-				width: calc(100% - 370px);
+		.change_button {
+			.task_status {
+				display: inline-block;
+				width: 30px;
+				vertical-align: middle;
+			}
 
-				.task_detail_text {
-					overflow: inherit;
-					white-space: inherit;
-					text-decoration: inherit;
-					height: inherit;
-				}
+			.plan_time_area {
+				display: inherit;
 			}
 		}
 
+		.task_info {
+			.task_memo > p {
+				margin: 5px;
+			}
+		}
+	}
+
+	.subtask_area {
+		display: none;
+	}
+}
+
+.doing {
+	.task_main {
 		.finish_task {
 			display: inline-block;
 
 			.finish {
 				img {
 					width: 40px;
+				}
+			}
+		}
+	}
+}
+
+.hide {
+	display: none;
+}
+
+#dones {
+	.task {
+		.task_main {
+			.change_button {
+				.task_status {
+					display: inline-block;
+					width: 30px;
+					vertical-align: middle;
 				}
 			}
 		}
