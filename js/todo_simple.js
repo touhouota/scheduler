@@ -50,6 +50,12 @@ let Task = {
 						Task.parent.push(task_info.task_id);
 
 						fragment.appendChild(task);
+
+						// タスクを監視し、変化があればサブタスク数を数える
+						new MutationObserver(Task.subtask_count).observe(task, {
+							childList: true,
+							subtree: true,
+						});
 					}
 					document.getElementById("todos").appendChild(fragment);
 					// 親の処理が終われば、子供を取得
@@ -61,7 +67,7 @@ let Task = {
 
 	get_child: function() {
 		let parents = Object.keys(Task.tree);
-		console.log(parents);
+		// console.log(parents);
 		parents.forEach(function(parent_id) {
 			let query = [
 				"?cmd=task_child",
@@ -73,7 +79,7 @@ let Task = {
 					let response = JSON.parse(this.responseText);
 					if (response.ok) {
 						let data = response.data;
-						console.table(data);
+						// console.table(data);
 
 						// 子供がいない場合は、何もしない
 						if (response.data.length === 0) {
@@ -423,6 +429,8 @@ let Task = {
 			imperfect: 0,
 			todo: 0,
 		};
+
+		tasks = [].slice.call(tasks);
 
 		tasks.forEach(function(item) {
 			// console.log(item, item.dataset.status, count.todo);
