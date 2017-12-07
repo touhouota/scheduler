@@ -18,6 +18,8 @@ let Chart = {
 		if (!Chart._init(canvas, real, plan)) {
 			// ここに入る時は、データに不備がある場合
 			alert("データの数が合いません。");
+			console.log("plan:", plan);
+			console.log("real:", real);
 			return;
 		};
 
