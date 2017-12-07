@@ -10,6 +10,9 @@ let Modal = {
 
 		document.body.appendChild(modal);
 
+		// モーダル内のタスク名入力欄にフォーカスを入れる。
+		modal.querySelector("[name=task_name]").focus();
+
 		// 中央に表示
 		Modal.centering(modal);
 	},
@@ -44,6 +47,9 @@ let Modal = {
 		Modal.set_parent_info(modal, parent_task);
 
 		document.body.appendChild(modal);
+		// モーダル内のタスク名入力欄にフォーカスを入れる。
+		modal.querySelector("[name=task_name]").focus();
+
 		Modal.centering(modal);
 	},
 
@@ -269,8 +275,10 @@ let Modal = {
 					let task = document.getElementById("task_id:" + data.parent);
 					task.querySelector(".subtask_list").appendChild(subtask);
 				}
-				// Modal.remove();
+				// modalを初期化
 				form.reset();
+				// 入力欄にfocus
+				form.task_name.focus();
 			}
 		}).send(post);
 	},
