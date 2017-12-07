@@ -30,8 +30,10 @@ let Timeline = {
 
 			// コメントの内容を記載
 			comment.querySelector(".comment_text").innerHTML = comment_item.items;
-			console.log("create_item: ", comment_item.items);
-			Notify.create_instance(comment_item.items);
+			// console.log("create_item: ", comment_item.items);
+			if (Notification.permission === 'granted') {
+				Notify.create_instance(comment_item.items);
+			}
 			fragment.insertBefore(comment, fragment.firstElementChild);
 		};
 
@@ -103,5 +105,5 @@ let Timeline = {
 		} else {
 			button.disabled = false;
 		}
-	}
+	},
 };
