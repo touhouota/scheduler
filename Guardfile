@@ -8,16 +8,7 @@ end
 
 guard :shell do
   # js
-  watch(%r{^js\/[\S]+_min.js|css/[\S]+.css|ruby\/[\S]+.rb|[\S]*.html}) do |m|
-    puts "#{m[0]}が変更されたので、サーバへ上げ直すよ"
-    `rake sync`
-    # Macの画面に更新完了した旨をポップアップ
-    `osascript -e 'display notification "rsync done!!" with title "Guard Auto Message"'`
-  end
-end
-
-guard :shell do
-  watch(/^js|/) do |m|
+  watch(%r{^js\/[\S]+_min.js|^css/[\S]+.css|ruby\/[\S]+.rb|[\S]*.html}) do |m|
     puts "#{m[0]}が変更されたので、サーバへ上げ直すよ"
     `rake sync`
     # Macの画面に更新完了した旨をポップアップ
