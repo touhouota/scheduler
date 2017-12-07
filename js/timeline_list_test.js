@@ -8,8 +8,12 @@ let Timeline = {
 		let _template = document.getElementById("timeline_template");
 		let template = document.importNode(_template.content, true);
 		// コメントを一つづつ作成する
-		item_list.forEach(function(comment_item) {
+		// item_list.forEach(function(comment_item) {
+		let i = 0;
+		let length = item_list.length;
+		for (i = 0; i < length; i++) {
 			let comment = template.cloneNode(true);
+			let comment_item = item_list[i];
 			// tl_id:xxxxとなる
 			comment.querySelector(".comment_container").id = "tl_id:" + comment_item.tl_id;
 
@@ -29,7 +33,7 @@ let Timeline = {
 			console.log("create_item: ", comment_item.items);
 			Notify.create_instance(comment_item.items);
 			fragment.insertBefore(comment, fragment.firstElementChild);
-		});
+		};
 
 		return fragment;
 	},
