@@ -52,10 +52,10 @@ let Task = {
 						fragment.appendChild(task);
 
 						// タスクを監視し、変化があればサブタスク数を数える
-						new MutationObserver(Task.subtask_count).observe(task, {
-							childList: true,
-							subtree: true,
-						});
+						// new MutationObserver(Task.subtask_count).observe(task, {
+						// 	childList: true,
+						// 	subtree: true,
+						// });
 					}
 					document.getElementById("todos").appendChild(fragment);
 					// 親の処理が終われば、子供を取得
