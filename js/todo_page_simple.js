@@ -1,4 +1,9 @@
 window.onload = function() {
+	if (!Base.get_cookie('user_id')) {
+		// ここに入った場合はidがない
+		window.location = "/b1013179/scheduler/index.html";
+	}
+	// タスク取得
 	Task.get_parents();
 
 	// コメントを取得するタイマーのセット
@@ -15,11 +20,6 @@ window.onload = function() {
 
 	// タスクを監視し、変化があれば数を数え直す
 	new MutationObserver(Task.progress_count).observe(document.querySelector(".todo_area"), {
-		childList: true,
-		subtree: true,
-	});
-	// タスクを監視し、変化があればサブタスク数を数える
-	new MutationObserver(Task.subtask_count).observe(document.querySelector(".todo_area"), {
 		childList: true,
 		subtree: true,
 	});
