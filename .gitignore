@@ -23,3 +23,4 @@ js/*_min.js
 js/*_concated.js
 ruby/task_inserter.rb
 ruby/task_list.yaml
+ruby/task_relation.yaml
