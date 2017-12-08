@@ -3,13 +3,13 @@ require 'json'
 require 'base64'
 
 class SendMail
-  def initialize(to: 'to@mail.com', from: 'from@mail.com', option: {})
+  def initialize(to: 'to@mail.com', from: 'from@mail.com', cc: [], bcc: [], option: {})
     # 引数を取り込む
     @smtp_option = {
-      server:        'smtp.gmail.com',  # <= SMTP サーバのアドレス
-      port:            587,              # <= Port 番号（単純な SMTP なら 25）
-      authentication: :plain,          # <= 認証方式（コメントアウトしても問題ない）
-      ssl:             true,          # <= SSL 認証（単純な SMTP なら false もしくはコメントアウト）
+      server:        'smtp.gmail.com', # <= SMTP サーバのアドレス
+      port:            587, # <= Port 番号（単純な SMTP なら 25）
+      authentication: :plain, # <= 認証方式（コメントアウトしても問題ない）
+      ssl:             true, # <= SSL 認証（単純な SMTP なら false もしくはコメントアウト）
     }
 
     @smtp_option.merge!(option)
@@ -17,22 +17,24 @@ class SendMail
     @smtp_option.merge!(load_secret)
     @from = from
     @to = to
-    @date = Time.now.strftime("%a, %d %b %Y %X")
+    @cc = cc
+    @bcc = bcc
+    @date = Time.now.strftime('%a, %d %b %Y %X')
   end
 
   # パスワードとかを記しておくもの
   def load_secret
-    File.open("./secret.json") do |file|
+    File.open('./secret.json') do |file|
       JSON.load(file)
     end
   end
-  
+
   def create_subject(subject)
-    str = ""
+    str = ''
     Base64.encode64(subject).split("\n").each do |string|
       str += "=?UTF-8?B?#{string}?= "
     end
-    return str.rstrip
+    str.rstrip
   end
 
   def create_body(subject: 'sample subject', body: 'mail main body')
@@ -40,6 +42,7 @@ class SendMail
 Date: #{@date}
 From: #{@from}
 To: #{@to}
+Cc: #{@cc.join(', ')}
 Subject: #{create_subject(subject)}
 Content-Type: text/plain; charset=UTF-8
 Mine-Version: 1.0
@@ -48,19 +51,19 @@ Mine-Version: 1.0
 EOS
   end
 
-  def send(subject: "test mail", body: "this mail is test!")
+  def send(subject: 'test mail', body: 'this mail is test!')
     count = 0
     begin
       create_body(subject: subject, body: body)
       mail = Net::SMTP.new(@smtp_option[:server], @smtp_option[:port])
       mail.enable_ssl if @smtp_option[:ssl]
-      mail.start(@smtp_option[:server], @smtp_option["mail"], @smtp_option["pass"])
-      mail.send_mail(@message, @from, @to)
+      mail.start(@smtp_option[:server], @smtp_option['mail'], @smtp_option['pass'])
+      mail.send_mail(@message, @from, @to, *@cc, *@bcc)
       mail.finish
     rescue => e
         count += 1
-        if count < 10 then
-          puts "retry"
+        if count < 10
+          puts 'retry'
           retry
         else
           puts e.class
