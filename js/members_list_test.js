@@ -59,7 +59,7 @@ let Members = {
 		task.id = "task_id:" + task_info.task_id;
 		task.classList.add(task_info.user_id);
 		// タスク名を付加
-		task.querySelector(".task_name").textContent = task_info.task;
+		task.querySelector(".task_name").textContent = task_info.task_name;
 
 		// タスクの状態を付加
 		task.dataset.status = task_info.status;
@@ -74,18 +74,18 @@ let Members = {
 		// 時間の設定
 		if (task_info.hour !== null) {
 			// 時間を少数5位で四捨五入する
-			task.querySelector(".image > .time").textContent = Base.round_at(task_info.hour, 5);
+			task.querySelector(".image > .time").textContent = Base.round_at(task_info.expected_time, 5);
 		}
 
 		// タスクの詳細を設定
 		if (task_info.task_detail) {
-			let task_detail = task_info.task_detail.replace(/\n/g, "<br>");
+			let task_detail = task_info.memo.replace(/\n/g, "<br>");
 			task.querySelector(".task_detail_text").innerHTML = task_detail;
 		}
 
 		// 他市区の終了時メモを設定
 		if (task_info.end_detail) {
-			let end_detail = task_info.end_detail.replace(/\n/g, "<br>");
+			let end_detail = task_info.reflection.replace(/\n/g, "<br>");
 			task.querySelector(".end_detail").innerHTML = end_detail;
 		}
 	},
