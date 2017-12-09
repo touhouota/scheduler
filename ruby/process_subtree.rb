@@ -180,10 +180,15 @@ def get_list_from_date(cgi)
   keys = %i[user_id date]
   raise $error_string unless _check_data(keys, cgi)
 
+  # sql = <<-SQL
+  # select * from daily join (users join groups using(group_id)) using(user_id)
+  # where group_id in (select group_id from users where user_id = ?) and
+  # (status in (0,1,4) and doing_date = date(?)) or (status in (2, 3) and finish_time = ?)
+  # SQL
   sql = <<-SQL
-  select * from daily join (users join groups using(group_id)) using(user_id)
-  where group_id in (select group_id from users where user_id = ?) and
-  (status in (0,1,4) and doing_date = date(?)) or (status in (2, 3) and finish_time = ?)
+  select * from task join (users join groups using(group_id)) using(user_id)
+  where group_id in (select group_id from users where user_id = ?)
+  and (status in (0,1,4) and date(start_date) = ?) or (status in (2, 3) and date(modify) = ?)
   SQL
   date = Time.parse(cgi[:date]).strftime('%F')
   result = $client.prepare(sql).execute(cgi[:user_id], date, date)
