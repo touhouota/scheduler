@@ -53,9 +53,27 @@ EOS
 end
 
 def members_action(timeline)
-  content = ''
-  timeline.each do |item|
-    content << item[:task_name].to_s << "\n"
+  # TLから各ユーザのタスク追加・実行状況を計測
+  users = timeline.each_with_object({}) do |entry, hash|
+  hash[entry[:name]] = { tasks: 0, fin: 0 } unless hash.dig(entry[:name])
+  p entry
+  # ユーザ名を数える => その日のタスク数がわかる
+  hash[entry[:name]][:tasks] += 1 if entry[:status] == 0
+  # statusが2のものを数える => 完了した数がわかる
+  hash[entry[:name]][:fin] += 1 if [2, 3].include?(entry[:status])
   end
+
+  content = ''
+
+  users.each do |user, info|
+    content << "#{user}の活動\n"
+    content << "=>新しく#{info[:tasks]}個のタスクを登録し、#{info[:fin]}個を終わらせました！\n\n"
+  end
+
+  # content << "Debug: tl_size => #{timeline.size}\n"
+  # timeline.each do |item|
+  #   content << "#{item} \n"
+  # end
+
   content
 end
