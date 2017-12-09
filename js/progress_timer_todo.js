@@ -36,16 +36,18 @@ let ProgressTimer = {
 			plan.push(_plan_time || 0);
 
 			let _real_time = ProgressTimer.calc_diff_seconds(task) / 60;
-			real.push(_real_time.toFixed(2) || 0);
+			_real_time = Math.floor(_real_time * 100) / 100;
+			real.push(_real_time || 0);
 		} else {
 			let subtasks = task.querySelector(".subtask_list").children;
 			let i = 0;
 			let length = subtasks.length;
 			for (i = 0; i < length; i += 1) {
 				let plan_time = Number(subtasks[i].dataset.expected_time);
-				let real_time = Number(subtasks[i].dataset.progress) / 60;
 				plan.push(plan_time || 0);
-				real.push(real_time.toFixed(2) || 0);
+				let real_time = Number(subtasks[i].dataset.progress) / 60;
+				real_time = Math.floor(real_time * 100) / 100;
+				real.push(real_time || 0);
 			}
 		}
 		console.log(plan, real);
