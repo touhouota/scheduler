@@ -18,11 +18,10 @@ today = Date.today.strftime('%F')
 yesterday = (Date.today - 1).strftime('%F')
 
 client.query('select * from groups').each do |group|
-  p group[:group_name]
   # mailアドレスが設定されていない場合は無視する
   next if group[:mail].nil?
   # メールアドレスが設定されているグループには、そこあてにメールを送る
-  mail = SendMail.new(to: 'g2117034@fun.ac.jp', from: 'planner@sketch.jp', option: { server: 'po.sketch.jp', port: 587, ssl: false })
+  mail = SendMail.new(to: group[:mail], from: 'planner@sketch.jp', option: { server: 'po.sketch.jp', port: 587, ssl: false })
 
   body = count_down(group[:group_name])
   # グループに属している人のTL内容を取得
@@ -43,8 +42,6 @@ client.query('select * from groups').each do |group|
   body += 'http://mimalab.c.fun.ac.jp/b1013179/scheduler/'
 
   title = group[:group_name] + 'の昨日のようす'
-
-  p body
 
   mail.send(subject: title, body: body)
 end
