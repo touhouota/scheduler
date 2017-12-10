@@ -117,8 +117,9 @@ def get_task_parent(cgi)
   keys = %i[user_id]
   raise $error_string + ' (get_task_parent)' unless _check_data(keys, cgi)
 
+  # 終わっていない親タスクを取得
   sql = <<-SQL
-  select * from task left outer join task_tree on task_id = child where (user_id = ? and parent is null)
+  select * from task left outer join task_tree on task_id = child where (status in (0, 1, 4) and user_id = ? and parent is null)
   SQL
 
   result = $client.prepare(sql).execute(cgi[:user_id])
@@ -130,9 +131,8 @@ def get_task_child(cgi)
   keys = %i[user_id parent]
   raise $error_string + ' (get_task_child)' unless _check_data(keys, cgi)
 
-  # 終わっていない親タスクを取得
   sql = <<-SQL
-  select * from task left outer join task_tree on task_id = child where (status in (0, 1, 4) and user_id = ? and parent is null)
+  select * from task left outer join task_tree on task_id = child where (user_id = ? and parent = ?)
   SQL
 
   result = $client.prepare(sql).execute(cgi[:user_id], cgi[:parent])
