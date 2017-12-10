@@ -41,7 +41,7 @@ client.query('select * from groups').each do |group|
   body += "\n今日も頑張って行きましょう！\n"
   body += 'http://mimalab.c.fun.ac.jp/b1013179/scheduler/'
 
-  title = group[:group_name] + 'の昨日のようす'
+  title = group[:group_name] + 'の昨日のようす - スケジューラ'
 
   mail.send(subject: title, body: body)
 end
