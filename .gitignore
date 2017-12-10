@@ -21,3 +21,6 @@ js/*_min.js
 js/*_concated.js
 ruby/plan/
 ruby/secret.json
+ruby/task_inserter.rb
+ruby/task_list.yaml
+ruby/task_relation.yaml
