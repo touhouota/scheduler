@@ -3,15 +3,13 @@
 .jshintrc
 .sass-cache
 css/
+sass/
 error
 secret.json
 *~
-sass/
 *.old
 old/
 temp_db/
-node_modules/
-gulpfile.js
 package-lock.json
 package.json
 database_info.yaml
@@ -21,3 +19,5 @@ Gemfile.lock
 local_passwd.yaml
 js/*_min.js
 js/*_concated.js
+ruby/plan/
+ruby/secret.json
