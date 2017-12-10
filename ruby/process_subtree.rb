@@ -10,7 +10,7 @@ def _check_data(hope, real)
   values = hope.map do |key|
     # realにkeyがある && reak[key]の大きさが0でない
     # => きちんと値が入っている
-    real[key].nil?.! && !real[key].empty?
+    real[key].nil?.! && !real[key].to_s.empty?
   end
   if values.include?(false)
     # 指定したkeyを持たない
@@ -50,6 +50,10 @@ def append_task(cgi)
 
   # コメントを投稿する
   auto_comment(cgi[:user_id], cgi[:cmd], cgi[:task_id])
+
+  # タスクタイムラインにも追加
+  cgi[:status] = '0' # タスク追加時は、状態が0
+  insert_task_tl(cgi)
 
   { ok: true, data: result.entries, test: cgi }
 end
@@ -223,6 +227,9 @@ end
 
 # タスクタイムラインに状態を保持する
 def insert_task_tl(cgi)
+  keys = %i[task_id user_id status]
+  raise $error_string unless _check_data(keys, cgi)
+
   sql = 'insert into task_timeline(task_id, user_id, status) values(?, ?, ?)'
   $client.prepare(sql).execute(cgi[:task_id], cgi[:user_id], cgi[:status])
 end

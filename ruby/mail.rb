@@ -24,8 +24,11 @@ class SendMail
 
   # パスワードとかを記しておくもの
   def load_secret
-    File.open('./secret.json') do |file|
-      JSON.load(file)
+    path = './secret.json'
+    {} unless File.exist?(path)
+
+    File.open(path) do |file|
+      JSON.parse(file.read)
     end
   end
 
@@ -62,7 +65,7 @@ EOS
       mail.finish
     rescue => e
         count += 1
-        if count < 10
+        if count < 5
           puts 'retry'
           retry
         else
