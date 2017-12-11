@@ -180,6 +180,11 @@ def task_modify(cgi)
   { ok: true, data: result.entries }
 end
 
+def task_delete(cgi)
+  keys = %i[user_id task_id]
+  raise $error_string + '(task_delete)' unless _check_data(keys, cgi)
+end
+
 # 日付を指定し、その日に登録されているタスクを取得する
 def get_list_from_date(cgi)
   keys = %i[user_id date]
