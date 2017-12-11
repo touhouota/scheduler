@@ -178,7 +178,10 @@ let Task = {
 						length = deleted_tasks.length;
 					for (i = 0; i < length; i += 1) {
 						let del_target = document.getElementById("task_id:" + deleted_tasks[i].task_id);
-						del_target.parentElement.removeChild(del_target);
+						// ターゲットがある場合、削除
+						if (del_target) {
+							del_target.parentElement.removeChild(del_target);
+						}
 					}
 				}
 			}
