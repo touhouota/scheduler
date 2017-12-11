@@ -147,6 +147,44 @@ let Task = {
 		return subtask;
 	},
 
+	task_delete: function(event) {
+		let task = Base.parents(event.target, "task");
+
+		let str = "タスク「" + task.querySelector(".task_name").textContent + "」を削除します\n";
+		str += "サブタスクがある場合、サブタスクも削除します。\n";
+		if (confirm(str) === false) {
+			// キャンセルされた時は何もしない
+			return;
+		}
+
+		if (task.dataset.status === '2') {
+			// タスクを一時停止する => statusアイコンをクリックする
+			task.querySelector(".task_status").click();
+		}
+
+		let query = [
+			'cmd=delete',
+			'&user_id=', Base.get_cookie('user_id'),
+			"&task_id=", task.id.split(":").pop(),
+		].join('');
+
+		Base.create_request("POST", Base.request_path, function() {
+			if (this.status == 200 && this.readyState == 4) {
+				let response = JSON.parse(this.responseText);
+				if (response.ok) {
+					let deleted_tasks = response.data;
+					console.log(deleted_tasks);
+					let i = 0,
+						length = deleted_tasks.length;
+					for (i = 0; i < length; i += 1) {
+						let del_target = document.getElementById("task_id:" + deleted_tasks[i].task_id);
+						del_target.parentElement.removeChild(del_target);
+					}
+				}
+			}
+		}).send(query);
+	},
+
 	// 引数の状態により、filterを返す
 	filter: function(status) {
 		if (status === "todos") {
@@ -441,6 +479,9 @@ let Task = {
 
 		// サブタスクを追加する
 		task.querySelector(".subtask").addEventListener("click", Modal.create_subtask);
+
+		// タスク削除
+		task.querySelector('.delete').addEventListener("click", Task.task_delete);
 
 		// 親タスクを終わらせる
 		task.querySelector(".finish").addEventListener("click", Task.finish);
