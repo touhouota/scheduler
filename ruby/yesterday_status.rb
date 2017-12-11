@@ -21,7 +21,7 @@ client.query('select * from groups').each do |group|
   # mailアドレスが設定されていない場合は無視する
   next if group[:mail].nil?
   # メールアドレスが設定されているグループには、そこあてにメールを送る
-  mail = SendMail.new(to: group[:mail], from: 'planner@sketch.jp', option: { server: 'po.sketch.jp', port: 587, ssl: false })
+  mail = SendMail.new(to: group[:mail], from: 'scheduler@sketch.jp', option: { server: 'po.sketch.jp', port: 587, ssl: false })
 
   body = count_down(group[:group_name])
   # グループに属している人のTL内容を取得
