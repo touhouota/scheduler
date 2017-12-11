@@ -117,8 +117,15 @@ def get_task_parent(cgi)
   keys = %i[user_id]
   raise $error_string + ' (get_task_parent)' unless _check_data(keys, cgi)
 
+  # 終わっていない親タスクを取得
   sql = <<-SQL
-  select * from task left outer join task_tree on task_id = child where (user_id = ? and parent is null)
+  select * from task left outer join task_tree on task_id = child
+  where (
+    user_id = ? and
+    deleted = 0 and
+    status in (0, 1, 4) and
+    parent is null
+  )
   SQL
 
   result = $client.prepare(sql).execute(cgi[:user_id])
@@ -131,7 +138,11 @@ def get_task_child(cgi)
   raise $error_string + ' (get_task_child)' unless _check_data(keys, cgi)
 
   sql = <<-SQL
-  select * from task left outer join task_tree on task_id = child where (user_id = ? and parent = ?)
+  select * from task left outer join task_tree on task_id = child
+  where (
+    user_id = ? and
+    deleted = 0 and
+    parent = ?)
   SQL
 
   result = $client.prepare(sql).execute(cgi[:user_id], cgi[:parent])
@@ -176,6 +187,26 @@ def task_modify(cgi)
   search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and (task_id = ? or parent = ?) order by task_id'
   # サブタスクを取得する
   result = $client.prepare(search).execute(user_id, parent_id, parent_id)
+  { ok: true, data: result.entries }
+end
+
+def task_delete(cgi)
+  keys = %i[user_id task_id]
+  raise $error_string + '(task_delete)' unless _check_data(keys, cgi)
+
+  delete_sql = <<-SQL
+  update task left outer join task_tree on task_id = child
+    set deleted = 1 where user_id = ? and (task_id = ? or parent = ?)
+  SQL
+  $client.prepare(delete_sql).execute(cgi[:user_id], cgi[:task_id], cgi[:task_id])
+
+  check_sql = <<-SQL
+  select task_id from task left outer join task_tree on task_id = child
+  where user_id = ? and (task_id = ? or parent = ?)
+  SQL
+
+  result = $client.prepare(check_sql).execute(cgi[:user_id], cgi[:task_id], cgi[:task_id])
+
   { ok: true, data: result.entries }
 end
 
