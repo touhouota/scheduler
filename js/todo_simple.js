@@ -157,8 +157,8 @@ let Task = {
 			return;
 		}
 
-		if (task.dataset.status === '2') {
-			// タスクを一時停止する => statusアイコンをクリックする
+		if (task.dataset.status === '1') {
+			// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
 			task.querySelector(".task_status").click();
 		}
 
