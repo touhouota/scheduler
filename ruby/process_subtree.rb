@@ -183,6 +183,21 @@ end
 def task_delete(cgi)
   keys = %i[user_id task_id]
   raise $error_string + '(task_delete)' unless _check_data(keys, cgi)
+
+  delete_sql = <<-SQL
+  update task left outer join task_tree on task_id = child
+    set deleted = 1 where user_id = ? and (task_id = ? or parent = ?)
+  SQL
+  $client.prepare(delete_sql).execute(cgi[:user_id], cgi[:task_id], cgi[:task_id])
+
+  check_sql = <<-SQL
+  select task_id from task left outer join task_tree on task_id = child
+  where user_id = ? and (task_id = ? or parent = ?)
+  SQL
+
+  result = $client.prepare(check_sql).execute(cgi[:user_id], cgi[:task_id], cgi[:task_id])
+
+  { ok: true, data: result.entries }
 end
 
 # 日付を指定し、その日に登録されているタスクを取得する
