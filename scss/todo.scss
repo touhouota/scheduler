@@ -102,125 +102,7 @@ body {
 		vertical-align: middle;
 	}
 }
-// タスクに関するあれこれ
-
-.task {
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-	// border: 1px solid #111;
-	background-color: rgba(130, 109, 241, 0.10);
-	width: 400px;
-	margin: 10px 10px 0;
-	padding: 5px;
-	position: relative;
-
-	.button_area {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-
-		img {
-			display: inline;
-		}
-
-		.buttons {
-			display: none;
-			background-color: #eee;
-		}
-
-		&:hover {
-			img {
-				display: none;
-			}
-
-			.buttons {
-				display: flex;
-				flex-flow: column;
-
-				button {
-					margin-bottom: 10px;
-				}
-			}
-		}
-	}
-
-	.task_main {
-		width: 100%;
-
-		.change_button {
-			width: 95%;
-			margin: 5px auto;
-			// grid-area: task_title;
-			.task_status {
-				display: none;
-			}
-
-			.task_name {
-				display: inline-block;
-				vertical-align: middle;
-				width: calc(95% - 35px);
-			}
-
-			.plan_time_area {
-				display: none;
-			}
-		}
-
-		.task_info {
-			display: -webkit-box;
-			display: -ms-flexbox;
-			display: flex;
-
-			.graph {
-				-webkit-box-sizing: border-box;
-				box-sizing: border-box;
-				// grid-area: task_graph;
-				width: 150px;
-				// margin-left: 10px;
-				canvas {
-					// border: 1px solid #111;
-					background-color: #fff;
-				}
-			}
-
-			.task_memo {
-				// canvasの大きさを引いた分がtextの大きさ
-				width: calc(100% - 165px);
-				// grid-area: task_detail;
-				margin: 5px 10px 5px 5px;
-
-				.task_title {
-					font-weight: bolder;
-				}
-
-				.memo {
-					overflow: hidden;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					height: 25px;
-				}
-			}
-
-			.subtask_area {
-				padding-left: 20px;
-				list-style: none;
-			}
-		}
-
-		.finish_task {
-			display: none;
-		}
-	}
-}
-// 各項目のタイトル
-
-.list_title {
-	font-size: 14px;
-	text-align: center;
-}
-// task
 // timelineに関するもの
-
 #timeline_area {
 	height: 610px;
 
@@ -305,6 +187,122 @@ body {
 		cursor: pointer;
 	}
 }
+// タスクに関するあれこれ
+.task {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	// border: 1px solid #111;
+	background-color: rgba(130, 109, 241, 0.10);
+	width: 400px;
+	margin: 10px 10px 0;
+	padding: 5px;
+	position: relative;
+
+	.button_area {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+
+		img {
+			display: inline;
+		}
+
+		.buttons {
+			display: none;
+			background-color: #eee;
+		}
+
+		&:hover {
+			img {
+				display: none;
+			}
+
+			.buttons {
+				display: flex;
+				flex-flow: column;
+
+				button {
+					margin-bottom: 10px;
+				}
+			}
+		}
+	}
+
+	.task_main {
+		width: 100%;
+
+		.change_button {
+			width: 95%;
+			margin: 5px auto;
+			// grid-area: task_title;
+			.task_status {
+				// display: none;
+				width: 30px;
+			}
+
+			.task_name {
+				display: inline-block;
+				vertical-align: middle;
+				width: calc(95% - 35px);
+			}
+
+			.plan_time_area {
+				display: none;
+			}
+		}
+
+		.task_info {
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+
+			.graph {
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				// grid-area: task_graph;
+				width: 150px;
+				// margin-left: 10px;
+				canvas {
+					// border: 1px solid #111;
+					background-color: #fff;
+				}
+			}
+
+			.task_memo {
+				// canvasの大きさを引いた分がtextの大きさ
+				width: calc(100% - 165px);
+				// grid-area: task_detail;
+				margin: 5px 10px 5px 5px;
+
+				.task_title {
+					font-weight: bolder;
+				}
+
+				.memo {
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					height: 25px;
+				}
+			}
+
+			.subtask_area {
+				padding-left: 20px;
+				list-style: none;
+			}
+		}
+
+		.finish_task {
+			display: none;
+		}
+	}
+}
+// 各項目のタイトル
+
+.list_title {
+	font-size: 14px;
+	text-align: center;
+}
 
 .sub {
 	background-color: inherit;
@@ -347,7 +345,7 @@ body {
 }
 
 .doing {
-	.task_main {
+	background-color:.task_main {
 		.finish_task {
 			display: inline-block;
 
@@ -363,6 +361,7 @@ body {
 .hide {
 	display: none;
 }
+// 終わったタスクにつける
 
 #dones {
 	.task {
