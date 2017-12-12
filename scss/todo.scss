@@ -40,6 +40,8 @@ body {
 			-webkit-box-pack: start;
 			-ms-flex-pack: start;
 			justify-content: flex-start;
+			-webkit-box-align: start;
+			-ms-flex-align: start;
 			align-items: flex-start;
 		}
 	}
@@ -103,6 +105,7 @@ body {
 	}
 }
 // timelineに関するもの
+
 #timeline_area {
 	height: 610px;
 
@@ -188,11 +191,12 @@ body {
 	}
 }
 // タスクに関するあれこれ
+
 .task {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	// border: 1px solid #111;
-	background-color: rgba(130, 109, 241, 0.10);
+	background-color: #f8f6ff;
 	width: 400px;
 	margin: 10px 10px 0;
 	padding: 5px;
@@ -218,7 +222,12 @@ body {
 			}
 
 			.buttons {
+				display: -webkit-box;
+				display: -ms-flexbox;
 				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-box-direction: normal;
+				-ms-flex-flow: column;
 				flex-flow: column;
 
 				button {
@@ -345,7 +354,9 @@ body {
 }
 
 .doing {
-	background-color:.task_main {
+	background-color: #efd388;
+
+	.task_main {
 		.finish_task {
 			display: inline-block;
 
@@ -363,16 +374,10 @@ body {
 }
 // 終わったタスクにつける
 
-#dones {
-	.task {
-		.task_main {
-			.change_button {
-				.task_status {
-					display: inline-block;
-					width: 30px;
-					vertical-align: middle;
-				}
-			}
-		}
-	}
+.done {
+	background-color: #cbefe4;
+}
+
+.imperfect {
+	background-color: #fdb2cb4f;
 }
