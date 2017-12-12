@@ -201,6 +201,18 @@ body {
 	margin: 10px 10px 0;
 	padding: 5px;
 	position: relative;
+	// 実行状態の時、黄色くする
+	&[data-status='1'] {
+		background-color: #ffeebf;
+	}
+	// 完了したとき、緑っぽくする
+	&[data-status='2'] {
+		background-color: #cbefe4;
+	}
+	// 未達成のとき、赤っぽくなる
+	&[data-status='3'] {
+		background-color: #fdb2cb4f;
+	}
 
 	.button_area {
 		position: absolute;
@@ -312,7 +324,7 @@ body {
 	font-size: 14px;
 	text-align: center;
 }
-
+// サブタスクのときに適用するモノ
 .sub {
 	background-color: inherit;
 	width: calc(100% - 20px);
@@ -354,8 +366,6 @@ body {
 }
 
 .doing {
-	background-color: #efd388;
-
 	.task_main {
 		.finish_task {
 			display: inline-block;
@@ -376,8 +386,4 @@ body {
 
 .done {
 	background-color: #cbefe4;
-}
-
-.imperfect {
-	background-color: #fdb2cb4f;
 }
