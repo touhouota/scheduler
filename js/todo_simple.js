@@ -221,31 +221,36 @@ let Task = {
 
 	// アイコンの設定
 	_setting_task_icon: function(task, info) {
+		// タスクについているclassを一旦取り払う
+		let class_list = ["doing", "done", "imperfect"];
+		for (let i = 0; i < class_list.length; i++) {
+			task.classList.remove(class_list[i]);
+		}
 		let icon = task.querySelector(".task_status");
 		// console.log(icon);
 		icon.classList.add("task_info");
 		// hogehoge.pngの部分を置換する
 		let src_regexp = new RegExp(/[^/]+.png/);
-		// icon.setAttribute("status", info.status);
+
 		task.dataset.status = info.status;
+
+
 		switch (info.status) {
 			case 1:
 				icon.src = icon.src.replace(src_regexp, "start.png");
+				task.classList.add("doing");
 				break;
 			case 2:
 				icon.src = icon.src.replace(src_regexp, "succ.png");
+				task.classList.add("done");
 				break;
 			case 3:
 				icon.src = icon.src.replace(src_regexp, "nosucc.png");
+				task.classList.add("imperfect");
 				break;
 			case 4:
 				icon.src = icon.src.replace(src_regexp, "pause.png");
 				break;
-		}
-		if (info.status === 1) {
-			task.classList.add("doing");
-		} else {
-			task.classList.remove("doing");
 		}
 		// ファビコンをセットする
 		Task.change_favicon(info.status);
