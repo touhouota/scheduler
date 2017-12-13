@@ -157,9 +157,26 @@ let Task = {
 			return;
 		}
 
-		if (task.dataset.status === '1') {
-			// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
-			task.querySelector(".task_status").click();
+		// if (task.dataset.status === '1') {
+		// 	// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
+		// 	task.querySelector(".task_status").click();
+		// }
+
+		// サブタスクを含めて、実行中のものがあればそれを一時停止する
+		let list = [task];
+		console.log(task.querySelectorAll(".sub").length > 0);
+		if (task.querySelectorAll(".sub").length > 0) {
+			let sub_list = task.querySelectorAll(".sub");
+			list = list.concat([].slice.call(sub_list));
+		}
+
+		let i = 0,
+			length = list.length;
+		for (i = 0; i < length; i++) {
+			if (list[i].dataset.status === '1') {
+				// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
+				list[i].querySelector(".task_status").click();
+			}
 		}
 
 		let query = [

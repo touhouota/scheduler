@@ -222,8 +222,9 @@ def get_list_from_date(cgi)
   # SQL
   sql = <<-SQL
   select * from task join (users join groups using(group_id)) using(user_id)
-  where group_id in (select group_id from users where user_id = ?)
-  and (status in (0,1,4) and date(start_date) = ?) or (status in (2, 3) and date(modify) = ?)
+  where group_id in (select group_id from users where user_id = ?) and
+  deleted = 0 and
+  (status in (0,1,4) and date(start_date) < ?) or (status in (2, 3) and date(modify) = ?)
   SQL
   date = Time.parse(cgi[:date]).strftime('%F')
   result = $client.prepare(sql).execute(cgi[:user_id], date, date)
