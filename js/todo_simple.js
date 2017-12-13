@@ -2,6 +2,128 @@ let Task = {
 	child: [],
 	parent: [],
 	tree: {},
+	create_task_list: function(task_list) {
+		let fragment = document.createDocumentFragment();
+		if (!task_list) {
+			// からの場合は何もしない
+			return;
+		}
+		task_list.forEach(function(item) {
+			let task = Task.create_task(item);
+
+			fragment.appendChild(task);
+		});
+		return fragment;
+	},
+
+	create_task: function(task_info) {
+		let _template = document.getElementById("todo_template");
+		let template = document.importNode(_template.content, true);
+		let task = template.cloneNode(true).firstElementChild;
+		// iconの設定
+		Task._setting_task_icon(task, task_info);
+		// タスクの情報に関するもの
+		Task._setting_task_info(task, task_info);
+
+		// もし、状態が実行中ならそうする
+		if (task_info.status === 1) {
+			// タイマーを実行する
+			ProgressTimer.set(task);
+		}
+		// タスクの作成
+		return task;
+	},
+
+	get_parents: function() {
+		const query = "?cmd=task_parent&user_id=" + Base.get_cookie("user_id");
+		Base.create_request("GET", Base.request_path + query, function() {
+			if (this.status == 200 && this.readyState == 4) {
+				let response = JSON.parse(this.responseText);
+				// console.table(response.data);
+				if (response.ok) {
+					let data = response.data;
+					let fragment = document.createDocumentFragment();
+					for (let i = 0; i < data.length; i++) {
+						let task_info = data[i];
+						let task = Task.create_task(task_info);
+						Task.tree[task_info.task_id] = [];
+						Task.parent.push(task_info.task_id);
+
+						fragment.appendChild(task);
+
+						// タスクを監視し、変化があればサブタスク数を数える
+						// new MutationObserver(Task.subtask_count).observe(task, {
+						// 	childList: true,
+						// 	subtree: true,
+						// });
+					}
+					document.getElementById("todos").appendChild(fragment);
+					// 親の処理が終われば、子供を取得
+					Task.get_child();
+				}
+			}
+		}).send(null);
+	},
+
+	get_child: function() {
+		let parents = Object.keys(Task.tree);
+		// console.log(parents);
+		parents.forEach(function(parent_id) {
+			let query = [
+				"?cmd=task_child",
+				"&parent=", parent_id,
+				"&user_id=" + Base.get_cookie("user_id"),
+			].join("");
+			Base.create_request("GET", Base.request_path + query, function() {
+				if (this.status == 200 && this.readyState == 4) {
+					let response = JSON.parse(this.responseText);
+					if (response.ok) {
+						let data = response.data;
+						// console.table(data);
+
+						// 子供がいない場合は、何もしない
+						if (response.data.length === 0) {
+							return;
+						}
+						// 子供をひとまとめにするfragment作成
+						let fragment = document.createDocumentFragment();
+
+						data.forEach(function(item) {
+							Task.tree[item.parent].push(item.task_id)
+							Task.child.push(item.task_id);
+							let subtask = Task.create_task(item);
+							subtask.classList.add("sub");
+							fragment.appendChild(subtask);
+						});
+
+						let parent = document.getElementById("task_id:" + data[0].parent);
+						// サブタスクがある時は、親の実行ボタンを隠す
+						parent.classList.add("parent");
+						let sublist = parent.querySelector(".subtask_list");
+						sublist.appendChild(fragment);
+
+						let tasks = document.querySelectorAll(".task");
+						for (i = 0; i < tasks.length; i++) {
+							ProgressTimer.display(tasks[i]);
+						}
+					}
+				}
+			}).send(null);
+		});
+	},
+
+	// 引数の状態により、filterを返す
+	filter: function(status) {
+		if (status === "todos") {
+			return function(item) {
+				return ![2, 3].includes(item.status);
+			}
+		} else if (status === "dones") {
+			return function(item) {
+				return [2, 3].includes(item.status);
+			}
+		}
+	},
 
 	// タスクの追加をサーバへ送る
 	append_task: function() {
@@ -41,13 +163,41 @@ let Task = {
 		// タスクの情報に関するもの
 		Task._setting_task_info(task, task_info);
 
-		// もし、状態が実行中ならそうする
-		if (task_info.status === 1) {
-			// タイマーを実行する
-			ProgressTimer.set(task);
+	// アイコンの設定
+	_setting_task_icon: function(task, info) {
+		// タスクについているclassを一旦取り払う
+		let class_list = ["doing", "done", "imperfect"];
+		for (let i = 0; i < class_list.length; i++) {
+			task.classList.remove(class_list[i]);
 		}
-		// タスクの作成
-		return task;
+		let icon = task.querySelector(".task_status");
+		// console.log(icon);
+		icon.classList.add("task_info");
+		// hogehoge.pngの部分を置換する
+		let src_regexp = new RegExp(/[^/]+.png/);
+
+		task.dataset.status = info.status;
+
+
+		switch (info.status) {
+			case 1:
+				icon.src = icon.src.replace(src_regexp, "start.png");
+				task.classList.add("doing");
+				break;
+			case 2:
+				icon.src = icon.src.replace(src_regexp, "succ.png");
+				task.classList.add("done");
+				break;
+			case 3:
+				icon.src = icon.src.replace(src_regexp, "nosucc.png");
+				task.classList.add("imperfect");
+				break;
+			case 4:
+				icon.src = icon.src.replace(src_regexp, "pause.png");
+				break;
+		}
+		// ファビコンをセットする
+		Task.change_favicon(info.status);
 	},
 
 	create_task_list: function(task_list) {

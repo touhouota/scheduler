@@ -50,7 +50,7 @@ let ProgressTimer = {
 				real.push(real_time || 0);
 			}
 		}
-		console.log(plan, real);
+		// console.log(plan, real);
 		Chart.draw(canvas, plan, real);
 	},
 

@@ -40,6 +40,8 @@ body {
 			-webkit-box-pack: start;
 			-ms-flex-pack: start;
 			justify-content: flex-start;
+			-webkit-box-align: start;
+			-ms-flex-align: start;
 			align-items: flex-start;
 		}
 	}
@@ -102,123 +104,6 @@ body {
 		vertical-align: middle;
 	}
 }
-// タスクに関するあれこれ
-
-.task {
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-	// border: 1px solid #111;
-	background-color: rgba(130, 109, 241, 0.10);
-	width: 400px;
-	margin: 10px 10px 0;
-	padding: 5px;
-	position: relative;
-
-	.button_area {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-
-		img {
-			display: inline;
-		}
-
-		.buttons {
-			display: none;
-			background-color: #eee;
-		}
-
-		&:hover {
-			img {
-				display: none;
-			}
-
-			.buttons {
-				display: flex;
-				flex-flow: column;
-
-				button {
-					margin-bottom: 10px;
-				}
-			}
-		}
-	}
-
-	.task_main {
-		width: 100%;
-
-		.change_button {
-			width: 95%;
-			margin: 5px auto;
-			// grid-area: task_title;
-			.task_status {
-				display: none;
-			}
-
-			.task_name {
-				display: inline-block;
-				vertical-align: middle;
-				width: calc(95% - 35px);
-			}
-
-			.plan_time_area {
-				display: none;
-			}
-		}
-
-		.task_info {
-			display: -webkit-box;
-			display: -ms-flexbox;
-			display: flex;
-
-			.graph {
-				-webkit-box-sizing: border-box;
-				box-sizing: border-box;
-				// grid-area: task_graph;
-				width: 150px;
-				// margin-left: 10px;
-				canvas {
-					// border: 1px solid #111;
-					background-color: #fff;
-				}
-			}
-
-			.task_memo {
-				// canvasの大きさを引いた分がtextの大きさ
-				width: calc(100% - 165px);
-				// grid-area: task_detail;
-				margin: 5px 10px 5px 5px;
-
-				.task_title {
-					font-weight: bolder;
-				}
-
-				.memo {
-					overflow: hidden;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					height: 25px;
-				}
-			}
-
-			.subtask_area {
-				padding-left: 20px;
-				list-style: none;
-			}
-		}
-
-		.finish_task {
-			display: none;
-		}
-	}
-}
-// 各項目のタイトル
-
-.list_title {
-	font-size: 14px;
-	text-align: center;
-}
-// task
 // timelineに関するもの
 
 #timeline_area {
@@ -305,6 +190,141 @@ body {
 		cursor: pointer;
 	}
 }
+// タスクに関するあれこれ
+
+.task {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	// border: 1px solid #111;
+	background-color: #f8f6ff;
+	width: 400px;
+	margin: 10px 10px 0;
+	padding: 5px;
+	position: relative;
+	// 実行状態の時、黄色くする
+	&[data-status='1'] {
+		background-color: #ffeebf;
+	}
+	// 完了したとき、緑っぽくする
+	&[data-status='2'] {
+		background-color: #cbefe4;
+	}
+	// 未達成のとき、赤っぽくなる
+	&[data-status='3'] {
+		background-color: #fdb2cb4f;
+	}
+
+	.button_area {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+
+		img {
+			display: inline;
+		}
+
+		.buttons {
+			display: none;
+			background-color: #eee;
+		}
+
+		&:hover {
+			img {
+				display: none;
+			}
+
+			.buttons {
+				display: -webkit-box;
+				display: -ms-flexbox;
+				display: flex;
+				-webkit-box-orient: vertical;
+				-webkit-box-direction: normal;
+				-ms-flex-flow: column;
+				flex-flow: column;
+
+				button {
+					margin-bottom: 10px;
+				}
+			}
+		}
+	}
+
+	.task_main {
+		width: 100%;
+
+		.change_button {
+			width: 95%;
+			margin: 5px auto;
+			// grid-area: task_title;
+			.task_status {
+				// display: none;
+				width: 30px;
+			}
+
+			.task_name {
+				display: inline-block;
+				vertical-align: middle;
+				width: calc(95% - 35px);
+			}
+
+			.plan_time_area {
+				display: none;
+			}
+		}
+
+		.task_info {
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+
+			.graph {
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				// grid-area: task_graph;
+				width: 150px;
+				// margin-left: 10px;
+				canvas {
+					// border: 1px solid #111;
+					background-color: #fff;
+				}
+			}
+
+			.task_memo {
+				// canvasの大きさを引いた分がtextの大きさ
+				width: calc(100% - 165px);
+				// grid-area: task_detail;
+				margin: 5px 10px 5px 5px;
+
+				.task_title {
+					font-weight: bolder;
+				}
+
+				.memo {
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					height: 25px;
+				}
+			}
+
+			.subtask_area {
+				padding-left: 20px;
+				list-style: none;
+			}
+		}
+
+		.finish_task {
+			display: none;
+		}
+	}
+}
+// 各項目のタイトル
+
+.list_title {
+	font-size: 14px;
+	text-align: center;
+}
+// サブタスクのときに適用するモノ
 
 .sub {
 	background-color: inherit;
@@ -360,20 +380,17 @@ body {
 	}
 }
 
-.hide {
-	display: none;
-}
-
-#dones {
-	.task {
-		.task_main {
-			.change_button {
-				.task_status {
-					display: inline-block;
-					width: 30px;
-					vertical-align: middle;
-				}
+.parent {
+	& > .task_main {
+		& > .change_button {
+			.task_status {
+				display: none;
 			}
 		}
 	}
+}
+// 要素を隠すために使う
+
+.hide {
+	display: none;
 }
