@@ -2,7 +2,6 @@ let Task = {
 	child: [],
 	parent: [],
 	tree: {},
-
 	// タスクの追加をサーバへ送る
 	append_task: function() {
 		var input = prompt("タスク名を入力してください");
@@ -32,38 +31,6 @@ let Task = {
 		}).send(post);
 	},
 
-	create_task: function(task_info) {
-		let _template = document.getElementById("todo_template");
-		let template = document.importNode(_template.content, true);
-		let task = template.cloneNode(true).firstElementChild;
-		// iconの設定
-		Task._setting_task_icon(task, task_info);
-		// タスクの情報に関するもの
-		Task._setting_task_info(task, task_info);
-
-		// もし、状態が実行中ならそうする
-		if (task_info.status === 1) {
-			// タイマーを実行する
-			ProgressTimer.set(task);
-		}
-		// タスクの作成
-		return task;
-	},
-
-	create_task_list: function(task_list) {
-		let fragment = document.createDocumentFragment();
-		if (!task_list) {
-			// からの場合は何もしない
-			return;
-		}
-		task_list.forEach(function(item) {
-			let task = Task.create_task(item);
-
-			fragment.appendChild(task);
-		});
-		return fragment;
-	},
-
 	change_favicon: function(status) {
 		var favicon = document.getElementById("favicon");
 		if (status == 1) {
@@ -76,6 +43,7 @@ let Task = {
 	// クリックされたら、状態を更新する
 	// 変化した先の状態を送る
 	change_status: function(event) {
+
 		let task = Base.parents(event.target, "task");
 		// 実行前、タスクの情報が付加されていない場合は一旦止める
 		if (Task._check_detail_empty(task) || Task._check_plan_empty(task)) {
@@ -134,6 +102,38 @@ let Task = {
 
 	},
 
+	create_task_list: function(task_list) {
+		let fragment = document.createDocumentFragment();
+		if (!task_list) {
+			// からの場合は何もしない
+			return;
+		}
+		task_list.forEach(function(item) {
+			let task = Task.create_task(item);
+
+			fragment.appendChild(task);
+		});
+		return fragment;
+	},
+
+	create_task: function(task_info) {
+		let _template = document.getElementById("todo_template");
+		let template = document.importNode(_template.content, true);
+		let task = template.cloneNode(true).firstElementChild;
+		// iconの設定
+		Task._setting_task_icon(task, task_info);
+		// タスクの情報に関するもの
+		Task._setting_task_info(task, task_info);
+
+		// もし、状態が実行中ならそうする
+		if (task_info.status === 1) {
+			// タイマーを実行する
+			ProgressTimer.set(task);
+		}
+		// タスクの作成
+		return task;
+	},
+
 	// subtask作成を行う。
 	create_subtask: function(task_info) {
 		let _template = document.getElementById("subtask_template");
@@ -147,62 +147,82 @@ let Task = {
 		return subtask;
 	},
 
-	task_delete: function(event) {
-		let task = Base.parents(event.target, "task");
-
-		let str = "タスク「" + task.querySelector(".task_name").textContent + "」を削除します\n";
-		str += "サブタスクがある場合、サブタスクも削除します。\n";
-		if (confirm(str) === false) {
-			// キャンセルされた時は何もしない
-			return;
-		}
-
-		// if (task.dataset.status === '1') {
-		// 	// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
-		// 	task.querySelector(".task_status").click();
-		// }
-
-		// サブタスクを含めて、実行中のものがあればそれを一時停止する
-		let list = [task];
-		console.log(task.querySelectorAll(".sub").length > 0);
-		if (task.querySelectorAll(".sub").length > 0) {
-			let sub_list = task.querySelectorAll(".sub");
-			list = list.concat([].slice.call(sub_list));
-		}
-
-		let i = 0,
-			length = list.length;
-		for (i = 0; i < length; i++) {
-			if (list[i].dataset.status === '1') {
-				// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
-				list[i].querySelector(".task_status").click();
-			}
-		}
-
-		let query = [
-			'cmd=delete',
-			'&user_id=', Base.get_cookie('user_id'),
-			"&task_id=", task.id.split(":").pop(),
-		].join('');
-
-		Base.create_request("POST", Base.request_path, function() {
+	get_parents: function() {
+		const query = "?cmd=task_parent&user_id=" + Base.get_cookie("user_id");
+		Base.create_request("GET", Base.request_path + query, function() {
 			if (this.status == 200 && this.readyState == 4) {
 				let response = JSON.parse(this.responseText);
+				// console.table(response.data);
 				if (response.ok) {
-					let deleted_tasks = response.data;
-					console.log(deleted_tasks);
-					let i = 0,
-						length = deleted_tasks.length;
-					for (i = 0; i < length; i += 1) {
-						let del_target = document.getElementById("task_id:" + deleted_tasks[i].task_id);
-						// ターゲットがある場合、削除
-						if (del_target) {
-							del_target.parentElement.removeChild(del_target);
+					let data = response.data;
+					let fragment = document.createDocumentFragment();
+					for (let i = 0; i < data.length; i++) {
+						let task_info = data[i];
+						let task = Task.create_task(task_info);
+						Task.tree[task_info.task_id] = [];
+						Task.parent.push(task_info.task_id);
+
+						fragment.appendChild(task);
+
+						// タスクを監視し、変化があればサブタスク数を数える
+						// new MutationObserver(Task.subtask_count).observe(task, {
+						// 	childList: true,
+						// 	subtree: true,
+						// });
+					}
+					document.getElementById("todos").appendChild(fragment);
+					// 親の処理が終われば、子供を取得
+					Task.get_child();
+				}
+			}
+		}).send(null);
+	},
+
+	get_child: function() {
+		let parents = Object.keys(Task.tree);
+		// console.log(parents);
+		parents.forEach(function(parent_id) {
+			let query = [
+				"?cmd=task_child",
+				"&parent=", parent_id,
+				"&user_id=" + Base.get_cookie("user_id"),
+			].join("");
+			Base.create_request("GET", Base.request_path + query, function() {
+				if (this.status == 200 && this.readyState == 4) {
+					let response = JSON.parse(this.responseText);
+					if (response.ok) {
+						let data = response.data;
+						// console.table(data);
+
+						// 子供がいない場合は、何もしない
+						if (response.data.length === 0) {
+							return;
+						}
+						// 子供をひとまとめにするfragment作成
+						let fragment = document.createDocumentFragment();
+
+						data.forEach(function(item) {
+							Task.tree[item.parent].push(item.task_id)
+							Task.child.push(item.task_id);
+							let subtask = Task.create_task(item);
+							subtask.classList.add("sub");
+							fragment.appendChild(subtask);
+						});
+
+						let parent = document.getElementById("task_id:" + data[0].parent);
+						// サブタスクがある時は、親の実行ボタンを隠す
+						parent.classList.add("parent");
+						let sublist = parent.querySelector(".subtask_list");
+						sublist.appendChild(fragment);
+
+						let tasks = document.querySelectorAll(".task");
+						for (i = 0; i < tasks.length; i++) {
+							ProgressTimer.display(tasks[i]);
 						}
 					}
 				}
-			}
-		}).send(query);
+			}).send(null);
+		});
 	},
 
 	// 引数の状態により、filterを返す
@@ -263,79 +283,62 @@ let Task = {
 		}).send(query);
 	},
 
-	get_child: function() {
-		let parents = Object.keys(Task.tree);
-		// console.log(parents);
-		parents.forEach(function(parent_id) {
-			let query = [
-				"?cmd=task_child",
-				"&parent=", parent_id,
-				"&user_id=" + Base.get_cookie("user_id"),
-			].join("");
-			Base.create_request("GET", Base.request_path + query, function() {
-				if (this.status == 200 && this.readyState == 4) {
-					let response = JSON.parse(this.responseText);
-					if (response.ok) {
-						let data = response.data;
-						// console.table(data);
+	task_delete: function(event) {
+		let task = Base.parents(event.target, "task");
 
-						// 子供がいない場合は、何もしない
-						if (response.data.length === 0) {
-							return;
-						}
-						// 子供をひとまとめにするfragment作成
-						let fragment = document.createDocumentFragment();
+		let str = "タスク「" + task.querySelector(".task_name").textContent + "」を削除します\n";
+		str += "サブタスクがある場合、サブタスクも削除します。\n";
+		if (confirm(str) === false) {
+			// キャンセルされた時は何もしない
+			return;
+		}
 
-						data.forEach(function(item) {
-							Task.tree[item.parent].push(item.task_id)
-							Task.child.push(item.task_id);
-							let subtask = Task.create_task(item);
-							subtask.classList.add("sub");
-							fragment.appendChild(subtask);
-						});
+		// if (task.dataset.status === '1') {
+		// 	// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
+		// 	task.querySelector(".task_status").click();
+		// }
 
-						let sub = document.getElementById("task_id:" + data[0].parent).querySelector(".subtask_list");
-						sub.appendChild(fragment);
+		// サブタスクを含めて、実行中のものがあればそれを一時停止する
+		let list = [task];
+		console.log(task.querySelectorAll(".sub").length > 0);
+		if (task.querySelectorAll(".sub").length > 0) {
+			let sub_list = task.querySelectorAll(".sub");
+			list = list.concat([].slice.call(sub_list));
+		}
 
-						let tasks = document.querySelectorAll(".task");
-						for (i = 0; i < tasks.length; i++) {
-							ProgressTimer.display(tasks[i]);
-						}
-					}
-				}
-			}).send(null);
-		});
-	},
+		let i = 0,
+			length = list.length;
+		for (i = 0; i < length; i++) {
+			if (list[i].dataset.status === '1') {
+				// 文字タスクが実行状態の場合、タスクを一時停止 => statusアイコンをクリックする
+				list[i].querySelector(".task_status").click();
+			}
+		}
 
-	get_parents: function() {
-		const query = "?cmd=task_parent&user_id=" + Base.get_cookie("user_id");
-		Base.create_request("GET", Base.request_path + query, function() {
+		let query = [
+			'cmd=delete',
+			'&user_id=', Base.get_cookie('user_id'),
+			"&task_id=", task.id.split(":").pop(),
+		].join('');
+
+		Base.create_request("POST", Base.request_path, function() {
 			if (this.status == 200 && this.readyState == 4) {
 				let response = JSON.parse(this.responseText);
-				// console.table(response.data);
 				if (response.ok) {
-					let data = response.data;
-					let fragment = document.createDocumentFragment();
-					for (let i = 0; i < data.length; i++) {
-						let task_info = data[i];
-						let task = Task.create_task(task_info);
-						Task.tree[task_info.task_id] = [];
-						Task.parent.push(task_info.task_id);
-
-						fragment.appendChild(task);
-
-						// タスクを監視し、変化があればサブタスク数を数える
-						// new MutationObserver(Task.subtask_count).observe(task, {
-						// 	childList: true,
-						// 	subtree: true,
-						// });
+					let deleted_tasks = response.data;
+					console.log(deleted_tasks);
+					let i = 0,
+						length = deleted_tasks.length;
+					for (i = 0; i < length; i += 1) {
+						let del_target = document.getElementById("task_id:" + deleted_tasks[i].task_id);
+						// ターゲットがある場合、削除
+						if (del_target) {
+							del_target.parentElement.removeChild(del_target);
+						}
 					}
-					document.getElementById("todos").appendChild(fragment);
-					// 親の処理が終われば、子供を取得
-					Task.get_child();
 				}
 			}
-		}).send(null);
+		}).send(query);
 	},
 
 	// タスクの状態ごとに数を数える
@@ -399,7 +402,6 @@ let Task = {
 			}
 		}
 	},
-
 
 	// タスクの内容を決めてあるかの確認
 	// true: 決められていない、false: 決められてる
@@ -513,35 +515,38 @@ let Task = {
 
 	// アイコンの設定
 	_setting_task_icon: function(task, info) {
+		// タスクについているclassを一旦取り払う
+		let class_list = ["doing", "done", "imperfect"];
+		for (let i = 0; i < class_list.length; i++) {
+			task.classList.remove(class_list[i]);
+		}
 		let icon = task.querySelector(".task_status");
 		// console.log(icon);
 		icon.classList.add("task_info");
 		// hogehoge.pngの部分を置換する
 		let src_regexp = new RegExp(/[^/]+.png/);
-		// icon.setAttribute("status", info.status);
+
 		task.dataset.status = info.status;
+
+
 		switch (info.status) {
 			case 1:
 				icon.src = icon.src.replace(src_regexp, "start.png");
+				task.classList.add("doing");
 				break;
 			case 2:
 				icon.src = icon.src.replace(src_regexp, "succ.png");
+				task.classList.add("done");
 				break;
 			case 3:
 				icon.src = icon.src.replace(src_regexp, "nosucc.png");
+				task.classList.add("imperfect");
 				break;
 			case 4:
 				icon.src = icon.src.replace(src_regexp, "pause.png");
 				break;
 		}
-		if (info.status === 1) {
-			task.classList.add("doing");
-		} else {
-			task.classList.remove("doing");
-		}
 		// ファビコンをセットする
 		Task.change_favicon(info.status);
 	},
-
-
 };

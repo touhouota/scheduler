@@ -273,6 +273,8 @@ let Modal = {
 					let subtask = Task.create_task(data);
 					subtask.classList.add("sub");
 					let task = document.getElementById("task_id:" + data.parent);
+					// サブタスク追加時、親にはparentクラスをつける
+					task.classList.add("parent");
 					task.querySelector(".subtask_list").appendChild(subtask);
 				}
 				// modalを初期化
