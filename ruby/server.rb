@@ -47,6 +47,9 @@ begin
            when 'task_modify'
              task_modify(cgi)
 
+           when 'delete'
+             task_delete(cgi)
+
            when 'date'
              get_list_from_date(cgi)
 
