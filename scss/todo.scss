@@ -381,8 +381,8 @@ body {
 }
 
 .parent {
-	.task_main {
-		.change_button {
+	& > .task_main {
+		& > .change_button {
 			.task_status {
 				display: none;
 			}
