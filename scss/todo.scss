@@ -325,6 +325,7 @@ body {
 	text-align: center;
 }
 // サブタスクのときに適用するモノ
+
 .sub {
 	background-color: inherit;
 	width: calc(100% - 20px);
@@ -379,11 +380,17 @@ body {
 	}
 }
 
+.parent {
+	.task_main {
+		.change_button {
+			.task_status {
+				display: none;
+			}
+		}
+	}
+}
+// 要素を隠すために使う
+
 .hide {
 	display: none;
-}
-// 終わったタスクにつける
-
-.done {
-	background-color: #cbefe4;
 }
