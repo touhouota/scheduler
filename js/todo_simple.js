@@ -96,8 +96,10 @@ let Task = {
 							fragment.appendChild(subtask);
 						});
 
-						let sub = document.getElementById("task_id:" + data[0].parent).querySelector(".subtask_list");
-						sub.appendChild(fragment);
+						let parent = document.getElementById("task_id:" + data[0].parent);
+						parent.classList.add("parent");
+						let sublist = parent.querySelector(".subtask_list");
+						sublist.appendChild(fragment);
 
 						let tasks = document.querySelectorAll(".task");
 						for (i = 0; i < tasks.length; i++) {
