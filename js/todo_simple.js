@@ -97,6 +97,7 @@ let Task = {
 						});
 
 						let parent = document.getElementById("task_id:" + data[0].parent);
+						// サブタスクがある時は、親の実行ボタンを隠す
 						parent.classList.add("parent");
 						let sublist = parent.querySelector(".subtask_list");
 						sublist.appendChild(fragment);
