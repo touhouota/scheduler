@@ -43,7 +43,6 @@ let Task = {
 	// クリックされたら、状態を更新する
 	// 変化した先の状態を送る
 	change_status: function(event) {
-
 		let task = Base.parents(event.target, "task");
 		// 実行前、タスクの情報が付加されていない場合は一旦止める
 		if (Task._check_detail_empty(task) || Task._check_plan_empty(task)) {
@@ -178,13 +177,20 @@ let Task = {
 		}).send(null);
 	},
 
-	get_child: function() {
-		let parents = Object.keys(Task.tree);
+	get_child: function(parent_id) {
+		let parents = null;
+		if (parent_id) {
+			// 引数があれば、それを
+			parents = [parent_id];
+		} else {
+			// 引数がなければ、ページ全体の
+			parents = Object.keys(Task.tree);
+		}
 		// console.log(parents);
-		parents.forEach(function(parent_id) {
+		parents.forEach(function(parent) {
 			let query = [
 				"?cmd=task_child",
-				"&parent=", parent_id,
+				"&parent=", parent,
 				"&user_id=" + Base.get_cookie("user_id"),
 			].join("");
 			Base.create_request("GET", Base.request_path + query, function() {
@@ -215,10 +221,12 @@ let Task = {
 						let sublist = parent.querySelector(".subtask_list");
 						sublist.appendChild(fragment);
 
-						let tasks = document.querySelectorAll(".task");
-						for (i = 0; i < tasks.length; i++) {
-							ProgressTimer.display(tasks[i]);
-						}
+						// let tasks = document.querySelectorAll(".task");
+						// for (i = 0; i < tasks.length; i++) {
+						// 	ProgressTimer.display(tasks[i]);
+						// }
+						console.log("get_child", parent.id);
+						ProgressTimer.display(parent);
 					}
 				}
 			}).send(null);
