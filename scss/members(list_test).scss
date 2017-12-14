@@ -73,10 +73,11 @@ html {
 			}
 			// タスク本体
 			.task {
-				min-height: 50px;
+				// min-height: 50px;
 				padding: 7px 10px;
 				margin: 20px 5px;
 				background-color: #c9d8f5;
+				position: relative;
 				// タスクのメイン部分
 				.task_main {
 					.status_area {
@@ -88,10 +89,16 @@ html {
 
 						.task_name {
 							display: inline-block;
-							width: 75%;
+							width: 80%;
 							margin: auto;
 							vertical-align: middle;
 						}
+					}
+
+					.name_area {
+						position: absolute;
+						top: -5px;
+						right: 0;
 					}
 				}
 			}
