@@ -280,7 +280,7 @@ def get_timeline(cgi)
       from timeline join users using(user_id)
       where timeline.user_id = users.user_id and tl_id > ?
       and group_id = (select group_id from users where user_id = ?)
-      order by tl_id desc
+      order by tl_id
     SQL
     result = $client.prepare(sql).execute(cgi[:last], cgi[:user_id]).entries
   end
