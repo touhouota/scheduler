@@ -91,7 +91,7 @@ let Timeline = {
 			}
 		}).send(null);
 		// 処理終了後、1秒後にもう一度関数を実行する
-		Timeline.timer = setTimeout(Timeline.set_timer, 1000);
+		Timeline.timer = setTimeout(Timeline.set_timer, 1500);
 	},
 
 	check_comment_textarea: function() {
