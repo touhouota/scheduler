@@ -29,8 +29,6 @@ let Notify = {
 		if (Notification.permission === "granted") {
 			let instance = new Notification(txt);
 			setTimeout(instance.close.bind(instance), 3000);
-		} else {
-			alert(txt);
 		}
 	}
 };
