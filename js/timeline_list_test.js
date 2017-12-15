@@ -30,8 +30,9 @@ let Timeline = {
 
 			// コメントの内容を記載
 			comment.querySelector(".comment_text").innerHTML = comment_item.items;
+			// fragment.insertBefore(comment, fragment.firstElementChild);
+			fragment.appendChild(comment);
 			Notify.create_instance(comment_item.items);
-			fragment.insertBefore(comment, fragment.firstElementChild);
 		};
 
 		return fragment;
