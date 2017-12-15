@@ -273,23 +273,26 @@ def get_timeline(cgi)
       where group_id = (select group_id from users where user_id = ?)
       order by tl_id desc limit 20
     SQL
-    result = $client.prepare(sql).execute(cgi[:user_id]).entries.reverse
+    result = $client.prepare(sql).execute(cgi[:user_id]).entries
   else
     sql = <<-SQL
       select tl_id, timeline.user_id, name, items, datetime, gj
       from timeline join users using(user_id)
       where timeline.user_id = users.user_id and tl_id > ?
       and group_id = (select group_id from users where user_id = ?)
-      order by tl_id
+      order by tl_id desc
     SQL
     result = $client.prepare(sql).execute(cgi[:last], cgi[:user_id]).entries
   end
 
   # 日付をJSが理解できる形式にする
-  result.each do |item|
-    item[:datetime] = item[:datetime].strftime('%a %b %d %Y %T GMT%z (%Z)')
+  # result.each do |item|
+  #   item[:datetime] = item[:datetime].strftime('%a %b %d %Y %T GMT%z (%Z)')
+  # end
+  result.map do |row|
+    row[:datetime] = row[:datetime].strftime('%a %b %d %Y %T GMT%z (%Z)')
+    row
   end
-
   { ok: true, data: result }
 end
 
@@ -307,6 +310,10 @@ def insert_timeline(cgi)
   select * from timeline join users using(user_id) where tl_id = ?
   SQL
   result = $client.prepare(search).execute($client.last_id)
+  result.map do |row|
+    row[:datetime] = row[:datetime].strftime('%a %b %d %Y %T GMT%z (%Z)')
+    row
+  end
   { ok: true, data: result.entries }
 end
 
