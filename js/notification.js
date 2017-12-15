@@ -28,9 +28,7 @@ let Notify = {
 	create_instance: function(txt) {
 		if (Notification.permission === "granted") {
 			let instance = new Notification(txt);
-			setTimeout(instance.close.bind(instance), 5000);
-		} else {
-			alert(txt);
+			setTimeout(instance.close.bind(instance), 3000);
 		}
 	}
 };

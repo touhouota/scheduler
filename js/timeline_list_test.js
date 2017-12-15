@@ -11,7 +11,7 @@ let Timeline = {
 		// item_list.forEach(function(comment_item) {
 		let i = 0;
 		let length = item_list.length;
-		for (i = 0; i < length; i++) {
+		for (i = 0; i < length; i += 1) {
 			let comment = template.cloneNode(true);
 			let comment_item = item_list[i];
 			// tl_id:xxxxとなる
@@ -30,11 +30,9 @@ let Timeline = {
 
 			// コメントの内容を記載
 			comment.querySelector(".comment_text").innerHTML = comment_item.items;
-			// console.log("create_item: ", comment_item.items);
-			if (Notification.permission === 'granted') {
-				Notify.create_instance(comment_item.items);
-			}
-			fragment.insertBefore(comment, fragment.firstElementChild);
+			// fragment.insertBefore(comment, fragment.firstElementChild);
+			fragment.appendChild(comment);
+			Notify.create_instance(comment_item.items);
 		};
 
 		return fragment;
@@ -94,7 +92,7 @@ let Timeline = {
 			}
 		}).send(null);
 		// 処理終了後、1秒後にもう一度関数を実行する
-		Timeline.timer = setTimeout(Timeline.set_timer, 1000);
+		Timeline.timer = setTimeout(Timeline.set_timer, 1500);
 	},
 
 	check_comment_textarea: function() {
