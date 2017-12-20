@@ -168,6 +168,7 @@ def task_modify(cgi)
   $client.prepare(sql + 'task_name = ?' + where).execute(cgi[:task_name], user_id, task_id) unless cgi[:task_name].nil?
   # statusを修正
   unless cgi[:status].nil? || cgi[:status].empty?
+    # もし、statusが0~4の間ではないときエラーを返す
     raise $range_error unless cgi[:status].to_i.between?(0, 4)
     $client.prepare(sql + 'status = ?' + where).execute(cgi[:status], user_id, task_id)
   end
@@ -179,6 +180,8 @@ def task_modify(cgi)
   $client.prepare(sql + 'expected_time = ?' + where).execute(cgi[:plan], user_id, task_id) unless cgi[:plan].nil? || cgi[:plan].to_s.empty?
   # timeを修正
   $client.prepare(sql + 'actual_time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil? || cgi[:time].to_s.empty?
+  # 開始時間を修正
+  $client.prepare(sql + 'start_time = ?' + where).execute(cgi[:start_time], user_id, task_id) unless cgi[:start_time].nil?
 
   # 修正した結果を取得する
   search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and task_id = ?'
