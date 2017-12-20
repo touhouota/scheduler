@@ -122,7 +122,7 @@ def get_task_parent(cgi)
   select * from task left outer join task_tree on task_id = child
   where (user_id = ? and deleted = 0 and parent is null) and (
     (
-      status in (0, 1, 4) and
+      status in (0, 1, 4)
     ) or (
       status in (2, 3) and
       date(task.finish_time) between
