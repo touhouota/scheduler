@@ -287,6 +287,14 @@ let Task = {
 					// console.log("finish_task, target_task", target_task);
 					// dones.insertBefore(target_task, dones.firstElementChild);
 
+					// もし、終わったものが親タスクならば
+					if (target_task.classList.contains("parent")) {
+						// 終了したものを下へ送る
+						let dones = document.getElementById("dones");
+						// console.log("finish_task, target_task", target_task);
+						dones.insertBefore(target_task, dones.firstElementChild);
+					}
+
 					// 終わった旨を表示する
 					let text = task_info.task + "に区切りをつけました！";
 					Notify.create_instance(text);
