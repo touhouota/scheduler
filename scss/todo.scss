@@ -376,6 +376,14 @@ body {
 }
 
 .parent {
+	& > .button_area {
+		& > .buttons {
+			.finish {
+				display: inherit;
+			}
+		}
+	}
+
 	& > .task_main {
 		& > .change_button {
 			.task_status {
