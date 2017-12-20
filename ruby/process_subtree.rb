@@ -238,6 +238,12 @@ def status_change(cgi)
   update = 'update task set status = ? where user_id = ? and task_id = ?'
   $client.prepare(update).execute(cgi[:status], cgi[:user_id], cgi[:task_id])
 
+  # タスク終了時、その時間をDBに書き込む
+  if %w[2 3].include?(cgi[:status])
+    fin_time_sql = 'update task set finish_time = current_timestamp where user_id = ? and task_id = ?'
+    $client.prepare(fin_time_sql).execute(cgi[:user_id], cgi[:task_id])
+  end
+
   # 一時停止時、完了時にはそれまでの経過時間が送られてくるので、それをmodifyへ渡す
   task_modify(cgi) if cgi[:time] || cgi[:start_time]
 
