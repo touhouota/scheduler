@@ -154,22 +154,26 @@ let Task = {
 				// console.table(response.data);
 				if (response.ok) {
 					let data = response.data;
-					let fragment = document.createDocumentFragment();
+					let todo = document.createDocumentFragment();
+					let done = document.createDocumentFragment();
 					for (let i = 0; i < data.length; i++) {
 						let task_info = data[i];
 						let task = Task.create_task(task_info);
 						Task.tree[task_info.task_id] = [];
 						Task.parent.push(task_info.task_id);
-
-						fragment.appendChild(task);
-
+						if (Base.finish_status.includes(task_info.status)) {
+							done.appendChild(task);
+						} else {
+							todo.appendChild(task);
+						}
 						// タスクを監視し、変化があればサブタスク数を数える
 						// new MutationObserver(Task.subtask_count).observe(task, {
 						// 	childList: true,
 						// 	subtree: true,
 						// });
 					}
-					document.getElementById("todos").appendChild(fragment);
+					document.getElementById("todos").appendChild(todo);
+					document.getElementById("dones").appendChild(done);
 					// 親の処理が終われば、子供を取得
 					Task.get_child();
 				}
