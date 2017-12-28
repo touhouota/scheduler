@@ -24,6 +24,9 @@ window.onload = function() {
 		subtree: true,
 	});
 
+	// タスクの実行を監視するタイマーを実行
+	ProgressTimer.watch();
+
 
 	// コメント入力欄のイベント
 	// 入力欄の状態によってボタンの表示を変える
@@ -32,7 +35,6 @@ window.onload = function() {
 	const button = document.getElementById("comment_button");
 	button.addEventListener("click", Timeline.append);
 	button.disabled = true;
-
 
 	// このページでNotificationAPIを使うための準備
 	Notify.init();

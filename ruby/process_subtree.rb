@@ -120,11 +120,16 @@ def get_task_parent(cgi)
   # 終わっていない親タスクを取得
   sql = <<-SQL
   select * from task left outer join task_tree on task_id = child
-  where (
-    user_id = ? and
-    deleted = 0 and
-    status in (0, 1, 4) and
-    parent is null
+  where (user_id = ? and deleted = 0 and parent is null) and (
+    (
+      status in (0, 1, 4)
+    ) or (
+      status in (2, 3) and
+      date(task.finish_time) between
+      date(date_sub(current_timestamp, interval 1 day))
+      and
+      date(date_add(current_timestamp, interval 1 day))
+    )
   )
   SQL
 
@@ -163,6 +168,7 @@ def task_modify(cgi)
   $client.prepare(sql + 'task_name = ?' + where).execute(cgi[:task_name], user_id, task_id) unless cgi[:task_name].nil?
   # statusを修正
   unless cgi[:status].nil? || cgi[:status].empty?
+    # もし、statusが0~4の間ではないときエラーを返す
     raise $range_error unless cgi[:status].to_i.between?(0, 4)
     $client.prepare(sql + 'status = ?' + where).execute(cgi[:status], user_id, task_id)
   end
@@ -174,6 +180,8 @@ def task_modify(cgi)
   $client.prepare(sql + 'expected_time = ?' + where).execute(cgi[:plan], user_id, task_id) unless cgi[:plan].nil? || cgi[:plan].to_s.empty?
   # timeを修正
   $client.prepare(sql + 'actual_time =  ?' + where).execute(cgi[:time], user_id, task_id) unless cgi[:time].nil? || cgi[:time].to_s.empty?
+  # 開始時間を修正
+  $client.prepare(sql + 'start_time = ?' + where).execute(cgi[:start_time], user_id, task_id) unless cgi[:start_time].nil?
 
   # 修正した結果を取得する
   search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and task_id = ?'
@@ -232,6 +240,12 @@ def status_change(cgi)
   # update = 'update daily set status = ? where user_id = ? and task_id = ?'
   update = 'update task set status = ? where user_id = ? and task_id = ?'
   $client.prepare(update).execute(cgi[:status], cgi[:user_id], cgi[:task_id])
+
+  # タスク終了時、その時間をDBに書き込む
+  if %w[2 3].include?(cgi[:status])
+    fin_time_sql = 'update task set finish_time = current_timestamp where user_id = ? and task_id = ?'
+    $client.prepare(fin_time_sql).execute(cgi[:user_id], cgi[:task_id])
+  end
 
   # 一時停止時、完了時にはそれまでの経過時間が送られてくるので、それをmodifyへ渡す
   task_modify(cgi) if cgi[:time] || cgi[:start_time]

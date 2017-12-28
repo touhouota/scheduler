@@ -1,4 +1,5 @@
 let ProgressTimer = {
+	timer: null,
 
 	set: function(task_element) {
 		console.log("ProgressTimer, set");
@@ -6,11 +7,7 @@ let ProgressTimer = {
 		if (!task_element.dataset.start_time) {
 			task_element.dataset.start_time = Date();
 		}
-		// 1秒ごとに表示をし直す
-		task_element.dataset.progressTimer_id = setInterval(function(task) {
-			console.log("ProgressTimer, timer");
-			ProgressTimer.display(task);
-		}, 1000, task_element);
+		Task.child[task_element.id] = true;
 	},
 
 	clear: function(task_element) {
@@ -24,6 +21,7 @@ let ProgressTimer = {
 		// 設定した諸々を消す
 		task_element.dataset.progressTimer_id = '';
 		task_element.dataset.start_time = '';
+		Task.child[task_element.id] = false;
 	},
 
 	display: function(task) {
@@ -54,6 +52,25 @@ let ProgressTimer = {
 		Chart.draw(canvas, plan, real);
 	},
 
+	watch: function() {
+		ProgressTimer.timer = setInterval(function() {
+			for (let key in Task.child) {
+				let parent = null;
+				if (Task.child[key]) {
+					console.log(Task.child[key]);
+					let task = document.getElementById(key);
+					ProgressTimer.display(task);
+					parent = Base.parents(task.parentElement, "task");
+					// 親要素があれば、親も表示変更
+					if (parent instanceof Node) {
+						console.log("start: parent:", parent);
+						ProgressTimer.display(parent);
+					}
+				}
+			}
+		}, 1000);
+	},
+
 	calc_diff_seconds: function(task_element) {
 		// 指定されたタスクの経過時間を取得 => ミリ秒に変換
 		let progress = parseInt(task_element.dataset.progress || 0, 10) * 1000;
@@ -66,6 +83,8 @@ let ProgressTimer = {
 
 		// これまでの経過時間 + タスク開始時間と現在時間の差分を返す
 		let diff_millis = progress + (now.getTime() - start_time);
+		// タスクの進行状況を記録する
+		task_element.dataset.progress = (diff_millis / 1000) || 0;
 		return (diff_millis / 1000) || 0;
 	},
 

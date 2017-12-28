@@ -272,6 +272,9 @@ let Modal = {
 					// サブタスク追加時、親にはparentクラスをつける
 					task.classList.add("parent");
 					task.querySelector(".subtask_list").appendChild(subtask);
+
+					// サブタスクを作ったら、追加する
+					Task.child["task_id:" + data.task_id] = false;
 				}
 				// modalを初期化
 				form.reset();

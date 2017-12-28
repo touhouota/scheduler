@@ -31,5 +31,5 @@ file :minify do
 end
 
 task :mimalab do
-  `rsync -pvr -e "ssh -i ~/.ssh/1013179_mimalab_rsa " --exclude-from=/Users/touhouota/.rsync/excludes ~/Dropbox/Program/5_master/scheduler b1013179@mimalab.c.fun.ac.jp:~/`
+  puts `rsync -pvr -e "ssh -i ~/.ssh/1013179_mimalab_rsa " --exclude-from=/Users/touhouota/.rsync/excludes ~/Dropbox/Program/5_master/scheduler b1013179@mimalab.c.fun.ac.jp:~/`
 end

@@ -1,5 +1,6 @@
 var Base = {
 	request_path: './ruby/server.rb',
+	finish_status: [2, 3],
 
 	create_request: function(method, url, callback) {
 		var request = new XMLHttpRequest();
