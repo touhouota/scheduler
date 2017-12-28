@@ -1,4 +1,5 @@
 let ProgressTimer = {
+	timer: null,
 
 	set: function(task_element) {
 		console.log("ProgressTimer, set");
@@ -11,6 +12,24 @@ let ProgressTimer = {
 			console.log("ProgressTimer, timer");
 			ProgressTimer.display(task);
 		}, 1000, task_element);
+	},
+	start: function() {
+		ProgressTimer.timer = setInterval(function() {
+			for (let key in Task.child) {
+				let parent = null;
+				if (Task.child[key]) {
+					console.log(Task.child[key]);
+					let task = document.getElementById(key);
+					ProgressTimer.display(task);
+					parent = Base.parents(task.parentElement, "task");
+					// 親要素があれば、親も表示変更
+					if (parent instanceof Node) {
+						console.log("start: parent:", parent);
+						ProgressTimer.display(parent);
+					}
+				}
+			}
+		}, 1000);
 	},
 
 	clear: function(task_element) {
