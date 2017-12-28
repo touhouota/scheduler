@@ -85,6 +85,8 @@ let ProgressTimer = {
 
 		// これまでの経過時間 + タスク開始時間と現在時間の差分を返す
 		let diff_millis = progress + (now.getTime() - start_time);
+		// タスクの進行状況を記録する
+		task_element.dataset.progress = (diff_millis / 1000) || 0;
 		return (diff_millis / 1000) || 0;
 	},
 
