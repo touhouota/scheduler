@@ -1,7 +1,7 @@
 let Task = {
-	child: [],
-	parent: [],
-	tree: {},
+	parents: [],
+	child: {},
+
 	// タスクの追加をサーバへ送る
 	append_task: function() {
 		var input = prompt("タスク名を入力してください");
@@ -133,19 +133,6 @@ let Task = {
 		return task;
 	},
 
-	// subtask作成を行う。
-	create_subtask: function(task_info) {
-		let _template = document.getElementById("subtask_template");
-		let template = document.importNode(_template.content, true);
-		let subtask = template.cloneNode(true).firstElementChild;
-
-
-		// タスク情報を付加
-		Task._setting_subtask(subtask, task_info);
-
-		return subtask;
-	},
-
 	get_parents: function() {
 		const query = "?cmd=task_parent&user_id=" + Base.get_cookie("user_id");
 		Base.create_request("GET", Base.request_path + query, function() {
@@ -159,8 +146,7 @@ let Task = {
 					for (let i = 0; i < data.length; i++) {
 						let task_info = data[i];
 						let task = Task.create_task(task_info);
-						Task.tree[task_info.task_id] = [];
-						Task.parent.push(task_info.task_id);
+						Task.parents.push(task_info.task_id);
 						if (Base.finish_status.includes(task_info.status)) {
 							done.appendChild(task);
 						} else {
@@ -182,21 +168,22 @@ let Task = {
 	},
 
 	get_child: function(parent_id) {
-		let parents = null;
+		let parents = [];
+		// 引数がある場合はそれを、なければすべてのタスク
 		if (parent_id) {
-			// 引数があれば、それを
-			parents = [parent_id];
+			parents.push(parent_id);
 		} else {
-			// 引数がなければ、ページ全体の
-			parents = Object.keys(Task.tree);
+			parents = Task.parents;
 		}
-		// console.log(parents);
-		parents.forEach(function(parent) {
+
+		let length = parents.length;
+		for (let i = 0; i < length; i += 1) {
 			let query = [
 				"?cmd=task_child",
-				"&parent=", parent,
+				"&parent=", parents[i],
 				"&user_id=" + Base.get_cookie("user_id"),
 			].join("");
+
 			Base.create_request("GET", Base.request_path + query, function() {
 				if (this.status == 200 && this.readyState == 4) {
 					let response = JSON.parse(this.responseText);
@@ -212,8 +199,8 @@ let Task = {
 						let fragment = document.createDocumentFragment();
 
 						data.forEach(function(item) {
-							Task.tree[item.parent].push(item.task_id)
-							Task.child.push(item.task_id);
+							// タスクごとに動いてるかを記録
+							Task.child["task_id:" + item.task_id] = false;
 							let subtask = Task.create_task(item);
 							subtask.classList.add("sub");
 							fragment.appendChild(subtask);
@@ -234,7 +221,7 @@ let Task = {
 					}
 				}
 			}).send(null);
-		});
+		}
 	},
 
 	// 引数の状態により、filterを返す
