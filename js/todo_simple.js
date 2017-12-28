@@ -1,6 +1,7 @@
 let Task = {
 	parents: [],
 	child: {},
+
 	// タスクの追加をサーバへ送る
 	append_task: function() {
 		var input = prompt("タスク名を入力してください");
