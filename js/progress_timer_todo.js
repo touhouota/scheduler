@@ -7,29 +7,7 @@ let ProgressTimer = {
 		if (!task_element.dataset.start_time) {
 			task_element.dataset.start_time = Date();
 		}
-		// 1秒ごとに表示をし直す
-		task_element.dataset.progressTimer_id = setInterval(function(task) {
-			console.log("ProgressTimer, timer");
-			ProgressTimer.display(task);
-		}, 1000, task_element);
-	},
-	start: function() {
-		ProgressTimer.timer = setInterval(function() {
-			for (let key in Task.child) {
-				let parent = null;
-				if (Task.child[key]) {
-					console.log(Task.child[key]);
-					let task = document.getElementById(key);
-					ProgressTimer.display(task);
-					parent = Base.parents(task.parentElement, "task");
-					// 親要素があれば、親も表示変更
-					if (parent instanceof Node) {
-						console.log("start: parent:", parent);
-						ProgressTimer.display(parent);
-					}
-				}
-			}
-		}, 1000);
+		Task.child[task_element.id] = true;
 	},
 
 	clear: function(task_element) {
@@ -43,6 +21,7 @@ let ProgressTimer = {
 		// 設定した諸々を消す
 		task_element.dataset.progressTimer_id = '';
 		task_element.dataset.start_time = '';
+		Task.child[task_element.id] = false;
 	},
 
 	display: function(task) {
@@ -71,6 +50,25 @@ let ProgressTimer = {
 		}
 		// console.log(plan, real);
 		Chart.draw(canvas, plan, real);
+	},
+
+	watch: function() {
+		ProgressTimer.timer = setInterval(function() {
+			for (let key in Task.child) {
+				let parent = null;
+				if (Task.child[key]) {
+					console.log(Task.child[key]);
+					let task = document.getElementById(key);
+					ProgressTimer.display(task);
+					parent = Base.parents(task.parentElement, "task");
+					// 親要素があれば、親も表示変更
+					if (parent instanceof Node) {
+						console.log("start: parent:", parent);
+						ProgressTimer.display(parent);
+					}
+				}
+			}
+		}, 1000);
 	},
 
 	calc_diff_seconds: function(task_element) {
