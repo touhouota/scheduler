@@ -79,6 +79,7 @@ let Chart = {
 		}
 		// 時間を表示する
 		ctx.fillStyle = "#000";
+		sum_time = Math.floor(sum_time * 100) / 100;
 		ctx.fillText(sum_time + "分", this.canvas.width - 40, graph_height + 18);
 		// console.log(data + "分");
 	},
