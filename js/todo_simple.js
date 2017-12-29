@@ -64,7 +64,8 @@ let Task = {
 		// console.log("status_change", task);
 
 		if (task.dataset.status === '1') {
-			let progress = ProgressTimer.calc_diff_seconds(task);
+			// let progress = ProgressTimer.calc_diff_seconds(task);
+			let progress = ProgressTimer.get_progress_seconds(task);
 			// console.log("タスクを停止。時間:", progress);
 			// タイマーを無効にする
 			ProgressTimer.clear(task);
@@ -245,7 +246,8 @@ let Task = {
 		let task_id = task.id.split(":").pop();
 		// console.log("finish_task", status, task_id);
 		// 経過時間を計測
-		let progress = ProgressTimer.calc_diff_seconds(task);
+		// let progress = ProgressTimer.calc_diff_seconds(task);
+		let progress = ProgressTimer.get_progress_seconds(task);
 		// タスクのタイマーを停止
 		ProgressTimer.clear(task);
 
