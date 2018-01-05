@@ -57,7 +57,7 @@ def members_action(group)
 
   result = $client.prepare(search_query).execute(group[:group_id])
   # もし、作業の情報がなければ、その段階で処理を終える。
-  return '誰も作業じていないようです。＼(^o^)／< 大丈夫か？？？' if result.size.zero?
+  return '誰も作業していないようです。＼(^o^)／< 大丈夫か？？？' if result.size.zero?
 
   # TLから各ユーザのタスク追加・実行状況を計測
   users = result.each_with_object({}) do |entry, hash|
