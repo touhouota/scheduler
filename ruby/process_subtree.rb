@@ -360,3 +360,12 @@ def auto_comment(user_id, cmd, task_id)
   hash = { user_id: user_id, comment: comment }
   insert_timeline(hash)
 end
+
+# taskの木構造をDB上で表現する
+def append_tree(json)
+  keys = %i[user_id task_id parent]
+  raise $error_string + '(append_tree)' unless _check_data(keys, json)
+
+  sql = 'insert into task_tree values(?, ?)'
+  $client.prepare(sql).execute(json[:parent], json[:task_id])
+end
