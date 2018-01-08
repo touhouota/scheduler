@@ -206,9 +206,14 @@ def task_modify(cgi)
 
   # 修正した結果を取得する
   search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and task_id = ?'
-  result = $client.prepare(search).execute(user_id, cgi[:task_id])
+  result = $client.prepare(search).execute(user_id, cgi[:task_id]).entries
 
-  { ok: true, data: result.entries }
+  # ２つ以上ある場合は、そのタスクは親タスク
+  if result.size >= 2
+    result = result.select { |row| row[:child] == row[:parent] }
+  end
+
+  { ok: true, data: result }
 end
 
 def task_delete(cgi)
