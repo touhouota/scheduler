@@ -69,7 +69,7 @@ begin
   $client.query('COMMIT')
   # クライアントへと返す
   print JSON.generate(result)
-rescue => e
+rescue StandardError => e
   # errorが起こった時は、なかったコトにする
   $client.query('ROLLBACK')
 
