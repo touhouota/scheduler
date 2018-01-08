@@ -49,7 +49,12 @@ def append_task(cgi)
   task_modify(cgi) if cgi[:plan]
 
   # treeに自己参照追加
-  tree_info = { user_id: cgi[:user_id], parent: cgi[:task_id], task_id: cgi[:task_id] }
+  tree_info = {
+    user_id: cgi[:user_id],
+    parent: cgi[:task_id],
+    task_id: cgi[:task_id],
+    depth: 2
+  }
   append_tree(tree_info)
 
   # コメントを投稿する
@@ -71,14 +76,19 @@ def append_subtask(cgi, task_info)
   # subtask_sql = 'insert into task_tree values(?, ?)'
   # $client.prepare(subtask_sql).execute(cgi[:parent], parent_id)
   task_id = task_info.dig(:data, 0, :task_id)
-  tree_info = { user_id: cgi[:user_id], parent: cgi[:parent], task_id: task_id }
+  tree_info = {
+    user_id: cgi[:user_id],
+    parent: cgi[:parent],
+    task_id: task_id,
+    depth: 3
+  }
   append_tree(tree_info)
 
   sql = <<-SQL
   select * from task left outer join task_tree on task.task_id = task_tree.child
-  where user_id = ? and task.task_id = ?
+  where user_id = ? and task.task_id = ? and parent = ?
   SQL
-  result = $client.prepare(sql).execute(cgi[:user_id], task_id)
+  result = $client.prepare(sql).execute(cgi[:user_id], task_id, cgi[:parent])
 
   { ok: true, data: result.entries }
 end
@@ -127,7 +137,8 @@ def get_task_parent(cgi)
   # 終わっていない親タスクを取得
   sql = <<-SQL
   select * from task left outer join task_tree on task_id = child
-  where (user_id = ? and deleted = 0 and parent is null) and (
+  -- where (user_id = ? and deleted = 0 and parent is null and depth = 2) and (
+  where (user_id = ? and deleted = 0 and depth = 2) and (
     (
       status in (0, 1, 4)
     ) or (
@@ -152,9 +163,12 @@ def get_task_child(cgi)
   sql = <<-SQL
   select * from task left outer join task_tree on task_id = child
   where (
+    -- depth = 3 and
     user_id = ? and
     deleted = 0 and
-    parent = ?)
+    parent = ? and
+    child != parent
+  )
   SQL
 
   result = $client.prepare(sql).execute(cgi[:user_id], cgi[:parent])
@@ -378,16 +392,21 @@ def append_tree(json)
     sql = 'insert into task_tree(parent, child, depth) values(?, ?, ?)'
     $client.prepare(sql).execute(json[:parent], json[:task_id], json[:depth])
   else
+    # すでに、タスクは自己参照が定義されている
+    # 階層を変更する必要がある
+    sql = 'update task_tree set depth = 3 where parent = ? and child = ?'
+    $client.prepare(sql).execute(json[:task_id], json[:task_id])
+
     # 異なる場合、親のIDと紐付ける
     # はじめに、親要素を子孫として持つ祖先を取得
     ancestors_sql = 'select parent from task_tree where child = ?'
     ancestors = $client.prepare(ancestors_sql).execute(json[:parent])
 
     # 取得した祖先の子供に、新しく子要素を追加する
-    insert_sql = 'insert into task_tree values(?, ?)'
+    insert_sql = 'insert into task_tree(parent, child, depth) values(?, ?, ?)'
     insert_prepare = $client.prepare(insert_sql)
     ancestors.each do |row|
-      insert_prepare.execute(row[:parent], json[:task_id])
+      insert_prepare.execute(row[:parent], json[:task_id], nil)
     end
   end
 end
