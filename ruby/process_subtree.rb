@@ -208,9 +208,10 @@ def task_modify(cgi)
   search = 'select * from task left outer join task_tree on task_id = child where user_id = ? and task_id = ?'
   result = $client.prepare(search).execute(user_id, cgi[:task_id]).entries
 
-  # ２つ以上ある場合は、そのタスクは親タスク
+  # ２つ以上ある場合は、そのタスクは子タスク
   if result.size >= 2
-    result = result.select { |row| row[:child] == row[:parent] }
+    # 子タスクは、child(自分)とparentが異なるものを返そう
+    result = result.reject { |row| row[:child] == row[:parent] }
   end
 
   { ok: true, data: result }
