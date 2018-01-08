@@ -48,6 +48,10 @@ def append_task(cgi)
   cgi[:task_id] = $client.last_id.to_s
   task_modify(cgi) if cgi[:plan]
 
+  # treeに自己参照追加
+  tree_info = { user_id: cgi[:user_id], parent: cgi[:task_id], task_id: cgi[:task_id] }
+  append_tree(tree_info)
+
   # コメントを投稿する
   auto_comment(cgi[:user_id], cgi[:cmd], cgi[:task_id])
 
@@ -63,15 +67,18 @@ def append_subtask(cgi, task_info)
   key = %i[user_id parent]
   raise $error_string + ' (append_subtask)' unless _check_data(key, cgi)
 
-  parent_id = task_info.dig(:data, 0, :task_id)
-  subtask_sql = 'insert into task_tree values(?, ?)'
-  $client.prepare(subtask_sql).execute(cgi[:parent], parent_id)
+  # parent_id = task_info.dig(:data, 0, :task_id)
+  # subtask_sql = 'insert into task_tree values(?, ?)'
+  # $client.prepare(subtask_sql).execute(cgi[:parent], parent_id)
+  task_id = task_info.dig(:data, 0, :task_id)
+  tree_info = { user_id: cgi[:user_id], parent: cgi[:parent], task_id: task_id }
+  append_tree(tree_info)
 
   sql = <<-SQL
   select * from task left outer join task_tree on task.task_id = task_tree.child
   where user_id = ? and task.task_id = ?
   SQL
-  result = $client.prepare(sql).execute(cgi[:user_id], parent_id)
+  result = $client.prepare(sql).execute(cgi[:user_id], task_id)
 
   { ok: true, data: result.entries }
 end
@@ -363,9 +370,24 @@ end
 
 # taskの木構造をDB上で表現する
 def append_tree(json)
-  keys = %i[user_id task_id parent]
+  keys = %i[user_id parent task_id]
   raise $error_string + '(append_tree)' unless _check_data(keys, json)
 
-  sql = 'insert into task_tree values(?, ?)'
-  $client.prepare(sql).execute(json[:parent], json[:task_id])
+  # 親と子のidが同じ場合、普通に追加する
+  if json[:parent] == json[:task_id]
+    sql = 'insert into task_tree(parent, child, depth) values(?, ?, ?)'
+    $client.prepare(sql).execute(json[:parent], json[:task_id], json[:depth])
+  else
+    # 異なる場合、親のIDと紐付ける
+    # はじめに、親要素を子孫として持つ祖先を取得
+    ancestors_sql = 'select parent from task_tree where child = ?'
+    ancestors = $client.prepare(ancestors_sql).execute(json[:parent])
+
+    # 取得した祖先の子供に、新しく子要素を追加する
+    insert_sql = 'insert into task_tree values(?, ?)'
+    insert_prepare = $client.prepare(insert_sql)
+    ancestors.each do |row|
+      insert_prepare.execute(row[:parent], json[:task_id])
+    end
+  end
 end
