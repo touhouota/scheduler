@@ -235,8 +235,8 @@ let Modal = {
 					let old_task = document.getElementById("task_id:" + data[0].task_id);
 					old_task.parentElement.replaceChild(new_task, old_task);
 
-					if (data[0].parent === null) {
-						// parentに値がなければ、親タスク
+					if (data[0].parent !== data[0].child) {
+						// parentとchildが同じ時は親タスク
 						Task.get_child(data[0].task_id);
 					} else {
 						new_task.classList.add("sub");
