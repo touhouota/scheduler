@@ -1,6 +1,9 @@
 body,
 html {
+	margin: 0;
+	padding: 0;
 	position: relative;
+	height: 100%;
 }
 
 .container {
@@ -9,6 +12,7 @@ html {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	height: 100%;
 }
 
 .plan_area {
@@ -20,26 +24,31 @@ html {
 // 各曜日の見た目を定義
 
 .day {
-	width: 400px;
+	width: 300px;
 	height: 100%;
 	box-sizing: border-box;
+	margin: 5px;
 	padding: 5px 0 0 10px;
 	position: relative;
+	background-color: #eee;
 
 	.plan_head {
 		width: 100%;
 		height: 50px;
 		position: relative;
+		background-color: #555;
 
 		.day_name {
-			width: 50px;
+			display: inline-block;
+			width: calc(100% - 50px);
+			text-align: center;
 		}
 
 		.append_button {
-			position: absolute;
-			right: 0;
-			top: 0;
 			@extend .button;
+			// position: absolute;
+			// top: 5px;
+			// right: 5px;
 		}
 	}
 
@@ -51,18 +60,18 @@ html {
 
 .button {
 	display: inline-block;
-	width: 40px;
+	width: 32px;
 	border-radius: 4px;
 	-webkit-box-shadow: 0 2px 0 #8f9080;
 	box-shadow: 0 2px 0 #8f9080;
 	border: 1px solid #666;
 	padding: 5px;
 	cursor: pointer;
-	margin-right: 10px;
+	position: relative;
 	background-color: #fff;
 
 	img {
-		width: 30px;
+		width: 20px;
 	}
 
 	.button_text {
@@ -77,9 +86,5 @@ html {
 		top: 3px;
 		-webkit-box-shadow: none;
 		box-shadow: none;
-	}
-
-	& > * {
-		vertical-align: middle;
 	}
 }
