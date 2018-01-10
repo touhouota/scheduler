@@ -10,15 +10,76 @@ html {
 	right: 0;
 	bottom: 0;
 }
-// 各曜日の見た目を定義
 
 .plan_area {
+	position: relative;
 	display: flex;
 	justify-content: space-between;
+	height: 100%;
 }
+// 各曜日の見た目を定義
 
 .day {
 	width: 400px;
+	height: 100%;
 	box-sizing: border-box;
 	padding: 5px 0 0 10px;
+	position: relative;
+
+	.plan_head {
+		width: 100%;
+		height: 50px;
+		position: relative;
+
+		.day_name {
+			width: 50px;
+		}
+
+		.append_button {
+			position: absolute;
+			right: 0;
+			top: 0;
+			@extend .button;
+		}
+	}
+
+	.plan_body {
+		width: 100%;
+		height: calc(100% - 50px);
+	}
+}
+
+.button {
+	display: inline-block;
+	width: 40px;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 2px 0 #8f9080;
+	box-shadow: 0 2px 0 #8f9080;
+	border: 1px solid #666;
+	padding: 5px;
+	cursor: pointer;
+	margin-right: 10px;
+	background-color: #fff;
+
+	img {
+		width: 30px;
+	}
+
+	.button_text {
+		margin-left: 10px;
+	}
+
+	&:hover {
+		background-color: rgb(232, 232, 232);
+	}
+
+	&:active {
+		top: 3px;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+
+	& > * {
+		vertical-align: middle;
+	}
 }
