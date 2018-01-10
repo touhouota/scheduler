@@ -1,0 +1,17 @@
+body,
+html {
+	position: relative;
+}
+
+.container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+// 各曜日の見た目を定義
+
+.plan_area {
+	display: flex;
+}
