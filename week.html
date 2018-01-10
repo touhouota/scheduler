@@ -4,9 +4,108 @@
 <head>
 	<meta charset="utf-8">
 	<title>週間予定 | SuperScheduler</title>
+	<link rel="stylesheet" href="./css/week.css">
 </head>
 
 <body>
+	<div class="container">
+		<div class="goal_area">
+
+		</div>
+		<div class="plan_area">
+			<div class="day">
+				<!-- 各曜日のヘッダー部分 -->
+				<div class="plan_head">
+					<p class="day_name">月</p>
+					<button type="button" class="append_button">
+            <img src="./image/add.png" alt="">
+          </button>
+				</div>
+				<!-- 以下には、その曜日の予定が入る -->
+				<div class="plan_body">
+
+				</div>
+			</div>
+			<div class="day">
+				<div class="plan_head">
+					<p class="day_name">火</p>
+					<button type="button" class="append_button">
+            <img src="./image/add.png" alt="">
+          </button>
+				</div>
+				<div class="plan_body">
+
+				</div>
+			</div>
+			<div class="day">
+				<div class="plan_head">
+					<p class="day_name">水</p>
+					<button type="button" class="append_button">
+            <img src="./image/add.png" alt="">
+          </button>
+				</div>
+				<div class="plan_body">
+
+				</div>
+			</div>
+			<div class="day">
+				<div class="plan_head">
+					<p class="day_name">木</p>
+					<button type="button" class="append_button">
+            <img src="./image/add.png" alt="">
+          </button>
+				</div>
+				<div class="plan_body">
+
+				</div>
+			</div>
+			<div class="day">
+				<div class="plan_head">
+					<p class="day_name">金</p>
+					<button type="button" class="append_button">
+            <img src="./image/add.png" alt="">
+          </button>
+				</div>
+				<div class="plan_body">
+
+				</div>
+			</div>
+			<div class="day">
+				<div class="plan_head">
+					<p class="day_name">土</p>
+					<button type="button" class="append_button">
+            <img src="./image/add.png" alt="">
+          </button>
+				</div>
+				<div class="plan_body">
+
+				</div>
+			</div>
+			<div class="day">
+				<div class="plan_head">
+					<p class="day_name">日</p>
+					<button type="button" class="append_button">
+            <img src="./image/add.png" alt="">
+          </button>
+				</div>
+				<div class="plan_body">
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<template id="plan_template">
+    <div class="plan">
+      <div class="main">
+        <img class="task_status" src="./image/stop.png" alt="タスクの状態">
+        <span class="task_name"></span>
+      </div>
+      <div class="sub">
+        期限：<span class="deadline"></span>まで
+      </div>
+    </div>
+  </template>
 
 </body>
 
