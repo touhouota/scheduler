@@ -57,6 +57,7 @@ html {
 		height: calc(100% - 50px);
 	}
 }
+// buttonの見た目を定義
 
 .button {
 	display: inline-block;
@@ -86,5 +87,33 @@ html {
 		top: 3px;
 		-webkit-box-shadow: none;
 		box-shadow: none;
+	}
+}
+// formの見た目を定義
+
+.form {
+	width: 100%;
+
+	.form_element {
+		width: 100%;
+
+		.element_wrapper {
+			width: 100%;
+
+			.form_title {
+				display: inline-block;
+				box-sizing: border-box;
+				margin-right: 10px;
+			}
+
+			.input_element {
+				width: 75%;
+			}
+
+			.textarea {
+				box-sizing: border-box;
+				width: 100%;
+			}
+		}
 	}
 }
